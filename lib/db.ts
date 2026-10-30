@@ -22,3 +22,4 @@ export async function queryOne<T = any>(sql: string, args: any[] = []): Promise<
   const rows = await query<T>(sql, args);
   return rows.length > 0 ? rows[0] : null;
 }
+

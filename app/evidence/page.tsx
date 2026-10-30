@@ -8,3 +8,4 @@ export default async function EvidencePage() {
 
   return <EvidenceLibraryView initialEvidence={evidence} />;
 }
+
