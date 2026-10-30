@@ -1,0 +1,40 @@
+{
+  "name": "intel's-chiplet-business",
+  "version": "1.0.0",
+  "description": "Web app for Intel Commercial Marketing that tracks chiplet market signals: ranks potential chiplet customers and monitors competitor movements, with a RAG-powered chat over all backend data.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "seed": "node scripts/seed.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BridgeAI-Tech/Intel-s-chiplet-business.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/BridgeAI-Tech/Intel-s-chiplet-business/issues"
+  },
+  "homepage": "https://github.com/BridgeAI-Tech/Intel-s-chiplet-business#readme",
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.2",
+    "lucide-react": "^1.65.0",
+    "next": "^16.4.3",
+    "postcss": "^8.5.32",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "^3.10.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  }
+}
