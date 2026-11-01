@@ -70,8 +70,8 @@
       "in_module_1": 1,
       "in_module_2": 1,
       "aliases": ["AWS", "Amazon Web Services", "Annapurna Labs", "Annapurna"],
-      "matching_notes": "aws.amazon.com is a subdomain; Explorium/PredictLeads may resolve it to amazon.com. Check returned entity name/employee count is AWS, not Amazon group. Annapurna Labs (AWS silicon team) has no live domain of its own (annapurnalabs.com does not resolve), so it is matched by alias and rolled up here; its jobs usually post under Amazon/AWS. Module 2 tracks only its silicon programmes (Trainium, Graviton).",
-      "needs_verification": ["Explorium match entity", "PredictLeads match entity"]
+      "matching_notes": "Explorium matches aws.amazon.com to AWS itself (verified S4). PredictLeads rejects aws.amazon.com: use amazon.com and filter to AWS/Annapurna roles, or amazon.jobs search. Annapurna Labs (AWS silicon team) has no live domain of its own (annapurnalabs.com does not resolve), so it is matched by alias and rolled up here; its jobs usually post under Amazon/AWS. Module 2 tracks only its silicon programmes (Trainium, Graviton).",
+      "needs_verification": []
     },
 
     {

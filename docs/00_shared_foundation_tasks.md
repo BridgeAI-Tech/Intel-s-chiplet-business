@@ -38,13 +38,13 @@ Owner split: **Satish** = collection, extraction, normalisation, backend, app.
 - [ ] Export master list for review and get sign-off. *(exported: data/review/company_master_review.xlsx — sign-off pending)*
 
 ## S4. Source access & coverage validation
-- [ ] Explorium: credits, firmographic + technographic fields, domain match accuracy (test Cerebras, AWS, Tesla).
-- [ ] PredictLeads: job postings history depth, fields, rate limits (test Cerebras, AWS, Tesla).
-- [ ] Exa: date filters, result relevance for Broadcom, Marvell, TSMC.
-- [ ] Google News RSS: fallback coverage.
-- [ ] SEC EDGAR / IR pages / TWSE (TSMC) / DART (Samsung) for filings.
-- [ ] Record per source: match accuracy, 12-month availability, field completeness, freshness, limits/credits, export options, usage rights → `source_validation_report.md`.
-- [ ] Reuse existing clients from the hp-new repo: `pipeline/connectors/explorium_client.py`, `predictleads_client.py`, `pipeline/crawlers/exa_crawler.py`, `google_news_crawler.py`, `filings_crawler.py`.
+- [x] Explorium: credits, firmographic + technographic fields, domain match accuracy (test Cerebras, AWS, Tesla).
+- [x] PredictLeads: job postings history depth, fields, rate limits (test Cerebras, AWS, Tesla).
+- [x] Exa: date filters, result relevance for Broadcom, Marvell, TSMC.
+- [x] Google News RSS: fallback coverage.
+- [x] SEC EDGAR / IR pages / TWSE (TSMC) / DART (Samsung) for filings.
+- [x] Record per source: match accuracy, 12-month availability, field completeness, freshness, limits/credits, export options, usage rights → [source_validation_report.md](source_validation_report.md); samples in data/review/source_probe_samples.xlsx.
+- [x] Reuse existing clients from the hp-new repo: `pipeline/connectors/explorium_client.py`, `predictleads_client.py`, `pipeline/crawlers/exa_crawler.py`, `google_news_crawler.py`, `filings_crawler.py`. *(endpoint/auth patterns reused in chiplet/sources/providers.py; filings_crawler.py not reused — it fabricates links)*
 
 ## S5. Shared extraction layer
 - [ ] Implement brief §8.5 extraction prompt as one function (page/document → structured JSON + excerpt + evidence class).
