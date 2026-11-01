@@ -1,0 +1,70 @@
+{
+  "_notes": [
+    "Starting programme list used as search terms and link targets. Only well-established attributes are filled;",
+    "architecture / process_node / packaging stay null until a pipeline records them with source evidence.",
+    "competes_with_intel: 1 = competes with an Intel product or foundry offering, 0 = not, null = unknown."
+  ],
+  "programmes": [
+    {"programme_id": "prg_aws_trainium", "company_id": "cmp_aws", "name": "Trainium", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": 1, "aliases": ["Trainium2", "Trainium3", "Trn2", "Trn3"]},
+    {"programme_id": "prg_aws_inferentia", "company_id": "cmp_aws", "name": "Inferentia", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": 1, "aliases": ["Inferentia2", "Inf2"]},
+    {"programme_id": "prg_aws_graviton", "company_id": "cmp_aws", "name": "Graviton", "programme_type": "cpu", "technology_tags": ["cpu", "arm_architecture"], "architecture": "Arm Neoverse", "competes_with_intel": 1, "aliases": ["Graviton4", "Graviton5"]},
+    {"programme_id": "prg_aws_nitro", "company_id": "cmp_aws", "name": "Nitro", "programme_type": "networking_silicon", "technology_tags": ["networking_silicon", "custom_asic"], "competes_with_intel": 1, "aliases": ["Nitro System", "Nitro card"]},
+
+    {"programme_id": "prg_google_tpu", "company_id": "cmp_google", "name": "TPU", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": 1, "aliases": ["Tensor Processing Unit", "Ironwood", "Trillium", "TPU v7"]},
+    {"programme_id": "prg_google_axion", "company_id": "cmp_google", "name": "Axion", "programme_type": "cpu", "technology_tags": ["cpu", "arm_architecture"], "architecture": "Arm Neoverse", "competes_with_intel": 1, "aliases": ["Google Axion"]},
+    {"programme_id": "prg_google_tensor", "company_id": "cmp_google", "name": "Tensor (Pixel SoC)", "programme_type": "soc", "technology_tags": ["soc"], "competes_with_intel": 0, "aliases": ["Tensor G5", "Google Tensor"]},
+
+    {"programme_id": "prg_microsoft_maia", "company_id": "cmp_microsoft", "name": "Maia", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": 1, "aliases": ["Azure Maia", "Maia 100", "Maia 200"]},
+    {"programme_id": "prg_microsoft_cobalt", "company_id": "cmp_microsoft", "name": "Cobalt", "programme_type": "cpu", "technology_tags": ["cpu", "arm_architecture"], "architecture": "Arm Neoverse", "competes_with_intel": 1, "aliases": ["Azure Cobalt", "Cobalt 100", "Cobalt 200"]},
+    {"programme_id": "prg_microsoft_azure_boost", "company_id": "cmp_microsoft", "name": "Azure Boost DPU", "programme_type": "networking_silicon", "technology_tags": ["networking_silicon"], "competes_with_intel": 1, "aliases": ["Azure Boost"]},
+
+    {"programme_id": "prg_meta_mtia", "company_id": "cmp_meta", "name": "MTIA", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": 1, "aliases": ["Meta Training and Inference Accelerator", "MTIA v2"]},
+
+    {"programme_id": "prg_cerebras_wse", "company_id": "cmp_cerebras", "name": "Wafer-Scale Engine", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "wafer_scale"], "competes_with_intel": 1, "aliases": ["WSE", "WSE-3", "CS-3"]},
+
+    {"programme_id": "prg_tenstorrent_tensix", "company_id": "cmp_tenstorrent", "name": "Tensix AI processors", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "risc_v", "chiplet"], "competes_with_intel": 1, "aliases": ["Wormhole", "Blackhole", "Grendel"]},
+    {"programme_id": "prg_tenstorrent_ascalon", "company_id": "cmp_tenstorrent", "name": "Ascalon RISC-V CPU", "programme_type": "ip_platform", "technology_tags": ["cpu", "risc_v", "semiconductor_ip"], "competes_with_intel": null, "aliases": ["Ascalon"]},
+
+    {"programme_id": "prg_cisco_silicon_one", "company_id": "cmp_cisco", "name": "Silicon One", "programme_type": "networking_silicon", "technology_tags": ["networking_silicon", "custom_asic"], "competes_with_intel": null, "aliases": ["Cisco Silicon One", "G200", "P200"]},
+
+    {"programme_id": "prg_nokia_fp", "company_id": "cmp_nokia", "name": "FP network processors", "programme_type": "networking_silicon", "technology_tags": ["networking_silicon", "custom_asic"], "competes_with_intel": null, "aliases": ["FP5", "FPcore"]},
+    {"programme_id": "prg_nokia_reefshark", "company_id": "cmp_nokia", "name": "ReefShark", "programme_type": "soc", "technology_tags": ["soc", "custom_asic"], "competes_with_intel": null, "aliases": ["ReefShark SoC"]},
+
+    {"programme_id": "prg_tesla_ai_chip", "company_id": "cmp_tesla", "name": "FSD / AI inference chip", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "soc", "custom_asic"], "competes_with_intel": null, "aliases": ["FSD computer", "HW4", "AI4", "AI5", "AI6"]},
+    {"programme_id": "prg_tesla_dojo", "company_id": "cmp_tesla", "name": "Dojo", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator", "custom_asic"], "competes_with_intel": null, "aliases": ["D1", "Dojo 2", "Dojo 3"], "notes": "Programme status must be established from current evidence."},
+
+    {"programme_id": "prg_apple_silicon", "company_id": "cmp_apple", "name": "Apple silicon (M / A series)", "programme_type": "soc", "technology_tags": ["soc", "arm_architecture"], "architecture": "Arm", "competes_with_intel": 1, "aliases": ["M4", "M5", "A19", "Apple M-series"]},
+    {"programme_id": "prg_apple_modem", "company_id": "cmp_apple", "name": "Apple modem / connectivity", "programme_type": "soc", "technology_tags": ["soc", "custom_asic"], "competes_with_intel": 0, "aliases": ["C1", "N1"]},
+
+    {"programme_id": "prg_samsung_exynos", "company_id": "cmp_samsung_electronics", "name": "Exynos", "programme_type": "soc", "technology_tags": ["soc"], "competes_with_intel": 0, "aliases": ["Exynos 2500", "Exynos 2600"]},
+
+    {"programme_id": "prg_ibm_telum", "company_id": "cmp_ibm", "name": "Telum", "programme_type": "cpu", "technology_tags": ["cpu", "ai_accelerator"], "competes_with_intel": null, "aliases": ["Telum II"]},
+    {"programme_id": "prg_ibm_spyre", "company_id": "cmp_ibm", "name": "Spyre", "programme_type": "ai_accelerator", "technology_tags": ["ai_accelerator"], "competes_with_intel": null, "aliases": ["Spyre Accelerator"]},
+    {"programme_id": "prg_ibm_power", "company_id": "cmp_ibm", "name": "Power", "programme_type": "cpu", "technology_tags": ["cpu"], "competes_with_intel": 1, "aliases": ["Power11", "Power10"]},
+
+    {"programme_id": "prg_broadcom_custom_xpu", "company_id": "cmp_broadcom", "name": "Custom XPU / ASIC business", "programme_type": "custom_asic_service", "technology_tags": ["custom_asic", "xpu", "ai_accelerator", "chiplet"], "competes_with_intel": 1, "aliases": ["custom accelerator", "XPU"]},
+    {"programme_id": "prg_broadcom_tomahawk", "company_id": "cmp_broadcom", "name": "Tomahawk / Jericho switching", "programme_type": "networking_silicon", "technology_tags": ["networking_silicon", "co_packaged_optics"], "competes_with_intel": 1, "aliases": ["Tomahawk 6", "Tomahawk Ultra", "Jericho 4"]},
+
+    {"programme_id": "prg_marvell_custom", "company_id": "cmp_marvell", "name": "Custom compute (XPU / ASIC)", "programme_type": "custom_asic_service", "technology_tags": ["custom_asic", "xpu", "hbm", "chiplet"], "competes_with_intel": 1, "aliases": ["custom XPU", "custom HBM", "custom SRAM"]},
+
+    {"programme_id": "prg_amd_instinct", "company_id": "cmp_amd", "name": "Instinct", "programme_type": "gpu", "technology_tags": ["gpu", "ai_accelerator", "chiplet", "hbm"], "competes_with_intel": 1, "aliases": ["MI350", "MI355X", "MI400", "MI450"]},
+    {"programme_id": "prg_amd_epyc", "company_id": "cmp_amd", "name": "EPYC", "programme_type": "cpu", "technology_tags": ["cpu", "x86", "chiplet"], "architecture": "x86", "competes_with_intel": 1, "aliases": ["Turin", "Venice"]},
+
+    {"programme_id": "prg_nvidia_dc_gpu", "company_id": "cmp_nvidia", "name": "Data-centre GPU (Blackwell / Rubin)", "programme_type": "gpu", "technology_tags": ["gpu", "ai_accelerator", "chiplet", "hbm", "cowos"], "competes_with_intel": 1, "aliases": ["Blackwell", "Blackwell Ultra", "Rubin", "Rubin Ultra", "GB300"]},
+    {"programme_id": "prg_nvidia_grace", "company_id": "cmp_nvidia", "name": "Grace / Vera CPU", "programme_type": "cpu", "technology_tags": ["cpu", "arm_architecture"], "architecture": "Arm", "competes_with_intel": 1, "aliases": ["Grace", "Vera"]},
+    {"programme_id": "prg_nvidia_nvlink", "company_id": "cmp_nvidia", "name": "NVLink / NVLink Fusion", "programme_type": "interconnect", "technology_tags": ["scale_up_interconnect", "chiplet"], "competes_with_intel": null, "aliases": ["NVLink Fusion", "NVLink-C2C"]},
+
+    {"programme_id": "prg_arm_neoverse", "company_id": "cmp_arm", "name": "Neoverse / Compute Subsystems", "programme_type": "ip_platform", "technology_tags": ["arm_architecture", "semiconductor_ip", "cpu"], "competes_with_intel": 1, "aliases": ["Neoverse", "CSS", "Neoverse V3", "Neoverse N3"]},
+    {"programme_id": "prg_arm_chiplet_arch", "company_id": "cmp_arm", "name": "Chiplet System Architecture", "programme_type": "ip_platform", "technology_tags": ["chiplet", "ucie", "semiconductor_ip"], "competes_with_intel": null, "aliases": ["CSA", "Arm Total Design"]},
+
+    {"programme_id": "prg_tsmc_leading_nodes", "company_id": "cmp_tsmc", "name": "Leading-edge process (N3 / N2 / A16)", "programme_type": "process_technology", "technology_tags": ["process_node", "foundry_services"], "competes_with_intel": 1, "aliases": ["N2", "A16", "A14", "N3"]},
+    {"programme_id": "prg_tsmc_cowos", "company_id": "cmp_tsmc", "name": "CoWoS", "programme_type": "packaging_technology", "technology_tags": ["cowos", "advanced_packaging", "chiplet"], "competes_with_intel": 1, "aliases": ["CoWoS-L", "CoWoS-S", "CoWoS-R", "3DFabric"]},
+    {"programme_id": "prg_tsmc_soic", "company_id": "cmp_tsmc", "name": "SoIC", "programme_type": "packaging_technology", "technology_tags": ["soic", "hybrid_bonding", "chiplet"], "competes_with_intel": 1, "aliases": ["SoIC-X"]},
+
+    {"programme_id": "prg_samsung_foundry_gaa", "company_id": "cmp_samsung_foundry", "name": "GAA process (SF3 / SF2)", "programme_type": "process_technology", "technology_tags": ["process_node", "foundry_services"], "competes_with_intel": 1, "aliases": ["SF2", "SF2P", "SF3", "MBCFET"]},
+    {"programme_id": "prg_samsung_foundry_packaging", "company_id": "cmp_samsung_foundry", "name": "I-Cube / X-Cube packaging", "programme_type": "packaging_technology", "technology_tags": ["i_cube", "x_cube", "advanced_packaging", "chiplet"], "competes_with_intel": 1, "aliases": ["I-Cube", "X-Cube", "SAINT"]},
+
+    {"programme_id": "prg_intel_18a", "company_id": "cmp_intel", "name": "Intel 18A / 14A", "programme_type": "process_technology", "technology_tags": ["process_node", "foundry_services"], "competes_with_intel": 0, "aliases": ["18A", "14A", "Intel 3"]},
+    {"programme_id": "prg_intel_emib_foveros", "company_id": "cmp_intel", "name": "EMIB / Foveros", "programme_type": "packaging_technology", "technology_tags": ["emib", "foveros", "advanced_packaging", "chiplet"], "competes_with_intel": 0, "aliases": ["EMIB", "EMIB-T", "Foveros Direct"]}
+  ]
+}

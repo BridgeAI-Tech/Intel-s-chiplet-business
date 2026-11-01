@@ -1,0 +1,200 @@
+{
+  "research_role": [
+    {"code": "potential_customer", "label": "Potential customer"},
+    {"code": "existing_customer", "label": "Existing Intel customer / partner"},
+    {"code": "competitor", "label": "Competitor"},
+    {"code": "supplier", "label": "Supplier"},
+    {"code": "partner", "label": "Partner"},
+    {"code": "ecosystem", "label": "Ecosystem participant"},
+    {"code": "benchmark", "label": "Research-only benchmark"},
+    {"code": "parent_entity", "label": "Parent entity (hierarchy only)"},
+    {"code": "self", "label": "Intel (reference entity)"}
+  ],
+  "intel_relationship_status": [
+    {"code": "existing_relationship", "label": "Existing Intel relationship", "description": "Announced customer, partner or development relationship with Intel."},
+    {"code": "potential_target", "label": "Potential target", "description": "Candidate to investigate; no confirmed Intel relationship assumed."},
+    {"code": "research_only", "label": "Research-only benchmark"},
+    {"code": "competitor_only", "label": "Competitor (no relationship tracked)"},
+    {"code": "partner_and_competitor", "label": "Partner in one area, competitor in another"},
+    {"code": "self", "label": "Intel"}
+  ],
+  "value_chain_role": [
+    {"code": "custom_asic_provider", "label": "Custom ASIC provider"},
+    {"code": "merchant_silicon_vendor", "label": "Merchant semiconductor vendor"},
+    {"code": "ip_architecture", "label": "IP / architecture", "description": "e.g. Arm — IP/architecture competitor and Intel Chiplet Alliance ecosystem partner; not a direct foundry competitor."},
+    {"code": "external_foundry", "label": "External foundry"},
+    {"code": "hyperscaler_in_house", "label": "Hyperscaler in-house silicon programme"},
+    {"code": "osat_packaging", "label": "OSAT / advanced packaging"},
+    {"code": "eda_design_services", "label": "EDA / design services"},
+    {"code": "system_oem", "label": "System / device OEM with in-house silicon"},
+    {"code": "intel", "label": "Intel"}
+  ],
+  "industry": [
+    {"code": "hyperscaler", "label": "Hyperscaler / cloud"},
+    {"code": "ai_hpc", "label": "AI / HPC"},
+    {"code": "networking", "label": "Networking"},
+    {"code": "automotive", "label": "Automotive"},
+    {"code": "consumer_electronics", "label": "Consumer electronics"},
+    {"code": "enterprise_technology", "label": "Enterprise technology"},
+    {"code": "semiconductors", "label": "Semiconductors"}
+  ],
+  "hiring_role_category": [
+    {"code": "architecture_system_design", "label": "Architecture & system design", "aliases": ["SoC architect", "CPU architect", "silicon architect", "performance architect", "system architect", "microarchitecture"]},
+    {"code": "rtl_logic_design", "label": "RTL & logic design", "aliases": ["RTL", "ASIC design", "logic design", "front-end design", "Verilog", "SystemVerilog", "micro-architecture design"]},
+    {"code": "physical_design", "label": "Physical design", "aliases": ["physical design", "place and route", "P&R", "timing closure", "STA", "floorplanning", "backend design", "physical verification"]},
+    {"code": "verification_validation", "label": "Verification & validation", "aliases": ["design verification", "DV engineer", "UVM", "formal verification", "emulation", "post-silicon validation", "pre-silicon validation"]},
+    {"code": "dft_test", "label": "Design-for-test & test engineering", "aliases": ["DFT", "design for test", "ATPG", "scan", "MBIST", "test engineer", "ATE"]},
+    {"code": "packaging_integration", "label": "Packaging & integration", "aliases": ["advanced packaging", "package design", "chiplet", "2.5D", "3D integration", "interposer", "substrate", "SI/PI", "signal integrity"]},
+    {"code": "manufacturing_bringup_product", "label": "Manufacturing, bring-up & product engineering", "aliases": ["silicon bring-up", "product engineer", "yield", "NPI", "manufacturing engineer", "foundry engineer", "process integration"]},
+    {"code": "sourcing_supplier_mgmt", "label": "Sourcing, procurement & supplier management", "aliases": ["silicon sourcing", "supply chain", "foundry management", "supplier quality", "commodity manager", "procurement"]},
+    {"code": "other", "label": "Other / not silicon-relevant"}
+  ],
+  "seniority": [
+    {"code": "intern", "label": "Intern"},
+    {"code": "entry", "label": "Entry / junior"},
+    {"code": "mid", "label": "Mid-level"},
+    {"code": "senior", "label": "Senior"},
+    {"code": "staff_principal", "label": "Staff / principal"},
+    {"code": "manager", "label": "Manager"},
+    {"code": "director", "label": "Director"},
+    {"code": "vp_executive", "label": "VP / executive"},
+    {"code": "unknown", "label": "Unknown"}
+  ],
+  "posting_status": [
+    {"code": "open", "label": "Open"},
+    {"code": "closed", "label": "Closed / removed"},
+    {"code": "unknown", "label": "Unknown"}
+  ],
+  "m1_signal_type": [
+    {"code": "leadership", "label": "Leadership appointment"},
+    {"code": "product_architecture", "label": "Product / architecture announcement"},
+    {"code": "programme_milestone", "label": "Programme launch / technical milestone"},
+    {"code": "partnership_ecosystem", "label": "Partnership / ecosystem"},
+    {"code": "investment_ma_financing", "label": "Investment, acquisition or financing"},
+    {"code": "manufacturing_capacity", "label": "Manufacturing, capacity or production update"},
+    {"code": "patent_standards", "label": "Patent, standards or technical disclosure"},
+    {"code": "financial_regulatory", "label": "Financial or regulatory disclosure"},
+    {"code": "hiring_trend", "label": "Hiring volume / role-mix change"},
+    {"code": "technographic", "label": "Technographic / capability indicator"}
+  ],
+  "m2_event_type": [
+    {"code": "design_win_customer", "label": "Design win / customer relationship"},
+    {"code": "product_architecture", "label": "Chip, product or architecture announcement"},
+    {"code": "foundry_process_manufacturing", "label": "Foundry, process-node or manufacturing development"},
+    {"code": "chiplet_advanced_packaging", "label": "Chiplet integration / advanced packaging"},
+    {"code": "partnership_ecosystem", "label": "Partnership / ecosystem agreement"},
+    {"code": "strategic_investment_capacity", "label": "Strategic investment, capacity expansion or other material development"}
+  ],
+  "technology": [
+    {"code": "custom_asic", "label": "Custom ASIC", "parent_code": "custom_silicon", "aliases": ["ASIC", "custom silicon", "application-specific"]},
+    {"code": "soc", "label": "SoC", "parent_code": "custom_silicon", "aliases": ["system-on-chip", "SoC"]},
+    {"code": "xpu", "label": "Custom XPU", "parent_code": "custom_silicon", "aliases": ["XPU", "custom XPU"]},
+    {"code": "cpu", "label": "CPU", "parent_code": "compute", "aliases": ["processor", "CPU"]},
+    {"code": "gpu", "label": "GPU", "parent_code": "compute", "aliases": ["GPU", "graphics processor"]},
+    {"code": "ai_accelerator", "label": "AI accelerator", "parent_code": "compute", "aliases": ["AI accelerator", "inference chip", "training chip", "NPU", "TPU"]},
+    {"code": "networking_silicon", "label": "Networking silicon", "parent_code": "compute", "aliases": ["switch ASIC", "network processor", "DPU", "IPU", "SmartNIC"]},
+    {"code": "risc_v", "label": "RISC-V", "parent_code": "architecture", "aliases": ["RISC-V"]},
+    {"code": "arm_architecture", "label": "Arm architecture", "parent_code": "architecture", "aliases": ["Arm", "Neoverse"]},
+    {"code": "x86", "label": "x86", "parent_code": "architecture", "aliases": ["x86"]},
+    {"code": "chiplet", "label": "Chiplet / multi-die", "parent_code": "chiplet_packaging", "aliases": ["chiplet", "multi-die", "heterogeneous integration", "die-to-die"]},
+    {"code": "ucie", "label": "UCIe", "parent_code": "chiplet_packaging", "aliases": ["UCIe", "Universal Chiplet Interconnect Express"]},
+    {"code": "advanced_packaging", "label": "Advanced packaging (general)", "parent_code": "chiplet_packaging", "aliases": ["advanced packaging", "2.5D", "3D integration", "fan-out", "silicon interposer"]},
+    {"code": "hybrid_bonding", "label": "Hybrid bonding", "parent_code": "chiplet_packaging", "aliases": ["hybrid bonding", "Cu-Cu bonding"]},
+    {"code": "emib", "label": "EMIB (Intel)", "parent_code": "chiplet_packaging", "aliases": ["EMIB", "EMIB-T"]},
+    {"code": "foveros", "label": "Foveros (Intel)", "parent_code": "chiplet_packaging", "aliases": ["Foveros"]},
+    {"code": "cowos", "label": "CoWoS (TSMC)", "parent_code": "chiplet_packaging", "aliases": ["CoWoS", "CoWoS-S", "CoWoS-L", "CoWoS-R"]},
+    {"code": "soic", "label": "SoIC (TSMC)", "parent_code": "chiplet_packaging", "aliases": ["SoIC"]},
+    {"code": "info", "label": "InFO (TSMC)", "parent_code": "chiplet_packaging", "aliases": ["InFO"]},
+    {"code": "i_cube", "label": "I-Cube (Samsung)", "parent_code": "chiplet_packaging", "aliases": ["I-Cube"]},
+    {"code": "x_cube", "label": "X-Cube (Samsung)", "parent_code": "chiplet_packaging", "aliases": ["X-Cube"]},
+    {"code": "hbm", "label": "HBM", "parent_code": "memory", "aliases": ["HBM", "high-bandwidth memory", "HBM3E", "HBM4"]},
+    {"code": "co_packaged_optics", "label": "Co-packaged optics", "parent_code": "chiplet_packaging", "aliases": ["co-packaged optics", "CPO"]},
+    {"code": "process_node", "label": "Leading-edge process node", "parent_code": "foundry_manufacturing", "aliases": ["2nm", "3nm", "18A", "14A", "N2", "A16", "SF2", "gate-all-around", "GAA"]},
+    {"code": "foundry_services", "label": "Foundry services", "parent_code": "foundry_manufacturing", "aliases": ["foundry", "wafer fabrication", "external manufacturing", "wafer supply"]},
+    {"code": "assembly_test", "label": "Assembly & test", "parent_code": "foundry_manufacturing", "aliases": ["OSAT", "assembly", "test", "ATE"]},
+    {"code": "wafer_scale", "label": "Wafer-scale integration", "parent_code": "chiplet_packaging", "aliases": ["wafer-scale"]},
+    {"code": "eda", "label": "EDA", "parent_code": "design_enablement", "aliases": ["EDA", "electronic design automation"]},
+    {"code": "semiconductor_ip", "label": "Semiconductor IP", "parent_code": "design_enablement", "aliases": ["IP licensing", "semiconductor IP", "reference architecture"]},
+    {"code": "design_services", "label": "Design services", "parent_code": "design_enablement", "aliases": ["design services", "ASIC services"]},
+    {"code": "scale_up_interconnect", "label": "Scale-up interconnect", "parent_code": "compute", "aliases": ["NVLink", "UALink", "scale-up interconnect"]}
+  ],
+  "programme_type": [
+    {"code": "ai_accelerator", "label": "AI accelerator"},
+    {"code": "cpu", "label": "CPU"},
+    {"code": "gpu", "label": "GPU"},
+    {"code": "soc", "label": "SoC"},
+    {"code": "networking_silicon", "label": "Networking / DPU silicon"},
+    {"code": "custom_asic_service", "label": "Custom ASIC / XPU business"},
+    {"code": "ip_platform", "label": "IP / architecture platform"},
+    {"code": "process_technology", "label": "Process technology"},
+    {"code": "packaging_technology", "label": "Packaging technology"},
+    {"code": "interconnect", "label": "Interconnect"},
+    {"code": "system", "label": "System / appliance"}
+  ],
+  "supplier_category": [
+    {"code": "foundry", "label": "Foundry"},
+    {"code": "osat_packaging", "label": "OSAT / advanced packaging"},
+    {"code": "ip_provider", "label": "IP provider"},
+    {"code": "eda_vendor", "label": "EDA vendor"},
+    {"code": "design_services", "label": "Design services"},
+    {"code": "memory", "label": "Memory supplier"},
+    {"code": "substrate_materials", "label": "Substrate / materials"},
+    {"code": "other", "label": "Other ecosystem"}
+  ],
+  "relationship_type": [
+    {"code": "foundry_manufacturing", "label": "Foundry / wafer manufacturing"},
+    {"code": "packaging_assembly", "label": "Packaging / assembly"},
+    {"code": "design_partner", "label": "Design / co-development partner"},
+    {"code": "ip_licence", "label": "IP licence"},
+    {"code": "eda_tools", "label": "EDA tools"},
+    {"code": "memory_supply", "label": "Memory supply"},
+    {"code": "customer", "label": "Customer"},
+    {"code": "investment", "label": "Investment"},
+    {"code": "ecosystem_membership", "label": "Ecosystem / standards membership"}
+  ],
+  "commercial_stage": [
+    {"code": "announced_intent", "label": "Announced intent / plan"},
+    {"code": "development", "label": "In development"},
+    {"code": "sampling_qualification", "label": "Sampling / qualification"},
+    {"code": "production_ramp", "label": "Production / ramp"},
+    {"code": "general_availability", "label": "Generally available / shipping"},
+    {"code": "discontinued", "label": "Discontinued / cancelled"},
+    {"code": "unknown", "label": "Unknown"}
+  ],
+  "evidence_class": [
+    {"code": "confirmed_fact", "label": "Confirmed fact", "description": "Supported by a clear company announcement, filing or other reliable evidence."},
+    {"code": "corroborated_inference", "label": "Corroborated inference", "description": "Supported by multiple relevant signals but not explicitly confirmed by the company."},
+    {"code": "press_released_intent", "label": "Press-released intent", "description": "Announced plan, target or intention; not proof of completion."}
+  ],
+  "action_tag": [
+    {"code": "watchlist", "label": "Watchlist"},
+    {"code": "message", "label": "Message"},
+    {"code": "campaign", "label": "Campaign"},
+    {"code": "competitive_response", "label": "Competitive response"},
+    {"code": "escalate", "label": "Escalate"}
+  ],
+  "intel_offering_area": [
+    {"code": "foundry_process", "label": "Foundry services & process technologies"},
+    {"code": "advanced_packaging", "label": "Advanced packaging (EMIB, Foveros)"},
+    {"code": "chiplet_integration", "label": "Chiplet integration"},
+    {"code": "design_enablement_ip", "label": "Design enablement & IP"},
+    {"code": "assembly_test", "label": "Assembly & test"},
+    {"code": "manufacturing_ecosystem", "label": "Other manufacturing & ecosystem capabilities"},
+    {"code": "needs_assessment", "label": "Potential relevance — needs assessment"}
+  ],
+  "source_type": [
+    {"code": "company_newsroom", "label": "Company newsroom / press release"},
+    {"code": "company_product_page", "label": "Company product / technical page"},
+    {"code": "company_blog", "label": "Company technical blog"},
+    {"code": "investor_relations", "label": "Investor relations material"},
+    {"code": "regulatory_filing", "label": "Regulatory / exchange filing"},
+    {"code": "partner_announcement", "label": "Partner / supplier announcement"},
+    {"code": "industry_publication", "label": "Industry publication"},
+    {"code": "news_media", "label": "General news media"},
+    {"code": "job_posting", "label": "Job posting"},
+    {"code": "career_page", "label": "Company career page"},
+    {"code": "patent", "label": "Patent"},
+    {"code": "standards_body", "label": "Standards body"},
+    {"code": "data_provider", "label": "Data provider record (Explorium, PredictLeads)"}
+  ]
+}
