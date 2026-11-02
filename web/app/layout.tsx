@@ -17,7 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-border bg-surface">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-3 px-4 py-3">
             <div>
               <div className="text-sm font-semibold tracking-wide text-accent">INTEL CHIPLET MARKET SIGNALS</div>
               <div className="text-xs text-muted">Sample POC · Data period: last 12 months</div>
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Suspense>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">
+        <main className="mx-auto w-full max-w-screen-2xl flex-1 px-4 py-6">
           <Suspense fallback={<div className="text-sm text-muted">Loading records…</div>}>{children}</Suspense>
         </main>
         <footer className="border-t border-border py-3 text-center text-xs text-muted">

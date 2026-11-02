@@ -9,6 +9,7 @@ Usage:
 """
 import argparse
 import json
+import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -94,6 +95,8 @@ def extract_one(run_id, cid, r):
         return cid, r, extraction, checked, None
     except ExtractionError as e:
         return cid, r, None, [], str(e)
+    except Exception as e:   # network / database errors: record the document as failed, keep the run going
+        return cid, r, None, [], f"{type(e).__name__}: {e}"
     finally:
         conn.close()
 
@@ -119,90 +122,131 @@ def main():
     if args.companies:
         wanted = set(args.companies.split(","))
         comps = [c for c in comps if c["company_id"] in wanted]
-    m1_ids = {c["company_id"] for c in comps}
     store = RawStore(conn, "m1_news", vars(args))
+
+    print("Collecting documents (Exa)…")
+    docs = collect(conn, store, comps, args.per_query)
+    process_documents(conn, store, docs, comps, args.workers, "m1_news_review.xlsx")
+
+
+def child_for_parent(subject, rec, comps, programme_alias):
+    """A parent-company statement (e.g. Amazon's 10-Q) belongs to the Module 1 subsidiary only when the record
+    itself names that subsidiary or one of its programmes (AWS, Trainium, ...). Deterministic, never guessed."""
+    blob = " ".join(filter(None, [rec.title, rec.excerpt, rec.programme_or_product])).lower()
+    for co in comps:
+        if co.get("parent_company_id") != subject:
+            continue
+        names = [co["short_name"].lower(), co["official_name"].lower(), *(a for a, _ in programme_alias.get(co["company_id"], []))]
+        if any(re.search(rf"\b{re.escape(n)}\b", blob) for n in names if len(n) > 2):
+            return co["company_id"]
+    return subject
+
+
+def process_documents(conn, store, docs, comps, workers, review_file):
+    """Extract, check and store documents. A document dict may carry:
+    filing_date - a date stated by the regulator's filing index (SEC EDGAR), trusted like a printed date;
+    source_url / full_text - the source to store when the extracted text is one part of a longer filing."""
+    m1_ids = {c["company_id"] for c in comps}
     idx = CompanyIndex.load(conn)
     programme_alias = {}
     for pid, cid, name, aliases in conn.execute("SELECT programme_id, company_id, name, aliases FROM programme_master"):
         for a in [name, *json.loads(aliases or "[]")]:
             programme_alias.setdefault(cid, []).append((a.lower(), pid))
-
-    print("Collecting documents (Exa)…")
-    docs = collect(conn, store, comps, args.per_query)
-    print(f"Extracting {len(docs)} documents with {args.workers} workers…")
+    print(f"Extracting {len(docs)} documents with {workers} workers…")
 
     accepted, review = 0, []
     today = utc_now()[:10]
-    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         futures = [pool.submit(extract_one, store.run_id, cid, r) for cid, r in docs.values()]
         for n, fut in enumerate(as_completed(futures), 1):
             cid, r, extraction, checked, error = fut.result()
-            if error:
-                review.append([cid, r["url"], "error", error, None, None, None, None, None])
-                continue
-            doc_pub = parse_date(extraction.publication_date_text) if extraction.publication_date_text else None
-            pub = doc_pub or parse_date(r.get("publishedDate"))   # crawler date kept for display only
-            for c in checked:
-                rec = c.record
-                subject = idx.resolve_name(rec.subject_company)
-                issues = list(c.issues)
-                if subject not in m1_ids:
-                    issues.append(f"subject '{rec.subject_company}' is not a Module 1 company")
-                evt = c.event_date.value if c.event_date else None
-                # The window must be provable from the document: an event date, or a publication date it prints.
-                if not in_window(evt, doc_pub.value if doc_pub else None):
-                    issues.append("outside the 12-month window, or no date stated in the document")
-                if c.status != "accepted" or issues != c.issues:
-                    review.append([cid, r["url"], c.status if c.status != "accepted" else "needs_review",
-                                   "; ".join(issues), rec.subject_company, rec.title, c.evidence_class, evt,
-                                   rec.excerpt])
-                    continue
-                source_id = upsert_source(conn, url=r["url"], source_type=source_type(r["url"], subject, comps),
-                                          source_name=host(r["url"]), title=r.get("title"),
-                                          publication_date=pub.value if pub else None, event_date=evt,
-                                          full_text=r["text"])
-                prog = next((pid for alias, pid in programme_alias.get(subject, [])
-                             if rec.programme_or_product and alias in rec.programme_or_product.lower()), None)
-                signal_id = stable_id("sig", source_id, rec.title.lower())
-                with conn:
-                    conn.execute(
-                        """INSERT OR REPLACE INTO m1_signal (signal_id, company_id, programme_id, signal_type, title,
-                               summary, technology_tags, counterparty_company_id, event_date, publication_date,
-                               first_observed_date, evidence_class, extraction_method, extraction_model, run_id,
-                               record_status)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT first_observed_date FROM m1_signal
-                                   WHERE signal_id = ?), ?), ?, 'llm', ?, ?, 'extracted')""",
-                        (signal_id, subject, prog, rec.category.value, rec.title, rec.summary,
-                         json.dumps([t.value for t in rec.technologies]),
-                         next((idx.resolve_name(cp.name) for cp in rec.counterparties if idx.resolve_name(cp.name)), None),
-                         evt, pub.value if pub else None, signal_id, today, c.evidence_class,
-                         "gemini", store.run_id))
-                    conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id, source_role,
-                                    excerpt) VALUES ('m1_signal', ?, ?, 'primary', ?)""", (signal_id, source_id, rec.excerpt))
-                    for cp in rec.counterparties:
-                        if cp.role.value not in SUPPLIER_ROLES or not excerpt_in_source(cp.name, r["text"]):
-                            continue
-                        sup_cid = idx.resolve_name(cp.name)
-                        sup_id = stable_id("sup", (sup_cid or cp.name).lower())
-                        conn.execute("""INSERT OR IGNORE INTO supplier_partner_master (supplier_id, company_id, name,
-                                        supplier_category) VALUES (?, ?, ?, ?)""",
-                                     (sup_id, sup_cid, cp.name, SUPPLIER_ROLES[cp.role.value]))
-                        rel_id = stable_id("rel", subject, sup_id, signal_id)
-                        conn.execute(
-                            """INSERT OR REPLACE INTO company_relationship (relationship_id, company_id, supplier_id,
-                                   programme_id, relationship_type, technology_tags, commercial_stage, evidence_class,
-                                   event_date, publication_date, first_observed_date, summary, run_id)
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                            (rel_id, subject, sup_id, prog, RELATIONSHIP_FOR_ROLE[cp.role.value],
-                             json.dumps([t.value for t in rec.technologies]), rec.commercial_stage.value,
-                             c.evidence_class, evt, pub.value if pub else None, today, rec.summary, store.run_id))
-                        conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id,
-                                        source_role, excerpt) VALUES ('relationship', ?, ?, 'primary', ?)""",
-                                     (rel_id, source_id, rec.excerpt))
-                accepted += 1
+            try:
+                accepted += store_document(conn, store, cid, r, extraction, checked, error, comps, m1_ids, idx,
+                                           programme_alias, review, today)
+            except Exception:
+                import traceback
+                traceback.print_exc()
+                review.append([cid, r["url"], "error", traceback.format_exc(limit=3), None, None, None, None, None])
             if n % 20 == 0:
                 print(f"  {n}/{len(futures)} documents processed, {accepted} accepted records")
 
+    finish_run(conn, store, accepted, review, review_file)
+
+
+def store_document(conn, store, cid, r, extraction, checked, error, comps, m1_ids, idx, programme_alias, review, today):
+    """Apply the publish rule to one extracted document and write accepted records. Returns the accepted count."""
+    accepted = 0
+    if error:
+        review.append([cid, r["url"], "error", error, None, None, None, None, None])
+        return 0
+    doc_pub = parse_date(extraction.publication_date_text) if extraction.publication_date_text else None
+    doc_pub = doc_pub or parse_date(r.get("filing_date"))
+    pub = doc_pub or parse_date(r.get("publishedDate"))   # crawler date kept for display only
+    src_url = r.get("source_url") or r["url"]
+    for c in checked:
+        rec = c.record
+        subject = idx.resolve_name(rec.subject_company)
+        if subject not in m1_ids:
+            subject = child_for_parent(subject, rec, comps, programme_alias)
+        issues = list(c.issues)
+        if subject not in m1_ids:
+            issues.append(f"subject '{rec.subject_company}' is not a Module 1 company")
+        evt = c.event_date.value if c.event_date else None
+        # The window must be provable from the document: an event date, or a publication date it prints.
+        if not in_window(evt, doc_pub.value if doc_pub else None):
+            issues.append("outside the 12-month window, or no date stated in the document")
+        if c.status != "accepted" or issues != c.issues:
+            review.append([cid, r["url"], c.status if c.status != "accepted" else "needs_review",
+                           "; ".join(issues), rec.subject_company, rec.title, c.evidence_class, evt,
+                           rec.excerpt])
+            continue
+        source_id = upsert_source(conn, url=src_url, source_type=source_type(src_url, subject, comps),
+                                  source_name=host(src_url), title=r.get("title"),
+                                  publication_date=pub.value if pub else None, event_date=evt,
+                                  full_text=r.get("full_text") or r["text"])
+        prog = next((pid for alias, pid in programme_alias.get(subject, [])
+                     if rec.programme_or_product and alias in rec.programme_or_product.lower()), None)
+        signal_id = stable_id("sig", source_id, rec.title.lower())
+        with conn:
+            conn.execute(
+                """INSERT OR REPLACE INTO m1_signal (signal_id, company_id, programme_id, signal_type, title,
+                       summary, technology_tags, counterparty_company_id, event_date, publication_date,
+                       first_observed_date, evidence_class, extraction_method, extraction_model, run_id,
+                       record_status)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT first_observed_date FROM m1_signal
+                           WHERE signal_id = ?), ?), ?, 'llm', ?, ?, 'extracted')""",
+                (signal_id, subject, prog, rec.category.value, rec.title, rec.summary,
+                 json.dumps([t.value for t in rec.technologies]),
+                 next((idx.resolve_name(cp.name) for cp in rec.counterparties if idx.resolve_name(cp.name)), None),
+                 evt, pub.value if pub else None, signal_id, today, c.evidence_class,
+                 "gemini", store.run_id))
+            conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id, source_role,
+                            excerpt) VALUES ('m1_signal', ?, ?, 'primary', ?)""", (signal_id, source_id, rec.excerpt))
+            for cp in rec.counterparties:
+                if cp.role.value not in SUPPLIER_ROLES or not excerpt_in_source(cp.name, r["text"]):
+                    continue
+                sup_cid = idx.resolve_name(cp.name)
+                sup_id = stable_id("sup", (sup_cid or cp.name).lower())
+                conn.execute("""INSERT OR IGNORE INTO supplier_partner_master (supplier_id, company_id, name,
+                                supplier_category) VALUES (?, ?, ?, ?)""",
+                             (sup_id, sup_cid, cp.name, SUPPLIER_ROLES[cp.role.value]))
+                rel_id = stable_id("rel", subject, sup_id, signal_id)
+                conn.execute(
+                    """INSERT OR REPLACE INTO company_relationship (relationship_id, company_id, supplier_id,
+                           programme_id, relationship_type, technology_tags, commercial_stage, evidence_class,
+                           event_date, publication_date, first_observed_date, summary, run_id)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    (rel_id, subject, sup_id, prog, RELATIONSHIP_FOR_ROLE[cp.role.value],
+                     json.dumps([t.value for t in rec.technologies]), rec.commercial_stage.value,
+                     c.evidence_class, evt, pub.value if pub else None, today, rec.summary, store.run_id))
+                conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id,
+                                source_role, excerpt) VALUES ('relationship', ?, ?, 'primary', ?)""",
+                             (rel_id, source_id, rec.excerpt))
+        accepted += 1
+    return accepted
+
+
+def finish_run(conn, store, accepted, review, review_file):
     merged = consolidate_signals(conn)
     print(f"Consolidated {merged} duplicate reports into existing signals (kept as corroborating sources)")
     store.finish(records_out=accepted)
@@ -214,9 +258,9 @@ def main():
     for row in review:
         ws.append(row)
     REVIEW_DIR.mkdir(parents=True, exist_ok=True)
-    wb.save(REVIEW_DIR / "m1_news_review.xlsx")
+    wb.save(REVIEW_DIR / review_file)
     print(f"Done: {accepted} accepted records written; {len(review)} held back "
-          f"(see data/review/m1_news_review.xlsx). Exa/Gemini calls live={store.live_calls}")
+          f"(see data/review/{review_file}). Exa/Gemini calls live={store.live_calls}")
 
 
 def consolidate_signals(conn):

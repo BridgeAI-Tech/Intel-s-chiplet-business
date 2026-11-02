@@ -15,11 +15,11 @@ Rule: build and review **one pipeline at a time** — share sample records + sou
 | M1-1 Firmographics | Explorium + SEC verified (domain, LinkedIn, HQ); evidence on company pages |
 | M1-2 Technographics | Capability evidence comes from extracted signals (Explorium stack not used: generic IT) |
 | M1-3 Hiring | 432 verified silicon postings: Tenstorrent 161, AWS 138 (amazon.jobs), Tesla 79, Cerebras 54. Other 8 companies not collected (PredictLeads volume/credits) |
-| M1-4 News & filings | 221 verified signals across all 12 companies (Exa official + trade press, SEC filings); 790 extractions held back in data/review/m1_news_review.xlsx |
-| M1-5 Supplier relationships | 64 relationships derived from verified signals |
+| M1-4 News & filings | 370 verified signals across all 12 companies (Exa official + trade press, SEC filings). Deep dive (scripts/m1_deep_dive.py) on the pilot set: Cerebras 92 (41 from the 424B4 prospectus and 10-Qs), AWS 79 (10 from Amazon filings naming AWS/its chips), Tesla 26. Held back: data/review/m1_news_review.xlsx, m1_deep_dive_review.xlsx |
+| M1-5 Supplier relationships | 103 relationships derived from verified signals |
 | M1-6 Normalise & link | Shared company/programme/source IDs; duplicate reports merged as corroborating sources |
 | M1-7 Assessment | **Blocked — needs research scoring rules (Shu Qi)**; no scores shown |
-| M1-8 UI | Overview, Emerging Demand, company pages, signal detail, Evidence, Ask AI |
+| M1-8 UI | Company-wise dashboard (8 numbered sections, company chips, evidence lake, data-source panel), company pages, signal detail, Ask AI |
 | M1-9 Validation | Manual sample audit done; publish rule: verbatim excerpt + date provable from the document + fully inside window |
 
 ---

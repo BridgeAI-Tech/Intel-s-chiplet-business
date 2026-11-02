@@ -4,10 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Overview" },
-  { href: "/emerging-demand", label: "Emerging Demand" },
-  { href: "/competitive-radar", label: "Competitive Radar" },
-  { href: "/evidence", label: "Evidence" },
+  { href: "/", label: "Module 1 · Emerging Demand" },
+  { href: "/competitive-radar", label: "Module 2 · Competitive Radar" },
   { href: "/ask", label: "Ask AI" },
 ];
 
