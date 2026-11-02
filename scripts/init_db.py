@@ -7,12 +7,14 @@ Usage:
 Re-running is safe: seeds are upserted and domain-validation results already stored are kept.
 """
 import argparse
+import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from chiplet.db import DB_PATH, SCHEMA_PATH, connect, load_seed, to_json
+from chiplet.extract.store import upsert_source
 
 
 def check_seeds(taxonomy, companies, programmes):
@@ -37,6 +39,12 @@ def check_seeds(taxonomy, companies, programmes):
             errors.append(f"{where}: parent '{c['parent_company_id']}' not in company master")
         if c["entity_type"] not in ("company", "subsidiary", "business_unit"):
             errors.append(f"{where}: bad entity_type '{c['entity_type']}'")
+        for v in c.get("verification", []):
+            check_code("source_type", v.get("source_type"), f"{where} verification")
+            if not (v.get("source_url") and v.get("excerpt") and v.get("fields")):
+                errors.append(f"{where}: verification entry needs source_url, excerpt and fields")
+            if v.get("evidence_class"):
+                check_code("evidence_class", v["evidence_class"], f"{where} verification")
         for domain in [c["primary_domain"], *c.get("alt_domains", [])]:
             domain = domain.lower()
             if domain in seen_domains:
@@ -84,15 +92,16 @@ def load_companies(conn, companies):
             conn.execute(
                 """INSERT INTO company_master (
                        company_id, official_name, short_name, entity_type, primary_domain, alt_domains,
-                       hq_country, hq_city, linkedin_url, parent_company_id, business_units, industry,
-                       research_roles, value_chain_role, intel_relationship_status, in_module_1, in_module_2,
-                       matching_notes, needs_verification)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                       hq_country, hq_city, linkedin_url, linkedin_verified, parent_company_id, business_units,
+                       industry, research_roles, value_chain_role, intel_relationship_status, in_module_1,
+                       in_module_2, matching_notes, needs_verification)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT (company_id) DO UPDATE SET
                        official_name = excluded.official_name, short_name = excluded.short_name,
                        entity_type = excluded.entity_type, primary_domain = excluded.primary_domain,
                        alt_domains = excluded.alt_domains, hq_country = excluded.hq_country,
                        hq_city = excluded.hq_city, linkedin_url = excluded.linkedin_url,
+                       linkedin_verified = excluded.linkedin_verified,
                        parent_company_id = excluded.parent_company_id, business_units = excluded.business_units,
                        industry = excluded.industry, research_roles = excluded.research_roles,
                        value_chain_role = excluded.value_chain_role,
@@ -102,7 +111,7 @@ def load_companies(conn, companies):
                        updated_at = datetime('now')""",
                 (c["company_id"], c["official_name"], c["short_name"], c["entity_type"],
                  c["primary_domain"].lower(), to_json(c.get("alt_domains", [])), c.get("hq_country"),
-                 c.get("hq_city"), c.get("linkedin_url"), c.get("parent_company_id"),
+                 c.get("hq_city"), c.get("linkedin_url"), c.get("linkedin_verified", 0), c.get("parent_company_id"),
                  to_json(c.get("business_units", [])), c.get("industry"), to_json(c["research_roles"]),
                  c.get("value_chain_role"), c.get("intel_relationship_status"), c["in_module_1"],
                  c["in_module_2"], c.get("matching_notes"), to_json(c.get("needs_verification", []))),
@@ -116,6 +125,24 @@ def load_companies(conn, companies):
             progressed = True
         if not progressed:
             raise RuntimeError(f"Unresolvable parent links: {[c['company_id'] for c in pending]}")
+
+
+def load_verification(conn, companies):
+    """Each verification entry becomes a source_evidence row linked to its company via record_source."""
+    for c in companies:
+        conn.execute("DELETE FROM record_source WHERE record_type = 'company' AND record_id = ?", (c["company_id"],))
+        for v in c.get("verification", []):
+            raw_id = v.get("raw_record_id")
+            if raw_id and not conn.execute("SELECT 1 FROM raw_provider_record WHERE raw_record_id = ?", (raw_id,)).fetchone():
+                raw_id = None           # fresh database: the provider payload is not stored locally
+            source_id = upsert_source(conn, url=v["source_url"], source_type=v["source_type"],
+                                      source_name=v.get("source_name"), publication_date=v.get("publication_date"),
+                                      excerpt=v["excerpt"], raw_record_id=raw_id)
+            conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id, source_role, excerpt)
+                            VALUES ('company', ?, ?, 'primary', ?)""",
+                         (c["company_id"], source_id, json.dumps({"fields": v["fields"], "checked_at": v.get("checked_at"),
+                                                                  "evidence_class": v.get("evidence_class"),
+                                                                  "excerpt": v["excerpt"]}, ensure_ascii=False)))
 
 
 def load_programmes(conn, programmes):
@@ -162,6 +189,8 @@ def main():
         load_taxonomy(conn, taxonomy)
         load_companies(conn, companies)
         load_programmes(conn, programmes)
+    load_verification(conn, companies)
+    conn.commit()
 
     counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
               for t in ("taxonomy_term", "company_master", "company_alias", "programme_master")}

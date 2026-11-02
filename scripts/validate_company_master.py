@@ -153,11 +153,32 @@ def write_review(conn, companies, by_company):
                     "business_units", "industry", "research_roles", "value_chain_role",
                     "intel_relationship_status", "in_module_1", "in_module_2", "matching_notes",
                     "needs_verification", "domain_status", "domain_final_url", "domain_checked_at", "master_status"]
+    evidence = {}
+    for cid, link_json, name, url, pub in conn.execute(
+            """SELECT rs.record_id, rs.excerpt, se.source_name, se.url, se.publication_date
+               FROM record_source rs JOIN source_evidence se USING (source_id)
+               WHERE rs.record_type = 'company' ORDER BY rs.record_id"""):
+        evidence.setdefault(cid, []).append((json.loads(link_json), name, url, pub))
+    key_fields = ["primary_domain", "linkedin_url", "hq", "intel_relationship_status", "business_units",
+                  "research_roles"]
+
+    def verified(cid):
+        return sorted({f for link, *_ in evidence.get(cid, []) for f in link["fields"]})
+
     ws = wb.active
     ws.title = "Company master"
-    sheet(ws, company_cols + ["reviewer_ok (Y/N)", "reviewer_comment"],
-          [[plain(c[k]) if isinstance(c[k], str) else c[k] for k in company_cols] + [None, None] for c in companies],
+    sheet(ws, company_cols + ["verified_fields", "unverified_key_fields", "reviewer_ok (Y/N)", "reviewer_comment"],
+          [[plain(c[k]) if isinstance(c[k], str) else c[k] for k in company_cols]
+           + [", ".join(verified(c["company_id"])),
+              ", ".join(f for f in key_fields if f not in verified(c["company_id"])), None, None]
+           for c in companies],
           flag_col=company_cols.index("domain_status"), flag_ok=PASSING)
+
+    sheet(wb.create_sheet("Verification evidence"),
+          ["company_id", "fields_confirmed", "evidence_class", "source", "publication_date", "checked_at", "url",
+           "excerpt"],
+          [[cid, ", ".join(link["fields"]), link.get("evidence_class"), name, pub, link.get("checked_at"), url,
+            link["excerpt"]] for cid, rows in evidence.items() for link, name, url, pub in rows])
 
     domain_rows = [[cid, r["domain"], "primary" if r["is_primary"] else "alt", r["dns"], r["http_status"],
                     r["final_url"], r["status"], r["error"]]

@@ -3,7 +3,8 @@
     "Draft company master for sign-off (shared foundation S3). Reference data only: no signals, scores or insights.",
     "primary_domain is the matching key for Explorium / PredictLeads / web sources. Run scripts/validate_company_master.py to check it.",
     "linkedin_url values are unverified until linkedin_verified is set after a manual check.",
-    "needs_verification lists fields that must be confirmed from an official source before master_status can move to signed_off."
+    "needs_verification lists fields that must be confirmed from an official source before master_status can move to signed_off.",
+    "verification lists the sources confirming specific fields; fields not listed there are unverified (checked 2026-11-02)."
   ],
   "companies": [
     {
@@ -17,39 +18,99 @@
       "hq_city": "Santa Clara, CA",
       "linkedin_url": "https://www.linkedin.com/company/intel-corporation",
       "parent_company_id": null,
-      "business_units": ["Intel Foundry", "Intel Products"],
+      "business_units": [
+        "Intel Foundry",
+        "Intel Products"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["self"],
+      "research_roles": [
+        "self"
+      ],
       "value_chain_role": "intel",
       "intel_relationship_status": "self",
       "in_module_1": 0,
       "in_module_2": 0,
-      "aliases": ["Intel", "Intel Corp", "Intel Foundry", "Intel Foundry Services", "IFS"],
+      "aliases": [
+        "Intel",
+        "Intel Corp",
+        "Intel Foundry",
+        "Intel Foundry Services",
+        "IFS"
+      ],
       "matching_notes": "Reference entity so relationships (e.g. Intel Foundry as supplier) can be linked by ID.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#7fec306d1e665bc9c748b5d2b99a6e97",
+          "raw_record_id": "raw_a7e60e2c8236d5e1762ebd19979e6189",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Intel Corporation; website=https://www.intel.com; city=santa clara; country=united states; linkedin=https://www.linkedin.com/company/intel-corporation"
+        }
+      ],
+      "linkedin_verified": 1
     },
-
     {
       "company_id": "cmp_amazon",
       "official_name": "Amazon.com, Inc.",
       "short_name": "Amazon",
       "entity_type": "company",
       "primary_domain": "amazon.com",
-      "alt_domains": ["aboutamazon.com"],
+      "alt_domains": [
+        "aboutamazon.com"
+      ],
       "hq_country": "United States",
       "hq_city": "Seattle, WA",
       "linkedin_url": "https://www.linkedin.com/company/amazon",
       "parent_company_id": null,
-      "business_units": ["Amazon Web Services"],
+      "business_units": [
+        "Amazon Web Services"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["parent_entity"],
+      "research_roles": [
+        "parent_entity"
+      ],
       "value_chain_role": null,
       "intel_relationship_status": null,
       "in_module_1": 0,
       "in_module_2": 0,
-      "aliases": ["Amazon", "Amazon.com"],
+      "aliases": [
+        "Amazon",
+        "Amazon.com"
+      ],
       "matching_notes": "Parent only. Do not attribute amazon.com retail data to AWS.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#8f19793b2671094e63a15ab883d50137",
+          "raw_record_id": "raw_57b4c0eb0d51953d4b2d16556a1cecb4",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Amazon.com, Inc.; website=https://www.amazon.com; city=seattle; country=united states; linkedin=https://www.linkedin.com/company/amazon"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001018724.json",
+          "raw_record_id": "raw_6de9e2a695e4018f5fd4862199794320",
+          "checked_at": "2026-11-02",
+          "excerpt": "AMAZON COM INC; business address: 410 TERRY AVENUE NORTH, SEATTLE, WA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_aws",
@@ -57,23 +118,62 @@
       "short_name": "AWS",
       "entity_type": "subsidiary",
       "primary_domain": "aws.amazon.com",
-      "alt_domains": ["aws.com", "amazonaws.com"],
+      "alt_domains": [
+        "aws.com",
+        "amazonaws.com"
+      ],
       "hq_country": "United States",
       "hq_city": "Seattle, WA",
       "linkedin_url": "https://www.linkedin.com/company/amazon-web-services",
       "parent_company_id": "cmp_amazon",
-      "business_units": ["Annapurna Labs (custom silicon)"],
+      "business_units": [
+        "Annapurna Labs (custom silicon)"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["existing_customer", "competitor"],
+      "research_roles": [
+        "existing_customer",
+        "competitor"
+      ],
       "value_chain_role": "hyperscaler_in_house",
       "intel_relationship_status": "existing_relationship",
       "in_module_1": 1,
       "in_module_2": 1,
-      "aliases": ["AWS", "Amazon Web Services", "Annapurna Labs", "Annapurna"],
+      "aliases": [
+        "AWS",
+        "Amazon Web Services",
+        "Annapurna Labs",
+        "Annapurna"
+      ],
       "matching_notes": "Explorium matches aws.amazon.com to AWS itself (verified S4). PredictLeads rejects aws.amazon.com: use amazon.com and filter to AWS/Annapurna roles, or amazon.jobs search. Annapurna Labs (AWS silicon team) has no live domain of its own (annapurnalabs.com does not resolve), so it is matched by alias and rolled up here; its jobs usually post under Amazon/AWS. Module 2 tracks only its silicon programmes (Trainium, Graviton).",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#2e322328ee87022358e5245fef28487c",
+          "raw_record_id": "raw_6ba8de070a3e5e43738eae048e94b073",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Amazon Web Services (AWS); website=https://aws.amazon.com/; city=seattle; country=united states; linkedin=https://www.linkedin.com/company/amazon-web-services"
+        },
+        {
+          "fields": [
+            "intel_relationship_status"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "Amazon press center",
+          "source_url": "https://press.aboutamazon.com/aws/2024/9/intel-and-aws-expand-strategic-collaboration-helping-advance-u-s-based-chip-manufacturing",
+          "publication_date": "2024-09-16",
+          "checked_at": "2026-11-02",
+          "excerpt": "18A and Custom Xeon 6 Chip on Intel 3 for AWS Multi-Year, Multi-Billion-Dollar Collaboration Accelerates Development of Chip Manufacturing in Ohio",
+          "evidence_class": "press_released_intent"
+        }
+      ],
+      "linkedin_verified": 1
     },
-
     {
       "company_id": "cmp_alphabet",
       "official_name": "Alphabet Inc.",
@@ -83,18 +183,50 @@
       "alt_domains": [],
       "hq_country": "United States",
       "hq_city": "Mountain View, CA",
-      "linkedin_url": null,
+      "linkedin_url": "https://www.linkedin.com/company/alphabet-inc",
       "parent_company_id": null,
-      "business_units": ["Google"],
+      "business_units": [
+        "Google"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["parent_entity"],
+      "research_roles": [
+        "parent_entity"
+      ],
       "value_chain_role": null,
       "intel_relationship_status": null,
       "in_module_1": 0,
       "in_module_2": 0,
-      "aliases": ["Alphabet"],
+      "aliases": [
+        "Alphabet"
+      ],
       "matching_notes": "Parent only; SEC filings are filed by Alphabet Inc.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#831c0156559705663490e856e07b5f03",
+          "raw_record_id": "raw_8db7254f47139a48e4e95343cd34c8e7",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Alphabet Inc.; website=https://www.abc.xyz; city=mountain view; country=united states; linkedin=https://www.linkedin.com/company/alphabet-inc"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001652044.json",
+          "raw_record_id": "raw_504d2dcdaa917c3db1ec43fed96f849c",
+          "checked_at": "2026-11-02",
+          "excerpt": "Alphabet Inc.; business address: 1600 AMPHITHEATRE PARKWAY, MOUNTAIN VIEW, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_google",
@@ -102,21 +234,61 @@
       "short_name": "Google",
       "entity_type": "subsidiary",
       "primary_domain": "google.com",
-      "alt_domains": ["cloud.google.com"],
+      "alt_domains": [
+        "cloud.google.com"
+      ],
       "hq_country": "United States",
       "hq_city": "Mountain View, CA",
       "linkedin_url": "https://www.linkedin.com/company/google",
       "parent_company_id": "cmp_alphabet",
-      "business_units": ["Google Cloud", "Google DeepMind", "Devices & Services"],
+      "business_units": [
+        "Google Cloud",
+        "Google DeepMind",
+        "Devices & Services"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["existing_customer", "competitor"],
+      "research_roles": [
+        "existing_customer",
+        "competitor"
+      ],
       "value_chain_role": "hyperscaler_in_house",
       "intel_relationship_status": "existing_relationship",
       "in_module_1": 1,
       "in_module_2": 1,
-      "aliases": ["Google", "Google Cloud", "GCP"],
+      "aliases": [
+        "Google",
+        "Google Cloud",
+        "GCP"
+      ],
       "matching_notes": "Module 2 tracks only its silicon programmes (TPU, Axion).",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#b197ffdef2ddc3308584dce7afa3661b",
+          "raw_record_id": "raw_2536067424d5babcc83fa7a6d5fac246",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Google; website=https://google.com; city=mountain view; country=united states; linkedin=https://www.linkedin.com/company/google"
+        },
+        {
+          "fields": [
+            "intel_relationship_status"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "Intel Newsroom",
+          "source_url": "https://www.intel.com/content/www/us/en/newsroom/news/artificial-intelligence/intel-google-deepen-collaboration-to-advance-ai-infrastructure.html",
+          "publication_date": "2026-04-09",
+          "checked_at": "2026-11-02",
+          "excerpt": "co-development of custom ASIC-based infrastructure processing units (IPUs) to improve efficiency, utilization and performance at scale",
+          "evidence_class": "press_released_intent"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_microsoft",
@@ -124,21 +296,71 @@
       "short_name": "Microsoft",
       "entity_type": "company",
       "primary_domain": "microsoft.com",
-      "alt_domains": ["azure.microsoft.com"],
+      "alt_domains": [
+        "azure.microsoft.com"
+      ],
       "hq_country": "United States",
       "hq_city": "Redmond, WA",
       "linkedin_url": "https://www.linkedin.com/company/microsoft",
       "parent_company_id": null,
-      "business_units": ["Microsoft Azure", "Azure Hardware Systems & Infrastructure"],
+      "business_units": [
+        "Microsoft Azure",
+        "Azure Hardware Systems & Infrastructure"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["existing_customer", "competitor"],
+      "research_roles": [
+        "existing_customer",
+        "competitor"
+      ],
       "value_chain_role": "hyperscaler_in_house",
       "intel_relationship_status": "existing_relationship",
       "in_module_1": 1,
       "in_module_2": 1,
-      "aliases": ["Microsoft", "Microsoft Azure", "Azure"],
-      "matching_notes": "Treat as an account to monitor (existing / announced Intel Foundry relationship), not a new prospect. Module 2 tracks only Maia / Cobalt.",
-      "needs_verification": ["Current status of Intel Foundry relationship"]
+      "aliases": [
+        "Microsoft",
+        "Microsoft Azure",
+        "Azure"
+      ],
+      "matching_notes": "Treat as an account to monitor, not a new prospect. Evidence on file is an announced plan (Feb 2024: chip design to be produced on Intel 18A); production status not confirmed. Module 2 tracks only Maia / Cobalt.",
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#a34bacf839b923770b2c360eefa26748",
+          "raw_record_id": "raw_6ed85c80eee91cbc29909bc19a9150ba",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Microsoft Corporation; website=https://www.microsoft.com; city=redmond; country=united states; linkedin=https://www.linkedin.com/company/microsoft"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000789019.json",
+          "raw_record_id": "raw_605a84654a833a559a6de1d2ec62d0ee",
+          "checked_at": "2026-11-02",
+          "excerpt": "MICROSOFT CORP; business address: ONE MICROSOFT WAY, REDMOND, WA"
+        },
+        {
+          "fields": [
+            "intel_relationship_status"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "Intel Newsroom",
+          "source_url": "https://www.intel.com/content/www/us/en/newsroom/news/foundry-news-roadmaps-updates.html",
+          "publication_date": "2024-02-21",
+          "checked_at": "2026-11-02",
+          "excerpt": "Microsoft CEO Satya Nadella shares that Microsoft has chosen a chip design it plans to produce on the Intel 18A process.",
+          "evidence_class": "press_released_intent"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_meta",
@@ -146,44 +368,118 @@
       "short_name": "Meta",
       "entity_type": "company",
       "primary_domain": "meta.com",
-      "alt_domains": ["facebook.com", "about.meta.com"],
+      "alt_domains": [
+        "facebook.com",
+        "about.meta.com"
+      ],
       "hq_country": "United States",
       "hq_city": "Menlo Park, CA",
       "linkedin_url": "https://www.linkedin.com/company/meta",
       "parent_company_id": null,
-      "business_units": ["Meta Infrastructure", "Reality Labs"],
+      "business_units": [
+        "Meta Infrastructure",
+        "Reality Labs"
+      ],
       "industry": "hyperscaler",
-      "research_roles": ["potential_customer", "competitor"],
+      "research_roles": [
+        "potential_customer",
+        "competitor"
+      ],
       "value_chain_role": "hyperscaler_in_house",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 1,
-      "aliases": ["Meta", "Meta Platforms", "Facebook"],
+      "aliases": [
+        "Meta",
+        "Meta Platforms",
+        "Facebook"
+      ],
       "matching_notes": "Providers may still key Meta on facebook.com; accept either. Potential external-foundry / packaging target subject to evidence.",
-      "needs_verification": ["Which domain Explorium returns"]
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#2e7fc7cb9bf8baacf29f1b7286976f53",
+          "raw_record_id": "raw_79f7626d5a49fb9655b28b9b16a0f9ae",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Meta Platforms, Inc.; website=https://www.meta.com; city=menlo park; country=united states; linkedin=https://www.linkedin.com/company/meta"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001326801.json",
+          "raw_record_id": "raw_cc962b60558ec36d54733db2c594d04e",
+          "checked_at": "2026-11-02",
+          "excerpt": "Meta Platforms, Inc.; business address: 1 META WAY, MENLO PARK, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
-
     {
       "company_id": "cmp_cerebras",
       "official_name": "Cerebras Systems Inc.",
       "short_name": "Cerebras",
       "entity_type": "company",
       "primary_domain": "cerebras.ai",
-      "alt_domains": ["cerebras.net"],
+      "alt_domains": [
+        "cerebras.net"
+      ],
       "hq_country": "United States",
       "hq_city": "Sunnyvale, CA",
       "linkedin_url": "https://www.linkedin.com/company/cerebras-systems",
       "parent_company_id": null,
-      "business_units": ["Cerebras Inference", "CS systems"],
+      "business_units": [
+        "Cerebras Inference",
+        "CS systems"
+      ],
       "industry": "ai_hpc",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Cerebras", "Cerebras Systems"],
+      "aliases": [
+        "Cerebras",
+        "Cerebras Systems"
+      ],
       "matching_notes": "Domain moved from cerebras.net to cerebras.ai; older provider records may use cerebras.net. Initial deep-dive candidate.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#9b4bdd772bcd1956e5052322815488df",
+          "raw_record_id": "raw_2a89bc238b3a3c41340ccff9f54ca2ae",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Cerebras Systems Inc.; website=https://www.cerebras.ai; city=sunnyvale; country=united states; linkedin=https://www.linkedin.com/company/cerebras-systems"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0002021728.json",
+          "raw_record_id": "raw_2b936da352d59274077093be90607971",
+          "checked_at": "2026-11-02",
+          "excerpt": "Cerebras Systems Inc.; business address: 1237 E. ARQUES AVE., SUNNYVALE, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_tenstorrent",
@@ -194,18 +490,41 @@
       "alt_domains": [],
       "hq_country": "Canada",
       "hq_city": "Toronto, ON",
-      "linkedin_url": "https://www.linkedin.com/company/tenstorrent-inc",
+      "linkedin_url": "https://www.linkedin.com/company/tenstorrent-inc.",
       "parent_company_id": null,
-      "business_units": ["AI accelerators", "RISC-V CPU IP"],
+      "business_units": [
+        "AI accelerators",
+        "RISC-V CPU IP"
+      ],
       "industry": "ai_hpc",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Tenstorrent"],
+      "aliases": [
+        "Tenstorrent"
+      ],
       "matching_notes": "Large US engineering presence (Santa Clara, Austin); confirm HQ the providers report.",
-      "needs_verification": ["hq_country", "hq_city", "linkedin_url"]
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url",
+            "hq"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#97fcf9505470886e46bca7e1c53ef756",
+          "raw_record_id": "raw_17e9e8deefcaf95924fa4102e92dd022",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Tenstorrent; website=https://www.tenstorrent.com/; city=toronto; country=canada; linkedin=https://www.linkedin.com/company/tenstorrent-inc."
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_cisco",
@@ -218,16 +537,39 @@
       "hq_city": "San Jose, CA",
       "linkedin_url": "https://www.linkedin.com/company/cisco",
       "parent_company_id": null,
-      "business_units": ["Cisco Silicon One"],
+      "business_units": [
+        "Cisco Silicon One"
+      ],
       "industry": "networking",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Cisco", "Cisco Systems"],
+      "aliases": [
+        "Cisco",
+        "Cisco Systems"
+      ],
       "matching_notes": null,
-      "needs_verification": []
+      "needs_verification": [
+        "linkedin_url (Explorium matched a different entity: ciscolifeconnections.com)"
+      ],
+      "verification": [
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000858877.json",
+          "raw_record_id": "raw_441fb69f737601f11cc3210109835b35",
+          "checked_at": "2026-11-02",
+          "excerpt": "CISCO SYSTEMS, INC.; business address: 170 WEST TASMAN DR, SAN JOSE, CA"
+        }
+      ],
+      "linkedin_verified": 0
     },
     {
       "company_id": "cmp_nokia",
@@ -240,16 +582,63 @@
       "hq_city": "Espoo",
       "linkedin_url": "https://www.linkedin.com/company/nokia",
       "parent_company_id": null,
-      "business_units": ["Network Infrastructure", "Mobile Networks", "Nokia Bell Labs"],
+      "business_units": [
+        "Network Infrastructure",
+        "Mobile Networks",
+        "Nokia Bell Labs"
+      ],
       "industry": "networking",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Nokia", "Nokia Oyj"],
+      "aliases": [
+        "Nokia",
+        "Nokia Oyj"
+      ],
       "matching_notes": "Do not confuse with HMD Global (Nokia-branded phones).",
-      "needs_verification": ["business_units (post-2025 reorganisation)", "Infinera subsidiary status"]
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#dc58e3a306451c9d670adcd37004f48f",
+          "raw_record_id": "raw_acd69463c208da4cb0be896fbcc5bffb",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Nokia; website=https://www.nokia.com/; city=espoo; country=finland; linkedin=https://www.linkedin.com/company/nokia"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000924613.json",
+          "raw_record_id": "raw_73b646b6a30bbec2ce7c54a8c28235cf",
+          "checked_at": "2026-11-02",
+          "excerpt": "NOKIA CORP; business address: KARAKAARI 7, ESPOO FINLAND, Finland"
+        },
+        {
+          "fields": [
+            "business_units"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "Nokia Newsroom",
+          "source_url": "https://www.nokia.com/newsroom/nokia-completes-acquisition-of-infinera-to-create-innovation-powerhouse-in-optical-networks-with-the-scale-to-power-the-data-center-revolution/",
+          "publication_date": "2025-02-28",
+          "checked_at": "2026-11-02",
+          "excerpt": "completes acquisition of Infinera to create innovation powerhouse in optical networks, with the scale to power the data center revolution",
+          "evidence_class": "confirmed_fact"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_tesla",
@@ -262,16 +651,50 @@
       "hq_city": "Austin, TX",
       "linkedin_url": "https://www.linkedin.com/company/tesla-motors",
       "parent_company_id": null,
-      "business_units": ["Autopilot / AI hardware", "Energy"],
+      "business_units": [
+        "Autopilot / AI hardware",
+        "Energy"
+      ],
       "industry": "automotive",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Tesla", "Tesla Motors"],
+      "aliases": [
+        "Tesla",
+        "Tesla Motors"
+      ],
       "matching_notes": null,
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#de2d3b18505f768bdf94162f550a2c38",
+          "raw_record_id": "raw_d1288f65a2a11532b3106fdb233e5183",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Tesla, Inc.; website=https://www.tesla.com; city=austin; country=united states; linkedin=https://www.linkedin.com/company/tesla-motors"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001318605.json",
+          "raw_record_id": "raw_7a6df0aa68466f953b1f871789d78626",
+          "checked_at": "2026-11-02",
+          "excerpt": "Tesla, Inc.; business address: 1 TESLA ROAD, AUSTIN, TX"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_apple",
@@ -284,16 +707,48 @@
       "hq_city": "Cupertino, CA",
       "linkedin_url": "https://www.linkedin.com/company/apple",
       "parent_company_id": null,
-      "business_units": ["Hardware Technologies (Apple silicon)"],
+      "business_units": [
+        "Hardware Technologies (Apple silicon)"
+      ],
       "industry": "consumer_electronics",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Apple"],
+      "aliases": [
+        "Apple"
+      ],
       "matching_notes": null,
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#8adce3ca1cef0c986b22310e369a0793",
+          "raw_record_id": "raw_2068b9949561850867fa8802e8670b44",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Apple Inc.; website=https://www.apple.com; city=cupertino; country=united states; linkedin=https://www.linkedin.com/company/apple"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000320193.json",
+          "raw_record_id": "raw_5b153ffdef5d3166600a3b0d7514bc9c",
+          "checked_at": "2026-11-02",
+          "excerpt": "Apple Inc.; business address: ONE APPLE PARK WAY, CUPERTINO, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_samsung_electronics",
@@ -301,21 +756,48 @@
       "short_name": "Samsung Electronics",
       "entity_type": "company",
       "primary_domain": "samsung.com",
-      "alt_domains": ["news.samsung.com"],
+      "alt_domains": [
+        "news.samsung.com"
+      ],
       "hq_country": "South Korea",
       "hq_city": "Suwon",
       "linkedin_url": "https://www.linkedin.com/company/samsung-electronics",
       "parent_company_id": null,
-      "business_units": ["Device Solutions (DS): Memory, System LSI, Foundry", "Device eXperience (DX)"],
+      "business_units": [
+        "Device Solutions (DS): Memory, System LSI, Foundry",
+        "Device eXperience (DX)"
+      ],
       "industry": "consumer_electronics",
-      "research_roles": ["potential_customer", "competitor"],
+      "research_roles": [
+        "potential_customer",
+        "competitor"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["Samsung", "Samsung Electronics"],
+      "aliases": [
+        "Samsung",
+        "Samsung Electronics"
+      ],
       "matching_notes": "Same legal entity as Samsung Foundry. Module 1 covers System LSI / Exynos demand; foundry competition is tracked under cmp_samsung_foundry. Assign signals by business unit, not by name match alone.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url",
+            "hq"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#a63fc8c5d915e1f1a40f40e6c7499863",
+          "raw_record_id": "raw_e5c9e639f160bd8a65bfe6095422fdb7",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Samsung Electronics Co., Ltd.; website=https://www.samsung.com; city=suwon-si; country=korea, republic of; linkedin=https://www.linkedin.com/company/samsung-electronics"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_ibm",
@@ -328,18 +810,51 @@
       "hq_city": "Armonk, NY",
       "linkedin_url": "https://www.linkedin.com/company/ibm",
       "parent_company_id": null,
-      "business_units": ["IBM Infrastructure", "IBM Research"],
+      "business_units": [
+        "IBM Infrastructure",
+        "IBM Research"
+      ],
       "industry": "enterprise_technology",
-      "research_roles": ["potential_customer"],
+      "research_roles": [
+        "potential_customer"
+      ],
       "value_chain_role": "system_oem",
       "intel_relationship_status": "potential_target",
       "in_module_1": 1,
       "in_module_2": 0,
-      "aliases": ["IBM", "International Business Machines"],
+      "aliases": [
+        "IBM",
+        "International Business Machines"
+      ],
       "matching_notes": null,
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#31b3b31a1c2f8a370206f111127c0dbd",
+          "raw_record_id": "raw_fc297a52e54baf4dc432488b602dfe62",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=International Business Machines Corporation; website=https://www.ibm.com; city=armonk; country=united states; linkedin=https://www.linkedin.com/company/ibm"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000051143.json",
+          "raw_record_id": "raw_7851e25c07f847a947fdb2b19c66b3bd",
+          "checked_at": "2026-11-02",
+          "excerpt": "INTERNATIONAL BUSINESS MACHINES CORP; business address: 1 NEW ORCHARD ROAD, ARMONK, NY"
+        }
+      ],
+      "linkedin_verified": 1
     },
-
     {
       "company_id": "cmp_broadcom",
       "official_name": "Broadcom Inc.",
@@ -351,16 +866,51 @@
       "hq_city": "Palo Alto, CA",
       "linkedin_url": "https://www.linkedin.com/company/broadcom",
       "parent_company_id": null,
-      "business_units": ["Semiconductor Solutions", "Infrastructure Software (VMware)"],
+      "business_units": [
+        "Semiconductor Solutions",
+        "Infrastructure Software (VMware)"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor"],
+      "research_roles": [
+        "competitor"
+      ],
       "value_chain_role": "custom_asic_provider",
       "intel_relationship_status": "competitor_only",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["Broadcom", "Broadcom Inc", "AVGO"],
+      "aliases": [
+        "Broadcom",
+        "Broadcom Inc",
+        "AVGO"
+      ],
       "matching_notes": "Exclude VMware software news unless silicon-related.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#be767243ca8f574c740fb4c26cc6dceb",
+          "raw_record_id": "raw_5c328cca7df649d3d3f169537cac0c21",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Broadcom Inc.; website=https://www.broadcom.com; city=san jose; country=united states; linkedin=https://www.linkedin.com/company/broadcom"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001730168.json",
+          "raw_record_id": "raw_bb6c56dde89827f9344fbb88d71504cc",
+          "checked_at": "2026-11-02",
+          "excerpt": "Broadcom Inc.; business address: 3421 HILLVIEW AVENUE, PALO ALTO, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_marvell",
@@ -370,19 +920,65 @@
       "primary_domain": "marvell.com",
       "alt_domains": [],
       "hq_country": "United States",
-      "hq_city": "Santa Clara, CA",
-      "linkedin_url": "https://www.linkedin.com/company/marvell-semiconductor",
+      "hq_city": "Wilmington, DE",
+      "linkedin_url": "https://www.linkedin.com/company/marvell",
       "parent_company_id": null,
-      "business_units": ["Data Center (custom compute, electro-optics, switching)"],
+      "business_units": [
+        "Data Center"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor"],
+      "research_roles": [
+        "competitor"
+      ],
       "value_chain_role": "custom_asic_provider",
       "intel_relationship_status": "competitor_only",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["Marvell", "Marvell Technology", "MRVL"],
-      "matching_notes": "SEC filings list a Wilmington, DE address; operational HQ is Santa Clara.",
-      "needs_verification": ["linkedin_url", "business_units (post auto-ethernet divestiture)"]
+      "aliases": [
+        "Marvell",
+        "Marvell Technology",
+        "MRVL"
+      ],
+      "matching_notes": "SEC and Explorium both give Wilmington, DE as the business address. Automotive Ethernet business sold to Infineon (completed Aug 2025).",
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#83ddfbd1c4f871159c148d7a010e69be",
+          "raw_record_id": "raw_0e727abb76a61fba7ce4dad214636157",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Marvell Technology, Inc.; website=https://www.marvell.com; city=wilmington; country=united states; linkedin=https://www.linkedin.com/company/marvell"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001835632.json",
+          "raw_record_id": "raw_7d9596925fd6481afd789659497fec68",
+          "checked_at": "2026-11-02",
+          "excerpt": "Marvell Technology, Inc.; business address: 1000 N. WEST STREET, WILMINGTON, DE"
+        },
+        {
+          "fields": [
+            "business_units"
+          ],
+          "source_type": "investor_relations",
+          "source_name": "Marvell Investor Relations",
+          "source_url": "https://investor.marvell.com/news-events/press-releases/detail/88/marvell-completes-divestiture-of-automotive-ethernet-business-to-infineon-for-2-5-billion-in-all-cash-transaction",
+          "publication_date": "2025-08-14",
+          "checked_at": "2026-11-02",
+          "excerpt": "completed the sale of its Automotive Ethernet business to Infineon Technologies AG",
+          "evidence_class": "confirmed_fact"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_amd",
@@ -395,16 +991,52 @@
       "hq_city": "Santa Clara, CA",
       "linkedin_url": "https://www.linkedin.com/company/amd",
       "parent_company_id": null,
-      "business_units": ["Data Center", "Client", "Gaming", "Embedded (Xilinx)"],
+      "business_units": [
+        "Data Center",
+        "Client",
+        "Gaming",
+        "Embedded (Xilinx)"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor"],
+      "research_roles": [
+        "competitor"
+      ],
       "value_chain_role": "merchant_silicon_vendor",
       "intel_relationship_status": "competitor_only",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["AMD", "Advanced Micro Devices"],
+      "aliases": [
+        "AMD",
+        "Advanced Micro Devices"
+      ],
       "matching_notes": null,
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#55c567fd4395ecef6d936cf77b8d5b2b",
+          "raw_record_id": "raw_c3c0c8ba30145401a88b83d32503a9d1",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Advanced Micro Devices, Inc.; website=https://www.amd.com; city=santa clara; country=united states; linkedin=https://www.linkedin.com/company/amd"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0000002488.json",
+          "raw_record_id": "raw_079ca0d7367e0662c0606874725524d2",
+          "checked_at": "2026-11-02",
+          "excerpt": "ADVANCED MICRO DEVICES INC; business address: 2485 AUGUSTINE DRIVE, SANTA CLARA, CA"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_nvidia",
@@ -417,16 +1049,77 @@
       "hq_city": "Santa Clara, CA",
       "linkedin_url": "https://www.linkedin.com/company/nvidia",
       "parent_company_id": null,
-      "business_units": ["Data Center", "Gaming", "Automotive"],
+      "business_units": [
+        "Data Center",
+        "Gaming",
+        "Automotive"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor", "partner"],
+      "research_roles": [
+        "competitor",
+        "partner"
+      ],
       "value_chain_role": "merchant_silicon_vendor",
       "intel_relationship_status": "partner_and_competitor",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["NVIDIA", "Nvidia", "NVDA"],
-      "matching_notes": "Has an announced investment / product collaboration with Intel; tag per development.",
-      "needs_verification": ["intel_relationship_status: confirm current status of Intel collaboration"]
+      "aliases": [
+        "NVIDIA",
+        "Nvidia",
+        "NVDA"
+      ],
+      "matching_notes": "Announced Sept 2025: $5B investment in Intel and joint development of custom data-center and PC products (press-released intent). Competitor in data-centre GPU/CPU; tag per development.",
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#60a0575ee6ce460e1d86c0e9d281c4f1",
+          "raw_record_id": "raw_9522aa2d5601bfe75b53aeb18ea1a407",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=NVIDIA Corporation; website=https://www.nvidia.com; city=santa clara; country=united states; linkedin=https://www.linkedin.com/company/nvidia"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001045810.json",
+          "raw_record_id": "raw_74e8602cac0e8a468ae8c5d8f7c8b67e",
+          "checked_at": "2026-11-02",
+          "excerpt": "NVIDIA CORP; business address: 2788 SAN TOMAS EXPRESSWAY, SANTA CLARA, CA"
+        },
+        {
+          "fields": [
+            "intel_relationship_status"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "NVIDIA Newsroom",
+          "source_url": "http://nvidianews.nvidia.com/news/nvidia-and-intel-to-develop-ai-infrastructure-and-personal-computing-products",
+          "publication_date": "2025-09-18",
+          "checked_at": "2026-11-02",
+          "excerpt": "jointly develop multiple generations of custom data center and PC products that accelerate applications and workloads across hyperscale, enterprise and consumer markets.",
+          "evidence_class": "press_released_intent"
+        },
+        {
+          "fields": [
+            "intel_relationship_status"
+          ],
+          "source_type": "company_newsroom",
+          "source_name": "NVIDIA Newsroom",
+          "source_url": "http://nvidianews.nvidia.com/news/nvidia-and-intel-to-develop-ai-infrastructure-and-personal-computing-products",
+          "publication_date": "2025-09-18",
+          "checked_at": "2026-11-02",
+          "excerpt": "invest $5 billion in Intel’s common stock at a purchase price of $23.",
+          "evidence_class": "press_released_intent"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_arm",
@@ -439,16 +1132,69 @@
       "hq_city": "Cambridge",
       "linkedin_url": "https://www.linkedin.com/company/arm",
       "parent_company_id": null,
-      "business_units": ["Infrastructure (Neoverse)", "Client", "Automotive", "IoT"],
+      "business_units": [
+        "Infrastructure (Neoverse)",
+        "Client",
+        "Automotive",
+        "IoT"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor", "ecosystem", "partner"],
+      "research_roles": [
+        "competitor",
+        "ecosystem",
+        "partner"
+      ],
       "value_chain_role": "ip_architecture",
       "intel_relationship_status": "partner_and_competitor",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["Arm", "ARM", "Arm Holdings", "Arm Ltd"],
+      "aliases": [
+        "Arm",
+        "ARM",
+        "Arm Holdings",
+        "Arm Ltd"
+      ],
       "matching_notes": "IP / architecture competitor and Intel Chiplet Alliance ecosystem partner. Never classify as a direct Intel Foundry competitor. 'ARM' also matches unrelated text; require company context.",
-      "needs_verification": []
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#103303dd56a731e377d01f6a37badae3",
+          "raw_record_id": "raw_f791717a97f1e19e9cb69af2e6be4f1b",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Arm Holdings plc American Depositary Shares; website=https://www.arm.com; city=cambridge; country=united kingdom; linkedin=https://www.linkedin.com/company/arm"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001973239.json",
+          "raw_record_id": "raw_2152f105d2a32302cf0517b7ac34a90c",
+          "checked_at": "2026-11-02",
+          "excerpt": "ARM HOLDINGS PLC /UK; business address: 110 FULBOURN ROAD, CAMBRIDGE, United Kingdom"
+        },
+        {
+          "fields": [
+            "intel_relationship_status",
+            "research_roles"
+          ],
+          "source_type": "partner_announcement",
+          "source_name": "Intel Foundry Chiplet Alliance partner quotes",
+          "source_url": "https://download.intel.com/newsroom/2025/foundry/Intel-DC-Chiplet-Alliance-Partner-Quotes.pdf",
+          "publication_date": "2025-04-29",
+          "checked_at": "2026-11-02",
+          "excerpt": "Arm Total Design helped foster collaboration around custom silicon solutions, and the Intel \nFoundry Chiplet Alliance drives the next wave of chiplet innovation.",
+          "evidence_class": "confirmed_fact"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_tsmc",
@@ -456,21 +1202,60 @@
       "short_name": "TSMC",
       "entity_type": "company",
       "primary_domain": "tsmc.com",
-      "alt_domains": ["pr.tsmc.com", "investor.tsmc.com"],
+      "alt_domains": [
+        "pr.tsmc.com",
+        "investor.tsmc.com"
+      ],
       "hq_country": "Taiwan",
       "hq_city": "Hsinchu",
       "linkedin_url": "https://www.linkedin.com/company/tsmc",
       "parent_company_id": null,
-      "business_units": ["Foundry", "Advanced Packaging (3DFabric)"],
+      "business_units": [
+        "Foundry",
+        "Advanced Packaging (3DFabric)"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor", "supplier"],
+      "research_roles": [
+        "competitor",
+        "supplier"
+      ],
       "value_chain_role": "external_foundry",
       "intel_relationship_status": "partner_and_competitor",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["TSMC", "Taiwan Semiconductor", "Taiwan Semiconductor Manufacturing"],
+      "aliases": [
+        "TSMC",
+        "Taiwan Semiconductor",
+        "Taiwan Semiconductor Manufacturing"
+      ],
       "matching_notes": "Direct foundry and packaging competitor; also an Intel wafer supplier. Subsidiaries (TSMC Arizona, JASM, ESMC) roll up here.",
-      "needs_verification": ["linkedin_url"]
+      "needs_verification": [],
+      "verification": [
+        {
+          "fields": [
+            "primary_domain",
+            "linkedin_url"
+          ],
+          "source_type": "data_provider",
+          "source_name": "Explorium firmographics",
+          "source_url": "https://api.explorium.ai/v1/businesses/firmographics/enrich#1ce3e6e3f452828e23a0c94572bef9d9",
+          "raw_record_id": "raw_a7e4294d7970912c212b8fc0bd6656bd",
+          "checked_at": "2026-11-02",
+          "excerpt": "name=Taiwan Semiconductor Manufacturing Company Limited; website=https://www.tsmc.com; city=hsinchu city; country=taiwan, province of china; linkedin=https://www.linkedin.com/company/tsmc"
+        },
+        {
+          "fields": [
+            "hq"
+          ],
+          "source_type": "regulatory_filing",
+          "source_name": "SEC EDGAR filer record",
+          "source_url": "https://data.sec.gov/submissions/CIK0001046179.json",
+          "raw_record_id": "raw_6cea07e9bd566fedcdd9c5c344fa0884",
+          "checked_at": "2026-11-02",
+          "excerpt": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD; business address: NO. 8, LI-HSIN ROAD 6, HSINCHU, None"
+        }
+      ],
+      "linkedin_verified": 1
     },
     {
       "company_id": "cmp_samsung_foundry",
@@ -483,16 +1268,30 @@
       "hq_city": null,
       "linkedin_url": null,
       "parent_company_id": "cmp_samsung_electronics",
-      "business_units": ["Foundry", "Advanced Packaging (AVP)"],
+      "business_units": [
+        "Foundry",
+        "Advanced Packaging (AVP)"
+      ],
       "industry": "semiconductors",
-      "research_roles": ["competitor"],
+      "research_roles": [
+        "competitor"
+      ],
       "value_chain_role": "external_foundry",
       "intel_relationship_status": "competitor_only",
       "in_module_1": 0,
       "in_module_2": 1,
-      "aliases": ["Samsung Foundry", "Samsung Foundry Forum", "Samsung SAFE"],
+      "aliases": [
+        "Samsung Foundry",
+        "Samsung Foundry Forum",
+        "Samsung SAFE"
+      ],
       "matching_notes": "Business unit, not a separate legal entity. Providers will match samsung.com; use this record only for foundry/packaging developments.",
-      "needs_verification": ["hq_city", "primary_domain path (semiconductor.samsung.com/foundry)"]
+      "needs_verification": [
+        "hq_city",
+        "primary_domain is the shared Samsung Semiconductor site (memory, LSI, foundry); no foundry-only domain"
+      ],
+      "verification": [],
+      "linkedin_verified": 0
     }
   ]
 }
