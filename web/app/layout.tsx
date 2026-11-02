@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Nav } from "@/components/nav";
@@ -30,8 +31,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="mx-auto w-full max-w-screen-2xl flex-1 px-4 py-6">
           <Suspense fallback={<div className="text-sm text-muted">Loading records…</div>}>{children}</Suspense>
         </main>
-        <footer className="border-t border-border py-3 text-center text-xs text-muted">
-          Every figure on these pages is computed from stored records; open any record to see its source.
+        <footer className="border-t border-border bg-surface py-3 text-xs text-muted">
+          <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-3 px-4">
+            <span>Every figure on these pages is computed from stored records; open any record to see its source.</span>
+            <a href="https://bridgeaitech.com" target="_blank" rel="noreferrer" className="flex items-center gap-2">
+              <span>Powered by</span>
+              <Image src="/bridgeai-logo.png" alt="BridgeAI — AI that works!" width={273} height={78} className="h-8 w-auto" />
+            </a>
+          </div>
         </footer>
       </body>
     </html>
