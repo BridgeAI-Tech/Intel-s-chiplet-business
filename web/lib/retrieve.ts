@@ -16,8 +16,23 @@ const STOP = new Set(["what", "which", "who", "whose", "when", "where", "have", 
   "this", "from", "show", "shows", "are", "was", "were", "any", "about", "over", "last", "months", "year", "their",
   "there", "does", "did", "how", "most", "latest", "companies", "company", "evidence", "into", "between", "been"]);
 
+// Domain synonyms so broad questions reach the specific vocabulary used in sources.
+const EXPAND: Record<string, string[]> = {
+  silicon: ["chip", "asic", "soc", "accelerator", "processor", "xpu"],
+  custom: ["asic", "in-house", "xpu"],
+  chiplet: ["multi-die", "die-to-die", "ucie"],
+  packaging: ["cowos", "emib", "foveros", "hbm", "interposer", "3d"],
+  foundry: ["tsmc", "fab", "wafer", "process node", "nm"],
+  manufacturing: ["fab", "wafer", "production", "foundry"],
+  supplier: ["foundry", "partner", "supply"],
+  hiring: ["job", "engineer", "role"],
+  roles: ["engineer", "job"],
+  design: ["rtl", "verification", "physical design", "architecture"],
+};
+
 function terms(question: string) {
-  return [...new Set(question.toLowerCase().match(/[a-z0-9][a-z0-9.+-]{2,}/g) ?? [])].filter((t) => !STOP.has(t)).slice(0, 12);
+  const base = (question.toLowerCase().match(/[a-z0-9][a-z0-9.+]{1,}/g) ?? []).filter((t) => t.length > 2 && !STOP.has(t));
+  return [...new Set(base.flatMap((t) => [t, ...(EXPAND[t] ?? [])]))].slice(0, 24);
 }
 
 // Keyword retrieval over the full backend (not dashboard summaries): signals with their verified excerpts,
@@ -30,15 +45,19 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
   const args = (cols: string[]) => t.flatMap((x) => cols.map(() => `%${x}%`));
 
   const sigCols = ["s.title", "s.summary", "rs.excerpt", "c.short_name", "s.signal_type", "s.technology_tags"];
+  // Best matches overall, capped per company so one company cannot crowd out the rest.
   const signals = await query<Record<string, string | number | null>>(
-    `SELECT s.signal_id, c.short_name, s.title, s.summary, s.signal_type, rs.excerpt, s.evidence_class,
-            COALESCE(s.event_date, s.publication_date) AS d, se.url, (${score(sigCols)}) AS sc
-     FROM m1_signal s JOIN company_master c USING (company_id)
-     JOIN record_source rs ON rs.record_type = 'm1_signal' AND rs.record_id = s.signal_id AND rs.source_role = 'primary'
-     JOIN source_evidence se ON se.source_id = rs.source_id
-     WHERE s.record_status IN ('extracted', 'reviewed') AND (${like(sigCols).join(" OR ")})
-     ORDER BY sc DESC, d DESC LIMIT ${limit}`,
-    [...args(sigCols), ...args(sigCols)]);
+    `SELECT * FROM (
+       SELECT s.signal_id, c.short_name, s.title, s.summary, s.signal_type, rs.excerpt, s.evidence_class,
+              COALESCE(s.event_date, s.publication_date) AS d, se.url, (${score(sigCols)}) AS sc,
+              ROW_NUMBER() OVER (PARTITION BY s.company_id ORDER BY (${score(sigCols)}) DESC,
+                                 COALESCE(s.event_date, s.publication_date) DESC) AS rn
+       FROM m1_signal s JOIN company_master c USING (company_id)
+       JOIN record_source rs ON rs.record_type = 'm1_signal' AND rs.record_id = s.signal_id AND rs.source_role = 'primary'
+       JOIN source_evidence se ON se.source_id = rs.source_id
+       WHERE s.record_status IN ('extracted', 'reviewed') AND (${like(sigCols).join(" OR ")}))
+     WHERE rn <= 6 ORDER BY sc DESC, d DESC LIMIT ${limit}`,
+    [...args(sigCols), ...args(sigCols), ...args(sigCols)]);
 
   const relCols = ["c.short_name", "sp.name", "r.relationship_type", "r.summary"];
   const rels = await query<Record<string, string | number | null>>(
@@ -50,8 +69,9 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
 
   const jobCols = ["c.short_name", "h.role_category", "h.normalised_title", "h.original_title", "h.description_excerpt"];
   const jobs = await query<Record<string, string | number | null>>(
-    `SELECT c.short_name, c.company_id, h.role_category, COUNT(*) AS n, MIN(h.first_observed_date) AS first_d,
-            MAX(h.first_observed_date) AS last_d
+    `SELECT c.short_name, c.company_id, h.role_category, COUNT(*) AS n,
+            MIN(COALESCE(h.posting_date, h.first_observed_date)) AS first_d,
+            MAX(COALESCE(h.posting_date, h.first_observed_date)) AS last_d
      FROM hiring_posting h JOIN company_master c USING (company_id)
      WHERE ${like(jobCols).join(" OR ")} GROUP BY 1, 2, 3 ORDER BY n DESC LIMIT 20`, args(jobCols));
 
@@ -75,7 +95,7 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
   }));
   jobs.forEach((j) => docs.push({
     ref: "", kind: "hiring aggregate", company: String(j.short_name), title: `${j.short_name}: ${j.n} silicon postings in ${j.role_category}`,
-    text: `${j.n} open or recent silicon-relevant job postings classified as ${j.role_category}, first observed between ${j.first_d} and ${j.last_d}. Vacancies are not confirmed hires.`,
+    text: `${j.n} open or recent silicon-relevant job postings classified as ${j.role_category}, posted or first observed between ${j.first_d} and ${j.last_d}. Vacancies are not confirmed hires.`,
     date: j.last_d as string | null, evidence_class: null, url: null, link: `/companies/${j.company_id}`,
   }));
   companyFacts.forEach((f) => {

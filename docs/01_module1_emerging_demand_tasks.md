@@ -7,6 +7,21 @@ Prerequisite: [Shared foundation](00_shared_foundation_tasks.md) S1–S5 done.
 Sample scope: screen 8–12 companies → shortlist 3–5 → 1 deep dive. Last 12 months only.
 Rule: build and review **one pipeline at a time** — share sample records + source links before moving on.
 
+
+## Status — 2026-11-02 (sample delivered in web app)
+| Task | Status |
+|---|---|
+| M1-0 Scope | 12 companies in master; 20/22 company records source-verified |
+| M1-1 Firmographics | Explorium + SEC verified (domain, LinkedIn, HQ); evidence on company pages |
+| M1-2 Technographics | Capability evidence comes from extracted signals (Explorium stack not used: generic IT) |
+| M1-3 Hiring | 432 verified silicon postings: Tenstorrent 161, AWS 138 (amazon.jobs), Tesla 79, Cerebras 54. Other 8 companies not collected (PredictLeads volume/credits) |
+| M1-4 News & filings | 221 verified signals across all 12 companies (Exa official + trade press, SEC filings); 790 extractions held back in data/review/m1_news_review.xlsx |
+| M1-5 Supplier relationships | 64 relationships derived from verified signals |
+| M1-6 Normalise & link | Shared company/programme/source IDs; duplicate reports merged as corroborating sources |
+| M1-7 Assessment | **Blocked — needs research scoring rules (Shu Qi)**; no scores shown |
+| M1-8 UI | Overview, Emerging Demand, company pages, signal detail, Evidence, Ask AI |
+| M1-9 Validation | Manual sample audit done; publish rule: verbatim excerpt + date provable from the document + fully inside window |
+
 ---
 
 ## M1-0. Scope confirmation
