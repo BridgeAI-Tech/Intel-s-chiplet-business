@@ -1,0 +1,33 @@
+Collecting documents (Exa)…
+  AWS: 35 unique documents so far
+  Apple: 64 unique documents so far
+  Cerebras: 95 unique documents so far
+  Cisco: 122 unique documents so far
+  Google: 153 unique documents so far
+  IBM: 183 unique documents so far
+  Meta: 210 unique documents so far
+  Microsoft: 239 unique documents so far
+  Nokia: 267 unique documents so far
+  Samsung Electronics: 299 unique documents so far
+  Tenstorrent: 325 unique documents so far
+  Tesla: 351 unique documents so far
+Extracting 351 documents with 8 workers…
+  20/351 documents processed, 15 accepted records
+  40/351 documents processed, 20 accepted records
+  60/351 documents processed, 43 accepted records
+  80/351 documents processed, 58 accepted records
+  100/351 documents processed, 84 accepted records
+  120/351 documents processed, 110 accepted records
+  140/351 documents processed, 137 accepted records
+  160/351 documents processed, 144 accepted records
+  180/351 documents processed, 158 accepted records
+  200/351 documents processed, 175 accepted records
+  220/351 documents processed, 194 accepted records
+  240/351 documents processed, 207 accepted records
+  260/351 documents processed, 218 accepted records
+  280/351 documents processed, 233 accepted records
+  300/351 documents processed, 242 accepted records
+  320/351 documents processed, 267 accepted records
+  340/351 documents processed, 286 accepted records
+Consolidated 40 duplicate reports into existing signals (kept as corroborating sources)
+Done: 290 accepted records written; 756 held back (see data/review/m1_news_review.xlsx). Exa/Gemini calls live=72

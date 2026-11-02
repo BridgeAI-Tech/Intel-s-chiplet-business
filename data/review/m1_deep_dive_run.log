@@ -1,0 +1,36 @@
+Collecting SEC filings…
+  Cerebras: 3 filing documents -> 20 passages
+  Tesla: 12 filing documents -> 8 passages
+  AWS: 12 filing documents -> 8 passages
+Collecting web documents (Exa, deep query set)…
+  Cerebras: 133 new web documents
+  Tesla: 141 new web documents
+  AWS: 197 new web documents
+Extracting 507 documents with 6 workers…
+  20/507 documents processed, 37 accepted records
+  40/507 documents processed, 70 accepted records
+  60/507 documents processed, 90 accepted records
+  80/507 documents processed, 110 accepted records
+  100/507 documents processed, 118 accepted records
+  120/507 documents processed, 127 accepted records
+  140/507 documents processed, 138 accepted records
+  160/507 documents processed, 145 accepted records
+  180/507 documents processed, 157 accepted records
+  200/507 documents processed, 161 accepted records
+  220/507 documents processed, 166 accepted records
+  240/507 documents processed, 169 accepted records
+  260/507 documents processed, 173 accepted records
+  280/507 documents processed, 174 accepted records
+  300/507 documents processed, 175 accepted records
+  320/507 documents processed, 191 accepted records
+  340/507 documents processed, 203 accepted records
+  360/507 documents processed, 205 accepted records
+  380/507 documents processed, 209 accepted records
+  400/507 documents processed, 211 accepted records
+  420/507 documents processed, 216 accepted records
+  440/507 documents processed, 220 accepted records
+  460/507 documents processed, 231 accepted records
+  480/507 documents processed, 237 accepted records
+  500/507 documents processed, 249 accepted records
+Consolidated 76 duplicate reports into existing signals (kept as corroborating sources)
+Done: 258 accepted records written; 906 held back (see data/review/m1_deep_dive_review.xlsx). Exa/Gemini calls live=0
