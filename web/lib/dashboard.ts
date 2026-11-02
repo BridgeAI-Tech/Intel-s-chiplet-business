@@ -1,7 +1,8 @@
 import { connection } from "next/server";
 import { query, queryOne } from "@/lib/db";
+import { FOCUS_SQL } from "@/lib/focus";
 
-// Company-wise reads for the Module 1 dashboard. `co` is a company_id, or null for all Module 1 companies.
+// Company-wise reads for the Module 1 dashboard. `co` is a company_id, or null for all deep-dive companies.
 // Only published records are counted (record_status extracted/reviewed); nothing here is estimated.
 
 export const WINDOW = { start: "2025-11-01", label: "1 Nov 2025 – today (last 12 months)" };
@@ -11,7 +12,7 @@ const LIVE = "record_status IN ('extracted', 'reviewed')";
 function scope(col: string, co: string | null) {
   return co
     ? { sql: `${col} = ?`, args: [co] }
-    : { sql: `${col} IN (SELECT company_id FROM company_master WHERE in_module_1 = 1)`, args: [] as string[] };
+    : { sql: `${col} IN ${FOCUS_SQL}`, args: [] as string[] };
 }
 
 // Every source linked to a company through any of its published records.
@@ -33,7 +34,8 @@ export async function moduleCompanies() {
   await connection();
   return query<{ company_id: string; short_name: string; official_name: string; industry: string | null;
     intel_relationship_status: string | null }>(
-    "SELECT company_id, short_name, official_name, industry, intel_relationship_status FROM company_master WHERE in_module_1 = 1 ORDER BY short_name");
+    `SELECT company_id, short_name, official_name, industry, intel_relationship_status FROM company_master
+     WHERE company_id IN ${FOCUS_SQL} ORDER BY short_name`);
 }
 
 export async function summary(co: string | null) {
@@ -92,7 +94,7 @@ export async function comparison() {
       (SELECT COUNT(*) FROM company_relationship r WHERE r.company_id = c.company_id) AS relationships,
       (SELECT COUNT(DISTINCT source_id) FROM (${COMPANY_SOURCES}) cs WHERE cs.company_id = c.company_id) AS sources,
       (SELECT MAX(publication_date) FROM m1_signal s WHERE s.company_id = c.company_id AND s.${LIVE}) AS latest
-    FROM company_master c WHERE c.in_module_1 = 1 ORDER BY signals DESC, c.short_name`);
+    FROM company_master c WHERE c.company_id IN ${FOCUS_SQL} ORDER BY signals DESC, c.short_name`);
 }
 
 export async function signals(co: string | null, opts: { category?: string; sourceType?: string; cls?: string; limit?: number } = {}) {

@@ -14,7 +14,7 @@ export async function Summary({ p, scope }: Props) {
   return (
     <>
       <SectionTitle n={1} title="Executive summary — what the evidence shows" scope={scope}>
-        Custom-silicon activity, hiring, suppliers and Intel relationship evidence for {p.co ? scope : "all Module 1 companies"},
+        Custom-silicon activity, hiring, suppliers and Intel relationship evidence for {p.co ? scope : "the deep-dive companies (Cerebras, AWS, Tesla)"},
         computed only from records whose excerpt was found verbatim in a dated source inside the 12-month window.
       </SectionTitle>
 

@@ -15,7 +15,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
   const p: Params = { tab, co: str("co"), category: str("category"), channel: str("channel"), platform: str("platform") };
   const companies = await moduleCompanies();
   const current = companies.find((c) => c.company_id === p.co);
-  const scope = current ? current.short_name : `All ${companies.length} companies`;
+  const scope = current ? current.short_name : `All ${companies.length} deep-dive companies`;
   const Section = SECTIONS[tab] ?? S.Summary;
 
   return (
@@ -26,7 +26,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
             <h1 className="font-mono text-base font-semibold uppercase tracking-wide">Module 1 · Emerging Demand Radar</h1>
             <span className="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 font-mono text-[10px] text-emerald-800">VERIFIED DATA ONLY</span>
           </div>
-          <p className="text-xs text-muted">Companies building custom silicon · Period: {WINDOW.label}</p>
+          <p className="text-xs text-muted">Deep dive: Cerebras, AWS, Tesla · Period: {WINDOW.label}</p>
         </div>
         <Link href={href(p, { tab: "sources" })} scroll={false}
           className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${tab === "sources" ? "border-foreground bg-foreground text-white" : "border-border bg-surface hover:border-accent"}`}>

@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Markdown } from "@/components/markdown";
 import type { Doc } from "@/lib/retrieve";
 
-type Turn = { q: string; answer?: string; sources?: Doc[]; error?: string };
+type Turn = { q: string; answer?: string; sources?: Doc[]; error?: string; done?: boolean; found?: number };
 
 const GENERAL = [
   "Which companies show evidence of expanding custom-silicon activity?",
@@ -19,23 +20,6 @@ const forCompany = (n: string) => [
   `What engineering roles is ${n} hiring for?`,
   `What is ${n}'s relationship with Intel?`,
 ];
-
-// Renders "[S1, S3]" citations as clickable chips that jump to the source list of that answer.
-function Answer({ text, turn }: { text: string; turn: number }) {
-  const parts = text.split(/(\[[^\]]*S\d+[^\]]*\])/g);
-  return (
-    <div className="whitespace-pre-wrap text-sm leading-6">
-      {parts.map((p, i) => {
-        const refs = /^\[[^\]]*S\d+[^\]]*\]$/.test(p) ? p.match(/S\d+/g) ?? [] : [];
-        if (!refs.length) return <Fragment key={i}>{p}</Fragment>;
-        return refs.map((r) => (
-          <a key={i + r} href={`#t${turn}-${r}`}
-            className="mx-0.5 inline-block rounded bg-accent-soft px-1 font-mono text-[10px] font-semibold text-accent no-underline hover:bg-accent hover:text-white">{r}</a>
-        ));
-      })}
-    </div>
-  );
-}
 
 export function AskDrawer({ companies }: { companies: { company_id: string; short_name: string }[] }) {
   const sp = useSearchParams();
@@ -60,15 +44,38 @@ export function AskDrawer({ companies }: { companies: { company_id: string; shor
     setInput("");
     setBusy(true);
     setTurns((t) => [...t, { q }]);
-    let next: Turn;
+    const update = (patch: Partial<Turn>) => setTurns((t) => [...t.slice(0, -1), { ...t[t.length - 1], ...patch }]);
     try {
-      const res = await fetch("/api/ask", { method: "POST", body: JSON.stringify({ question: q, company: co?.short_name }) });
-      const data = await res.json();
-      next = res.ok ? { q, answer: data.answer, sources: data.sources ?? [] } : { q, error: data.error ?? "Request failed" };
+      const res = await fetch("/api/ask", { method: "POST", body: JSON.stringify({ question: q, company: co?.short_name, stream: true }) });
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => ({}));
+        update({ error: data.error ?? "Request failed" });
+      } else {
+        // NDJSON stream: {sources} first, then {delta} text chunks, or {error}.
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let buf = "";
+        let answer = "";
+        let all: Doc[] = [];
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          const lines = buf.split("\n");
+          buf = lines.pop() ?? "";
+          for (const line of lines.filter(Boolean)) {
+            const msg = JSON.parse(line);
+            if (msg.sources) { all = msg.sources; update({ found: all.length }); }
+            if (msg.delta) { answer += msg.delta; update({ answer }); }
+            if (msg.error) update({ error: msg.error });
+          }
+        }
+        const refs = new Set([...answer.matchAll(/\[([^\]]*S\d+[^\]]*)\]/g)].flatMap((m) => m[1].match(/S\d+/g) ?? []));
+        update({ answer, sources: all.filter((d) => refs.has(d.ref)), done: true });
+      }
     } catch {
-      next = { q, error: "Request failed — check the connection and try again." };
+      update({ error: "Request failed — check the connection and try again." });
     }
-    setTurns((t) => [...t.slice(0, -1), next]);
     setBusy(false);
   }
 
@@ -118,7 +125,8 @@ export function AskDrawer({ companies }: { companies: { company_id: string; shor
               {t.error && <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{t.error}</div>}
               {t.answer !== undefined && (
                 <div className="rounded-2xl rounded-bl-sm border border-border bg-background p-3">
-                  <Answer text={t.answer} turn={i} />
+                  <Markdown text={t.answer} turn={i} />
+                  {!t.done && !t.error && <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse bg-accent align-middle" />}
                   {!!t.sources?.length && (
                     <div className="mt-3 border-t border-border pt-2">
                       <div className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted">Sources ({t.sources.length})</div>
@@ -138,7 +146,8 @@ export function AskDrawer({ companies }: { companies: { company_id: string; shor
               )}
               {t.answer === undefined && !t.error && (
                 <div className="flex items-center gap-2 text-xs text-muted">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-accent" /> Searching records and drafting a cited answer…
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
+                  {t.found === undefined ? "Searching verified records…" : `Found ${t.found} matching records · writing a cited answer…`}
                 </div>
               )}
             </div>

@@ -1,4 +1,5 @@
 import { query } from "@/lib/db";
+import { FOCUS_SQL } from "@/lib/focus";
 
 export type Doc = {
   ref: string;
@@ -55,7 +56,7 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
        FROM m1_signal s JOIN company_master c USING (company_id)
        JOIN record_source rs ON rs.record_type = 'm1_signal' AND rs.record_id = s.signal_id AND rs.source_role = 'primary'
        JOIN source_evidence se ON se.source_id = rs.source_id
-       WHERE s.record_status IN ('extracted', 'reviewed') AND (${like(sigCols).join(" OR ")}))
+       WHERE s.record_status IN ('extracted', 'reviewed') AND s.company_id IN ${FOCUS_SQL} AND (${like(sigCols).join(" OR ")}))
      WHERE rn <= 6 ORDER BY sc DESC, d DESC LIMIT ${limit}`,
     [...args(sigCols), ...args(sigCols), ...args(sigCols)]);
 
@@ -64,7 +65,7 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
     `SELECT r.relationship_id, r.company_id, c.short_name, sp.name, r.relationship_type, r.summary, r.evidence_class,
             COALESCE(r.event_date, r.publication_date) AS d, (${score(relCols)}) AS sc
      FROM company_relationship r JOIN company_master c USING (company_id) JOIN supplier_partner_master sp USING (supplier_id)
-     WHERE ${like(relCols).join(" OR ")} ORDER BY sc DESC LIMIT 15`,
+     WHERE r.company_id IN ${FOCUS_SQL} AND (${like(relCols).join(" OR ")}) ORDER BY sc DESC LIMIT 15`,
     [...args(relCols), ...args(relCols)]);
 
   const jobCols = ["c.short_name", "h.role_category", "h.normalised_title", "h.original_title", "h.description_excerpt"];
@@ -73,14 +74,14 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
             MIN(COALESCE(h.posting_date, h.first_observed_date)) AS first_d,
             MAX(COALESCE(h.posting_date, h.first_observed_date)) AS last_d
      FROM hiring_posting h JOIN company_master c USING (company_id)
-     WHERE ${like(jobCols).join(" OR ")} GROUP BY 1, 2, 3 ORDER BY n DESC LIMIT 20`, args(jobCols));
+     WHERE h.company_id IN ${FOCUS_SQL} AND (${like(jobCols).join(" OR ")}) GROUP BY 1, 2, 3 ORDER BY n DESC LIMIT 20`, args(jobCols));
 
   const coCols = ["c.short_name", "c.official_name", "c.intel_relationship_status", "rs.excerpt"];
   const companyFacts = await query<Record<string, string | number | null>>(
     `SELECT c.company_id, c.short_name, c.intel_relationship_status, rs.excerpt, se.url, se.publication_date AS d
      FROM company_master c JOIN record_source rs ON rs.record_type = 'company' AND rs.record_id = c.company_id
      JOIN source_evidence se ON se.source_id = rs.source_id
-     WHERE rs.excerpt LIKE '%intel_relationship_status%' AND (${like(coCols).join(" OR ")}) LIMIT 10`, args(coCols));
+     WHERE c.company_id IN ${FOCUS_SQL} AND rs.excerpt LIKE '%intel_relationship_status%' AND (${like(coCols).join(" OR ")}) LIMIT 10`, args(coCols));
 
   const docs: Doc[] = [];
   signals.forEach((s) => docs.push({

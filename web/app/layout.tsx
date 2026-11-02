@@ -37,8 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AskIntelligence />
         </Suspense>
         <footer className="border-t border-border bg-surface py-3 text-xs text-muted">
-          <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-3 px-4">
-            <span>Every figure on these pages is computed from stored records; open any record to see its source.</span>
+          <div className="mx-auto flex max-w-screen-2xl justify-center px-4">
             <a href="https://bridgeaitech.com" target="_blank" rel="noreferrer" className="flex items-center gap-2">
               <span>Powered by</span>
               <Image src="/bridgeai-logo.png" alt="BridgeAI — AI that works!" width={273} height={78} className="h-8 w-auto" />
