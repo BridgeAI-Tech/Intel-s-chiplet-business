@@ -208,3 +208,19 @@ export async function providers(co: string | null) {
   ]);
   return { byProvider, runs };
 }
+
+export async function topPartners(co: string | null, limit = 8) {
+  await connection();
+  const s = scope("r.company_id", co);
+  return query<{ partner: string; n: number; companies: string }>(`
+    SELECT sp.name AS partner, COUNT(*) AS n, GROUP_CONCAT(DISTINCT c.short_name) AS companies
+    FROM company_relationship r JOIN supplier_partner_master sp USING (supplier_id) JOIN company_master c USING (company_id)
+    WHERE ${s.sql} GROUP BY sp.name ORDER BY n DESC, sp.name LIMIT ${limit}`, s.args);
+}
+
+export async function hiringRoles(co: string | null) {
+  await connection();
+  const s = scope("company_id", co);
+  return query<{ role_category: string; n: number }>(`
+    SELECT role_category, COUNT(*) AS n FROM hiring_posting WHERE ${s.sql} GROUP BY 1 ORDER BY n DESC`, s.args);
+}

@@ -3,14 +3,14 @@ import type { ReactNode } from "react";
 import { Badge, SourceLink, humanize } from "@/components/ui";
 
 export const TABS = [
-  { key: "summary", label: "Executive Summary" },
-  { key: "developments", label: "Silicon Developments" },
-  { key: "hiring", label: "Hiring Intelligence" },
-  { key: "ecosystem", label: "Supplier & Ecosystem" },
-  { key: "intel", label: "Intel Relationship" },
-  { key: "filings", label: "Filings & Disclosures" },
-  { key: "assessment", label: "Assessment" },
-  { key: "evidence", label: "Evidence & Sources" },
+  { key: "summary", label: "Overview", hint: "Charts and key numbers" },
+  { key: "developments", label: "Developments", hint: "What each company built or announced" },
+  { key: "hiring", label: "Hiring", hint: "Open chip-engineering jobs" },
+  { key: "ecosystem", label: "Partners & suppliers", hint: "Foundries, packaging, memory, design tools" },
+  { key: "intel", label: "Intel relationship", hint: "Existing ties to Intel, with sources" },
+  { key: "filings", label: "SEC filings", hint: "Statements from official filings" },
+  { key: "assessment", label: "Scoring", hint: "Pending the research team's criteria" },
+  { key: "evidence", label: "All sources", hint: "Every source document behind the numbers" },
 ] as const;
 
 export type Params = { tab: string; co: string | null; [k: string]: string | null };
@@ -33,12 +33,12 @@ export function Chip({ to, active, children, title }: { to: string; active?: boo
   );
 }
 
-export function SectionTitle({ n, title, scope, children }: { n?: number; title: string; scope: string; children?: ReactNode }) {
+export function SectionTitle({ title, scope, children }: { n?: number; title: string; scope: string; children?: ReactNode }) {
   return (
     <div className="mb-4">
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="font-mono text-lg font-semibold uppercase tracking-wide">{n ? `${n}. ` : ""}{title}</h1>
-        <span className="rounded border border-border bg-surface px-2 py-0.5 font-mono text-xs uppercase text-muted">{scope}</span>
+        <h1 className="text-xl font-semibold">{title}</h1>
+        <span className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-xs text-muted">{scope}</span>
       </div>
       {children && <p className="mt-1 max-w-4xl text-sm text-muted">{children}</p>}
     </div>
@@ -50,7 +50,7 @@ export function Panel({ title, note, action, children }: { title: string; note?:
     <section className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-3 flex items-start justify-between gap-2">
         <div>
-          <h2 className="font-mono text-xs font-semibold uppercase tracking-wider">{title}</h2>
+          <h2 className="text-sm font-semibold">{title}</h2>
           {note && <p className="mt-0.5 text-xs text-muted">{note}</p>}
         </div>
         {action}
@@ -63,7 +63,7 @@ export function Panel({ title, note, action, children }: { title: string; note?:
 export function Tile({ label, value, note }: { label: string; value: ReactNode; note?: ReactNode }) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
-      <div className="font-mono text-[11px] uppercase tracking-wider text-muted">{label}</div>
+      <div className="text-xs font-medium text-muted">{label}</div>
       <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
       {note && <div className="mt-1 text-xs text-muted">{note}</div>}
     </div>
@@ -125,7 +125,7 @@ export function SignalCard({ s }: {
       {s.summary && <p className="mt-1 text-xs text-muted">{s.summary}</p>}
       {s.excerpt && (
         <blockquote className="mt-2 rounded-md border border-emerald-200 bg-emerald-50/60 p-2 text-xs">
-          <div className="mb-0.5 font-mono text-[10px] uppercase text-emerald-800">Verbatim source excerpt</div>
+          <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800">Exact words from the source</div>
           “{s.excerpt}”
         </blockquote>
       )}
@@ -134,7 +134,7 @@ export function SignalCard({ s }: {
         <span>{humanize(s.source_type)}</span>
         <SourceLink url={s.url} label={s.source_name} />
         {s.sources > 1 && <span>+{s.sources - 1} corroborating</span>}
-        <Link href={`/events/m1_signal/${s.signal_id}`} className="ml-auto text-accent">Inspect evidence →</Link>
+        <Link href={`/events/m1_signal/${s.signal_id}`} className="ml-auto text-accent">Open details →</Link>
       </div>
     </article>
   );

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CompareBars, MonthBars, RankBars, SplitBar } from "@/components/charts";
 import { Bar, Chip, MonthColumns, Panel, SectionTitle, SignalCard, Tile, href, monthLabel, type Params } from "@/components/dash";
 import { Badge, Empty, SourceLink, Table, Td, humanize } from "@/components/ui";
 import * as d from "@/lib/dashboard";
@@ -6,82 +7,107 @@ import * as d from "@/lib/dashboard";
 type Props = { p: Params; scope: string };
 
 export async function Summary({ p, scope }: Props) {
-  const [k, months, channels, domains, latest, matrix] = await Promise.all([
-    d.summary(p.co), d.signalsByMonth(p.co), d.channelCoverage(p.co), d.topDomains(p.co),
-    d.signals(p.co, { cls: "confirmed_fact", limit: 6 }), p.co ? Promise.resolve([]) : d.comparison(),
+  const [k, months, channels, cats, partners, roles, latest, matrix, companies] = await Promise.all([
+    d.summary(p.co), d.signalsByMonth(p.co), d.channelCoverage(p.co), d.signalCategories(p.co), d.topPartners(p.co),
+    d.hiringRoles(p.co), d.signals(p.co, { cls: "confirmed_fact", limit: 3 }), d.comparison(), d.moduleCompanies(),
   ]);
-  const maxChannel = Math.max(1, ...channels.map((c) => Number(c.n)));
+  const n = (v: unknown) => Number(v ?? 0);
+  const one = p.co ? matrix.find((m) => m.company_id === p.co) : null;
   return (
     <>
-      <SectionTitle n={1} title="Executive summary — what the evidence shows" scope={scope}>
-        Custom-silicon activity, hiring, suppliers and Intel relationship evidence for {p.co ? scope : "the deep-dive companies (Cerebras, AWS, Tesla)"},
-        computed only from records whose excerpt was found verbatim in a dated source inside the 12-month window.
+      <SectionTitle title={p.co ? `${scope} at a glance` : "Overview"} scope={scope}>
+        {p.co
+          ? `Everything we found about ${scope}'s own chips in the last 12 months: what it built or announced, who it works with, and who it is hiring.`
+          : "Three companies building their own chips — Cerebras, AWS and Tesla. See what each has built or announced in the last 12 months, who supplies them, and who they are hiring."}
       </SectionTitle>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/50 px-4 py-2 text-xs">
-        <span className="font-mono font-semibold uppercase text-emerald-800">Evidence provenance · 100% source-verified</span>
-        <span className="text-muted">{Number(k.signals) + Number(k.postings) + Number(k.relationships)} records · {k.sources} source documents</span>
-        <span className="ml-auto font-mono uppercase text-muted">Verified sources:</span>
-        {domains.map((x) => (
-          <Link key={x.source_name} href={href(p, { tab: "evidence", platform: x.source_name })}
-            className="rounded border border-border bg-surface px-2 py-0.5 hover:border-accent">{x.source_name} · {x.n}</Link>
+      <ol className="mb-5 grid gap-2 rounded-xl border border-border bg-surface p-3 text-sm sm:grid-cols-3">
+        {[
+          ["Pick a company", "Use the company buttons above, or keep \"All three\" to compare."],
+          ["Read the charts", "Every number is a count of real records — nothing is estimated."],
+          ["Open the proof", "Click any card to see the exact sentence and the original source."],
+        ].map(([t, s], i) => (
+          <li key={t} className="flex gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">{i + 1}</span>
+            <span><b>{t}</b><span className="block text-xs text-muted">{s}</span></span>
+          </li>
         ))}
+      </ol>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        <Tile label="Chip developments" value={k.signals} note="News, filings and announcements found" />
+        <Tile label="Confirmed" value={k.confirmed} note="Already happened, officially stated" />
+        <Tile label="Announced plans" value={k.intents} note="Officially announced, not yet done" />
+        <Tile label="Chip-engineering jobs" value={k.postings} note="Open roles (vacancies, not hires)" />
+        <Tile label="Partners & suppliers" value={k.relationships} note="Links named in the sources" />
+        <Tile label="Sources checked" value={k.sources} note={`Incl. ${k.filings} SEC filings`} />
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
-        <Tile label="Verified signals" value={k.signals} />
-        <Tile label="Confirmed facts" value={k.confirmed} note="Completed, officially attributed" />
-        <Tile label="Press-released intent" value={k.intents} note="Planned, officially attributed" />
-        <Tile label="Silicon job postings" value={k.postings} note="Vacancies, not hires" />
-        <Tile label="Supplier / ecosystem links" value={k.relationships} />
-        <Tile label="Source documents" value={k.sources} />
-        <Tile label="SEC filings used" value={k.filings} />
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        {p.co && one ? (
+          <Panel title={`${scope} snapshot`} note="The key facts in one place">
+            <dl className="grid grid-cols-2 gap-3 text-sm">
+              <Fact label="Relationship with Intel"><Badge value={one.intel_relationship_status as string} /></Fact>
+              <Fact label="Latest development">{one.latest ?? "—"}</Fact>
+              <Fact label="Partner named most">{partners[0] ? `${partners[0].partner} (${partners[0].n})` : "—"}</Fact>
+              <Fact label="Most-hired area">{roles[0] ? `${humanize(roles[0].role_category)} (${roles[0].n})` : "Not collected"}</Fact>
+            </dl>
+            <Link href={`/companies/${p.co}`} className="mt-3 inline-block text-xs text-accent">Full company profile →</Link>
+          </Panel>
+        ) : (
+          <Panel title="How the three companies compare" note="Click a bar to open that company">
+            <CompareBars
+              companies={companies.map((c) => ({ id: c.company_id, name: c.short_name, href: href(p, { co: c.company_id }) }))}
+              measures={[
+                { label: "Chip developments", hint: "news, filings, announcements", values: Object.fromEntries(matrix.map((m) => [String(m.company_id), n(m.signals)])) },
+                { label: "Chip-engineering jobs", hint: "open roles", values: Object.fromEntries(matrix.map((m) => [String(m.company_id), n(m.postings)])) },
+                { label: "Partners & suppliers", hint: "named in sources", values: Object.fromEntries(matrix.map((m) => [String(m.company_id), n(m.relationships)])) },
+              ]} />
+          </Panel>
+        )}
+        <div className="grid gap-4">
+          <Panel title="How certain is it?" note="Every development is either confirmed or an announced plan">
+            <SplitBar a={n(k.confirmed)} b={n(k.intents)} aLabel="confirmed" bLabel="announced plans"
+              aHint="Happened — stated by the company, a partner or a filing" bHint="Planned — officially announced, not proof it happened" />
+          </Panel>
+          <Panel title="Where the evidence comes from" note="Click to see those sources">
+            <RankBars rows={channels.map((c) => ({ label: humanize(c.source_type), n: n(c.n), href: href(p, { tab: "evidence", channel: c.source_type }) }))} unit="sources" />
+          </Panel>
+        </div>
       </div>
 
-      <div className="mt-4">
-        <Panel title="Key developments — latest confirmed facts" action={<Link href={href(p, { tab: "developments" })} className="text-xs text-accent">All developments →</Link>}>
-          {latest.length ? (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{latest.map((s) => <SignalCard key={s.signal_id} s={s} />)}</div>
-          ) : <Empty>No confirmed facts on record for this selection.</Empty>}
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <Panel title="Activity month by month" note="Developments by the month the source was published">
+          {months.length ? <MonthBars rows={months.map((m) => ({ month: m.month, a: n(m.confirmed), b: n(m.intent) }))} /> : <Empty>No dated developments.</Empty>}
+        </Panel>
+        <Panel title="What kind of activity" note="Click a type to see those developments">
+          <RankBars rows={cats.map((c) => ({ label: humanize(c.signal_type), n: n(c.n), href: href(p, { tab: "developments", category: c.signal_type }) }))} />
         </Panel>
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <Panel title="Monthly signal breakdown" note="By source publication month · dark = confirmed fact, light = press-released intent">
-          {months.length ? <MonthColumns rows={months.map((m) => ({ month: m.month, a: Number(m.confirmed), b: Number(m.intent) }))} />
-            : <Empty>No dated signals.</Empty>}
+        <Panel title="Partners & suppliers named most" note="Foundries, packaging, memory, chip-design software and design partners">
+          {partners.length ? <RankBars rows={partners.map((x) => ({ label: x.partner, n: n(x.n), href: href(p, { tab: "ecosystem" }) }))} unit="mentions" />
+            : <Empty>No partners named in the sources.</Empty>}
         </Panel>
-        <Panel title="Data coverage by channel" note="Distinct source documents behind this selection">
-          <div className="space-y-1.5">
-            {channels.map((c) => <Bar key={c.source_type} label={humanize(c.source_type)} n={Number(c.n)} max={maxChannel}
-              to={href(p, { tab: "evidence", channel: c.source_type })} />)}
-          </div>
+        <Panel title="Which chip-engineering skills they hire for" note="Open job postings by type of role">
+          {roles.length ? <RankBars rows={roles.map((r) => ({ label: humanize(r.role_category), n: n(r.n), href: href(p, { tab: "hiring" }) }))} unit="jobs" />
+            : <Empty>Job postings were not collected for this company.</Empty>}
         </Panel>
       </div>
 
-      {!p.co && (
-        <div className="mt-4">
-          <Panel title="Company comparison matrix" note="Counts of verified records per company. Click a company to filter every section.">
-            <Table head={["Company", "Intel relationship", "Signals", "Confirmed", "Intent", "Job postings", "Ecosystem links", "Sources", "Latest source"]}>
-              {matrix.map((r) => (
-                <tr key={String(r.company_id)}>
-                  <Td><Link href={href(p, { co: String(r.company_id) })} className="font-medium text-accent hover:underline">{r.short_name}</Link></Td>
-                  <Td><Badge value={r.intel_relationship_status as string} /></Td>
-                  <Td className="tabular-nums">{r.signals}</Td>
-                  <Td className="tabular-nums">{r.confirmed}</Td>
-                  <Td className="tabular-nums">{r.intents}</Td>
-                  <Td className="tabular-nums">{Number(r.postings) || <span className="text-muted">not collected</span>}</Td>
-                  <Td className="tabular-nums">{r.relationships}</Td>
-                  <Td className="tabular-nums">{r.sources}</Td>
-                  <Td className="whitespace-nowrap">{r.latest ?? "—"}</Td>
-                </tr>
-              ))}
-            </Table>
-          </Panel>
-        </div>
-      )}
+      <div className="mt-4">
+        <Panel title="Latest confirmed developments" action={<Link href={href(p, { tab: "developments" })} className="text-xs text-accent">See all →</Link>}>
+          {latest.length ? <div className="grid gap-3 md:grid-cols-3">{latest.map((s) => <SignalCard key={s.signal_id} s={s} />)}</div>
+            : <Empty>No confirmed developments for this selection.</Empty>}
+        </Panel>
+      </div>
     </>
   );
+}
+
+function Fact({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div><dt className="text-xs text-muted">{label}</dt><dd className="mt-0.5 font-medium">{children}</dd></div>;
 }
 
 export async function Developments({ p, scope }: Props) {
@@ -90,9 +116,9 @@ export async function Developments({ p, scope }: Props) {
   const max = Math.max(1, ...cats.map((c) => Number(c.n)));
   return (
     <>
-      <SectionTitle n={2} title="Silicon developments" scope={scope}>
-        Programme milestones, product launches, partnerships, investment and capacity moves. Each card carries the
-        verbatim excerpt from its source.
+      <SectionTitle n={2} title="Developments" scope={scope}>
+        What each company built, launched or announced — new chips, milestones, partnerships, funding and manufacturing.
+        Each card shows the exact sentence from its source.
       </SectionTitle>
       <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
         <Panel title="By category" note="Click to filter">
@@ -103,7 +129,7 @@ export async function Developments({ p, scope }: Props) {
           </div>
         </Panel>
         <div>
-          <div className="mb-2 text-xs text-muted">{rows.length} signals{category ? ` · ${humanize(category)}` : ""}</div>
+          <div className="mb-2 text-xs text-muted">{rows.length} developments{category ? ` · ${humanize(category)}` : ""}</div>
           {rows.length ? <div className="grid gap-3 xl:grid-cols-2">{rows.map((s) => <SignalCard key={s.signal_id} s={s} />)}</div>
             : <Empty>No verified signals for this selection.</Empty>}
         </div>
@@ -118,9 +144,9 @@ export async function Hiring({ p, scope }: Props) {
   mix.forEach((r) => byCo.set(r.short_name, [...(byCo.get(r.short_name) ?? []), r]));
   return (
     <>
-      <SectionTitle n={3} title="Hiring intelligence" scope={scope}>
-        Silicon-engineering job postings (RTL, verification, physical design, DFT, packaging, process…). Each posting
-        was classified from its own description; vacancies are not confirmed hires.
+      <SectionTitle n={3} title="Hiring" scope={scope}>
+        Open chip-engineering jobs, grouped by the skill they ask for. A company hiring chip designers is a sign it is
+        building its own chips. These are open vacancies, not confirmed hires.
       </SectionTitle>
       {!mix.length ? <Empty>Hiring data not collected for this company in the sample (collected: Cerebras, AWS, Tesla, Tenstorrent).</Empty> : (
         <>
@@ -172,8 +198,8 @@ export async function Ecosystem({ p, scope }: Props) {
   const top = [...partners.entries()].sort((a, b) => b[1] - a[1]);
   return (
     <>
-      <SectionTitle n={4} title="Supplier & ecosystem" scope={scope}>
-        Foundry, packaging, memory, IP, EDA and design partners named in verified sources. No undisclosed supplier is inferred.
+      <SectionTitle n={4} title="Partners & suppliers" scope={scope}>
+        Who makes, packages and helps design each company's chips, as named in the sources. We never guess a supplier that is not named.
       </SectionTitle>
       {!rows.length ? <Empty>No supplier or ecosystem relationship found in verified sources.</Empty> : (
         <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
@@ -208,8 +234,8 @@ export async function IntelRelationship({ p, scope }: Props) {
   return (
     <>
       <SectionTitle n={5} title="Intel relationship" scope={scope}>
-        Existing Intel relationships backed by quoted sources. Where no source is on file the status is a research
-        classification only. Intel-relevance mapping is part of the assessment rules (pending).
+        Existing ties between each company and Intel, with the quote that proves it. Where there is no quote, the label
+        is our research classification only.
       </SectionTitle>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {[...byCo.entries()].map(([name, rs]) => (
@@ -234,7 +260,7 @@ export async function Filings({ p, scope }: Props) {
   const rows = await d.signals(p.co, { sourceType: "regulatory_filing" });
   return (
     <>
-      <SectionTitle n={6} title="Filings & disclosures" scope={scope}>
+      <SectionTitle n={6} title="SEC filings" scope={scope}>
         Statements taken from SEC filings (10-K, 10-Q, IPO prospectus, earnings-release exhibits). Filing dates come from
         the SEC EDGAR index. Amazon filings count for AWS only where the statement names AWS or its chips.
       </SectionTitle>
@@ -247,7 +273,7 @@ export async function Filings({ p, scope }: Props) {
 export async function Assessment({ scope }: Props) {
   return (
     <>
-      <SectionTitle n={7} title="Assessment & Intel mapping" scope={scope} />
+      <SectionTitle n={7} title="Scoring" scope={scope} />
       <Panel title="Pending — assessment criteria from the research team">
         <p className="text-sm">
           Development stage, Intel relevance (foundry, design/IP, advanced packaging) and the 3–5 company shortlist will
@@ -264,23 +290,23 @@ export async function EvidenceLake({ p, scope }: Props) {
   const total = channels.reduce((a, c) => a + Number(c.n), 0);
   return (
     <>
-      <SectionTitle n={8} title="Evidence & source lake" scope={scope}>
-        The source documents every number on this dashboard is computed from, filtered by company, channel and platform.
+      <SectionTitle n={8} title="All sources" scope={scope}>
+        Every source document behind the numbers. Filter by type of source or by website.
       </SectionTitle>
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[11px] uppercase text-muted">Channel</span>
+        <span className="text-xs text-muted">Type of source</span>
         <Chip to={href(p, { channel: null, platform: null })} active={!p.channel}>All · {total}</Chip>
         {channels.map((c) => <Chip key={c.source_type} to={href(p, { channel: c.source_type, platform: null })} active={p.channel === c.source_type}>{humanize(c.source_type)} · {c.n}</Chip>)}
       </div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[11px] uppercase text-muted">Platform</span>
+        <span className="text-xs text-muted">Website</span>
         <Chip to={href(p, { platform: null })} active={!p.platform}>All</Chip>
         {platforms.map((x) => <Chip key={x.source_name} to={href(p, { platform: x.source_name })} active={p.platform === x.source_name}>{x.source_name} · {x.n}</Chip>)}
       </div>
       <div className="mb-4 grid gap-3 rounded-xl border border-border bg-surface p-4 text-xs md:grid-cols-3">
-        <div><b className="font-mono uppercase">1. Raw provider responses</b><p className="mt-1 text-muted">Exa, SEC EDGAR, PredictLeads, amazon.jobs and Explorium responses are stored untouched, with request parameters and fetch time.</p></div>
-        <div><b className="font-mono uppercase">2. Extraction + deterministic checks</b><p className="mt-1 text-muted">Gemini extracts structured records; a record is published only if its excerpt is found verbatim in the source and its date is stated in the document and inside the window.</p></div>
-        <div><b className="font-mono uppercase">3. Dashboard & Ask AI</b><p className="mt-1 text-muted">Counts and charts are computed from the published records; Ask AI answers only from them, with citations.</p></div>
+        <div><b>1. Collected</b><p className="mt-1 text-muted">News sites, company newsrooms, SEC filings and job sites are collected and stored unchanged.</p></div>
+        <div><b>2. Checked</b><p className="mt-1 text-muted">AI reads each document; a finding is kept only if its exact sentence is in the source and the source gives a date in the last 12 months.</p></div>
+        <div><b>3. Shown</b><p className="mt-1 text-muted">Charts count only the kept findings; Ask Intelligence answers only from them, with sources.</p></div>
       </div>
       <div className="mb-2 text-xs text-muted">Showing {rows.length} most recent of the selection</div>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -299,8 +325,8 @@ export async function EvidenceLake({ p, scope }: Props) {
               <div><dt className="font-mono uppercase text-muted">Supports</dt><dd>{r.records} {String(r.via).split(",").map(humanize).join(", ").toLowerCase()}</dd></div>
             </dl>
             <div className="mt-2 flex items-center justify-between border-t border-border pt-2 text-[11px]">
-              <span className="text-emerald-700">✓ Excerpt verified in source</span>
-              <Link href={`/evidence?id=${r.source_id}`} className="text-accent">Record lineage →</Link>
+              <span className="text-emerald-700">✓ Checked against source</span>
+              <Link href={`/evidence?id=${r.source_id}`} className="text-accent">Details →</Link>
             </div>
           </article>
         ))}
@@ -322,8 +348,8 @@ export async function DataSources({ p, scope }: Props) {
   };
   return (
     <>
-      <SectionTitle title="Data sources & provider health" scope={scope}>
-        Providers behind this dashboard and the pipeline runs that populated it. API keys stay server-side.
+      <SectionTitle title="Where the data comes from" scope={scope}>
+        The services we collect from and when they last ran.
       </SectionTitle>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {byProvider.map((r) => (

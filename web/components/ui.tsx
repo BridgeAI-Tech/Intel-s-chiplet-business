@@ -58,7 +58,30 @@ export function Badge({ value, label }: { value: string | null | undefined; labe
 const ACRONYMS = new Set(["ai", "hpc", "ip", "asic", "rtl", "dft", "osat", "eda", "soc", "cpu", "gpu", "hbm", "ucie",
   "xpu", "emib", "cowos", "soic", "vp", "ma", "sec", "it", "llm", "npu", "dpu", "ipu"]);
 
+// Plain-language names for taxonomy codes, so a first-time reader does not need the research vocabulary.
+const PLAIN: Record<string, string> = {
+  confirmed_fact: "Confirmed", press_released_intent: "Announced plan", corroborated_inference: "Inferred",
+  design_win_customer: "Customer win", product_architecture: "Product / chip", programme_milestone: "Milestone",
+  partnership_ecosystem: "Partnership", investment_ma_financing: "Funding & deals", manufacturing_capacity: "Manufacturing",
+  patent_standards: "Patents & standards", financial_regulatory: "Financials", leadership: "Leadership",
+  technographic: "Tools & technology", hiring_trend: "Hiring trend", foundry_process_manufacturing: "Foundry & process node",
+  chiplet_advanced_packaging: "Chiplets & packaging", strategic_investment_capacity: "Capacity & investment",
+  company_newsroom: "Company news", investor_relations: "Investor relations", regulatory_filing: "SEC filing",
+  partner_announcement: "Partner news", industry_publication: "Trade press", job_posting: "Job posting",
+  career_page: "Careers page", data_provider: "Data provider", news_media: "News", company_blog: "Company blog",
+  verification_validation: "Verification", architecture_system_design: "Architecture", rtl_logic_design: "RTL / logic design",
+  physical_design: "Physical design", dft_test: "Design-for-test", packaging_integration: "Packaging",
+  manufacturing_bringup_product: "Bring-up & product", sourcing_supplier_mgmt: "Sourcing",
+  existing_relationship: "Existing Intel relationship", potential_target: "Potential target", research_only: "Research only",
+  foundry_manufacturing: "Chip manufacturing (foundry)", packaging_assembly: "Packaging / assembly", ip_licence: "IP licence",
+  eda_tools: "Chip-design software (EDA)", memory_supply: "Memory supply", design_partner: "Design partner",
+  osat_packaging: "Packaging", eda_vendor: "EDA software", ip_provider: "IP provider", design_services: "Design services",
+  announced_intent: "Announced", development: "In development", sampling_qualification: "Sampling", production_ramp: "In production",
+  general_availability: "Available now", unknown: "Not stated",
+};
+
 export function humanize(code: string) {
+  if (PLAIN[code]) return PLAIN[code];
   return code
     .split("_")
     .map((w, i) => (ACRONYMS.has(w) ? w.toUpperCase() : i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w))
