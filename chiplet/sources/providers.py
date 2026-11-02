@@ -67,10 +67,11 @@ class Exa:
         self.store = store
         self.headers = {"x-api-key": env("EXA_API_KEY"), "Content-Type": "application/json"}
 
-    def search(self, company_id, query, start_published_date, num_results=10, include_domains=None):
+    def search(self, company_id, query, start_published_date, num_results=10, include_domains=None,
+               max_characters=2000):
         body = {"query": query, "type": "auto", "numResults": num_results,
                 "startPublishedDate": start_published_date,
-                "contents": {"text": {"maxCharacters": 2000}}}
+                "contents": {"text": {"maxCharacters": max_characters}}}
         if include_domains:
             body["includeDomains"] = include_domains
         return self.store.fetch("exa", "search", body, company_id,

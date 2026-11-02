@@ -26,11 +26,15 @@ def env(name):
 
 
 class RawStore:
-    def __init__(self, conn, pipeline, params=None):
+    def __init__(self, conn, pipeline, params=None, run_id=None):
+        """Pass run_id to attach another connection (e.g. a worker thread) to an existing run."""
         self.conn = conn
-        self.run_id = f"run_{datetime.now(timezone.utc):%Y%m%d%H%M%S}_{uuid.uuid4().hex[:6]}"
         self.live_calls = 0
         self.cached_calls = 0
+        if run_id:
+            self.run_id = run_id
+            return
+        self.run_id = f"run_{datetime.now(timezone.utc):%Y%m%d%H%M%S}_{uuid.uuid4().hex[:6]}"
         with conn:
             conn.execute("INSERT INTO pipeline_run (run_id, pipeline, started_at, params) VALUES (?, ?, ?, ?)",
                          (self.run_id, pipeline, utc_now(), json.dumps(params or {})))

@@ -52,7 +52,7 @@ Owner split: **Satish** = collection, extraction, normalisation, backend, app.
 - [x] Deterministic helpers: entity matching by domain, date parsing, dedup (URL canonicalisation + content hash).
 - [x] Fields left `null`/"unavailable" when not in source — no inference.
 
-- [ ] Run extraction sample on real data — blocked: needs ANTHROPIC_API_KEY in .env (`python scripts/run_extraction_sample.py`).
+- [ ] Run extraction sample on real data — blocked: needs GEMINI_API_KEY in .env (`python scripts/run_extraction_sample.py`).
 
 ## S6. App shell, RAG and validation (after both modules have data)
 - [ ] Web app shell: Overview | Emerging Demand | Competitive Radar | Evidence | Ask AI; global filters (period, company, category, search).

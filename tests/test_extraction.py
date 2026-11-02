@@ -61,41 +61,48 @@ def test_schema_rejects_codes_outside_taxonomy():
 
 
 class FakeClient:
-    """Stands in for anthropic.Anthropic: records calls and returns a fixed parsed output."""
+    """Stands in for google.genai.Client: records calls and returns fixed JSON text."""
 
-    def __init__(self, parsed, stop_reason="end_turn"):
+    def __init__(self, parsed, finish_reason="STOP", text=None):
         self.calls = 0
         outer = self
 
-        class _Messages:
-            def parse(self, **kwargs):
+        class _Models:
+            def generate_content(self, **kwargs):
                 outer.calls += 1
                 outer.last_kwargs = kwargs
+                body = text if text is not None else (parsed.model_dump_json() if parsed else "")
                 return SimpleNamespace(
-                    stop_reason=stop_reason, stop_details=None, model=kwargs["model"], _request_id="req_test",
-                    usage=SimpleNamespace(to_dict=lambda: {"input_tokens": 10, "output_tokens": 5}),
-                    parsed_output=parsed)
+                    candidates=[SimpleNamespace(finish_reason=SimpleNamespace(name=finish_reason))],
+                    usage_metadata=None, text=body)
 
-        self.beta = SimpleNamespace(messages=_Messages())
+        self.models = _Models()
 
 
 def test_extract_document_checks_and_caches(conn):
     parsed = DocumentExtraction(relevant=True, page_type="press_release", publication_date_text="Feb. 26, 2026",
                                 records=[record(), record(excerpt="not in the source at all")])
     client = FakeClient(parsed)
-    ex = Extractor(RawStore(conn, "test"), client=client)
+    ex = Extractor(RawStore(conn, "test"), client=client, model="gemini-test")
     extraction, checked, _ = ex.extract_document(SOURCE, url="https://investors.broadcom.com/x")
     assert [c.status for c in checked] == ["accepted", "rejected"]
-    assert client.last_kwargs["model"] == "claude-opus-5-5"
-    assert client.last_kwargs["output_format"] is DocumentExtraction
+    cfg = client.last_kwargs["config"]
+    assert cfg.response_mime_type == "application/json" and cfg.temperature == 0
+    assert cfg.response_json_schema == DocumentExtraction.model_json_schema()
     ex.extract_document(SOURCE, url="https://investors.broadcom.com/x")
     assert client.calls == 1                       # second identical request served from raw_provider_record
 
 
-def test_refusal_raises(conn):
-    ex = Extractor(RawStore(conn, "test"), client=FakeClient(None, stop_reason="refusal"))
+def test_blocked_response_raises(conn):
+    ex = Extractor(RawStore(conn, "test"), client=FakeClient(None, finish_reason="SAFETY"), model="gemini-test")
     with pytest.raises(ExtractionError):
         ex.extract_document(SOURCE, url="https://example.com/a")
+
+
+def test_off_schema_output_raises(conn):
+    ex = Extractor(RawStore(conn, "test"), client=FakeClient(None, text='{"relevant": "maybe"}'), model="gemini-test")
+    with pytest.raises(ExtractionError):
+        ex.extract_document(SOURCE, url="https://example.com/b")
 
 
 def test_classify_job_verifies_excerpt(conn):
@@ -103,7 +110,7 @@ def test_classify_job_verifies_excerpt(conn):
                                normalised_title="ASIC RTL Design Engineer", job_function="Hardware engineering",
                                seniority="senior", department="AI Hardware", programme_keywords=[],
                                technologies=["custom_asic"], excerpt="Own RTL for our next AI accelerator")
-    ex = Extractor(RawStore(conn, "test"), client=FakeClient(parsed))
+    ex = Extractor(RawStore(conn, "test"), client=FakeClient(parsed), model="gemini-test")
     result, verified, _ = ex.classify_job(title="Senior ASIC RTL Design Engineer",
                                           description="You will own RTL for our next AI accelerator.")
     assert result.role_category.value == "rtl_logic_design" and verified

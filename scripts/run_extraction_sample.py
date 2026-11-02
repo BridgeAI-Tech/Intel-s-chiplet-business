@@ -3,7 +3,7 @@
 Usage:
     python scripts/run_extraction_sample.py [--docs 6] [--jobs 10]
 
-Needs ANTHROPIC_API_KEY in .env. Uses only stored raw records as input (Exa official-domain results and
+Needs GEMINI_API_KEY in .env. Uses only stored raw records as input (Exa official-domain results and
 PredictLeads Cerebras jobs); LLM responses are cached in raw_provider_record. Output:
 data/review/extraction_sample.xlsx with every record's status (accepted / needs_review / rejected) and issues.
 """
@@ -52,8 +52,8 @@ def main():
     ap.add_argument("--docs", type=int, default=6)
     ap.add_argument("--jobs", type=int, default=10)
     args = ap.parse_args()
-    if not env("ANTHROPIC_API_KEY"):
-        sys.exit("ANTHROPIC_API_KEY is not set in .env — add a project API key to run extraction.")
+    if not env("GEMINI_API_KEY"):
+        sys.exit("GEMINI_API_KEY is not set in .env — add a project API key to run extraction.")
 
     conn = connect()
     store = RawStore(conn, "s5_extraction_sample", vars(args))

@@ -14,7 +14,7 @@ DB_PATH = Path(os.environ.get("CHIPLET_DB_PATH", ROOT / "data" / "chiplet.db"))
 def connect(path=DB_PATH):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(path)
+    conn = sqlite3.connect(path, timeout=60)   # pipelines may write concurrently
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
