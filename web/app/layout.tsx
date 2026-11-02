@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AskDrawer } from "@/components/ask-drawer";
 import { Nav } from "@/components/nav";
+import { moduleCompanies } from "@/lib/dashboard";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -31,6 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="mx-auto w-full max-w-screen-2xl flex-1 px-4 py-6">
           <Suspense fallback={<div className="text-sm text-muted">Loading records…</div>}>{children}</Suspense>
         </main>
+        <Suspense fallback={null}>
+          <AskIntelligence />
+        </Suspense>
         <footer className="border-t border-border bg-surface py-3 text-xs text-muted">
           <div className="mx-auto flex max-w-screen-2xl flex-wrap items-center justify-between gap-3 px-4">
             <span>Every figure on these pages is computed from stored records; open any record to see its source.</span>
@@ -43,4 +48,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </body>
     </html>
   );
+}
+
+async function AskIntelligence() {
+  const companies = await moduleCompanies();
+  return <AskDrawer companies={companies.map(({ company_id, short_name }) => ({ company_id, short_name }))} />;
 }

@@ -14,11 +14,13 @@ Rules:
 6. Structure: a short direct answer, then "Key findings" as bullets, then "Implications for Intel" only if the records support any (otherwise write "Not established from the records."). Plain text with simple bullets.`;
 
 export async function POST(request: Request) {
-  const { question } = (await request.json()) as { question?: string };
+  const { question, company } = (await request.json()) as { question?: string; company?: string };
   if (!question?.trim()) return Response.json({ error: "Ask a question." }, { status: 400 });
   if (!process.env.GEMINI_API_KEY) return Response.json({ error: "GEMINI_API_KEY is not configured." }, { status: 503 });
 
-  const docs = await retrieve(question);
+  // A question asked while a company is selected on the dashboard is retrieved for that company.
+  const focus = company && !question.toLowerCase().includes(company.toLowerCase()) ? `${company} ` : "";
+  const docs = await retrieve(focus + question);
   if (!docs.length) {
     return Response.json({ answer: "No stored records match this question, so it cannot be answered from the dataset.", sources: [] });
   }
