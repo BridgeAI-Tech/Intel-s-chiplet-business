@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS company_master (
 
 -- Name variants used for deterministic entity matching in news / filings / jobs.
 CREATE TABLE IF NOT EXISTS company_alias (
-    alias        TEXT NOT NULL COLLATE NOCASE,
+    alias        TEXT NOT NULL,                      -- case kept: "Arm" and "ARM" match differently
     company_id   TEXT NOT NULL REFERENCES company_master(company_id),
     PRIMARY KEY (alias, company_id)
 );

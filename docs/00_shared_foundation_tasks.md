@@ -47,10 +47,12 @@ Owner split: **Satish** = collection, extraction, normalisation, backend, app.
 - [x] Reuse existing clients from the hp-new repo: `pipeline/connectors/explorium_client.py`, `predictleads_client.py`, `pipeline/crawlers/exa_crawler.py`, `google_news_crawler.py`, `filings_crawler.py`. *(endpoint/auth patterns reused in chiplet/sources/providers.py; filings_crawler.py not reused — it fabricates links)*
 
 ## S5. Shared extraction layer
-- [ ] Implement brief §8.5 extraction prompt as one function (page/document → structured JSON + excerpt + evidence class).
-- [ ] Separate job-posting extraction variant.
-- [ ] Deterministic helpers: entity matching by domain, date parsing, dedup (URL canonicalisation + content hash).
-- [ ] Fields left `null`/"unavailable" when not in source — no inference.
+- [x] Implement brief §8.5 extraction prompt as one function (page/document → structured JSON + excerpt + evidence class).
+- [x] Separate job-posting extraction variant.
+- [x] Deterministic helpers: entity matching by domain, date parsing, dedup (URL canonicalisation + content hash).
+- [x] Fields left `null`/"unavailable" when not in source — no inference.
+
+- [ ] Run extraction sample on real data — blocked: needs ANTHROPIC_API_KEY in .env (`python scripts/run_extraction_sample.py`).
 
 ## S6. App shell, RAG and validation (after both modules have data)
 - [ ] Web app shell: Overview | Emerging Demand | Competitive Radar | Evidence | Ask AI; global filters (period, company, category, search).
