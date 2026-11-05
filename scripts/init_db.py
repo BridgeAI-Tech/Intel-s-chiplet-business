@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from chiplet.db import DB_PATH, SCHEMA_PATH, connect, load_seed, to_json
+from chiplet.db import DB_PATH, SCHEMA_PATH, SEED_DIR, connect, load_seed, to_json
 from chiplet.extract.store import upsert_source
 
 
@@ -190,6 +190,10 @@ def main():
         load_companies(conn, companies)
         load_programmes(conn, programmes)
     load_verification(conn, companies)
+    # Part 2 framework, Version 1 (editable later in the app's Settings page; existing versions are kept).
+    conn.execute("INSERT OR IGNORE INTO scoring_config (version, config_json, active, updated_at, updated_by) "
+                 "VALUES ('v1', ?, 1, datetime('now'), 'seed')",
+                 ((SEED_DIR / "scoring_config_v1.json").read_text(encoding="utf-8"),))
     conn.commit()
 
     counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]

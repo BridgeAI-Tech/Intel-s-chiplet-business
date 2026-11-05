@@ -1,0 +1,11 @@
+URL: https://www.intel.com/content/www/us/en/foundry/accelerator/chiplet-alliance.html
+TITLE: Chiplet Alliance
+CAPTURED: 2026-11-05 (read in browser)
+---
+Chiplet Alliance
+Positioned to support the needs of both MAG and commercial customers by enabling an ecosystem that supports interoperable and secure chiplet implementations.
+Focusing on Interoperable, Secure Implementations from the Chiplet Supply Chain
+Intel Foundry is uniquely positioned to support both USMAG and commercial markets across the entire chiplet supply chain. With a robust network of ecosystem partners, the Chiplet Alliance aims to enhance interoperability and security for a wide range of applications.
+Advancing the chiplet ecosystem involves delivering leading-edge process and advanced packaging technology, EDA, IP, and services that delight our customers. This Alliance emphasizes interoperability and security to ensure every customer's mission is supported and their needs are fully satisfied.
+Partner logos shown on the page (image alt text): arm logo, arteris logo, cadence logo, capgemini logo, draper logo, ememory logo, hcl tech logo, JMEM TEK logo, keysight logo, quicklogic logo, siemens logo, Synopsys logo, trusted logo
+Other names and brands may be claimed as the property of others.

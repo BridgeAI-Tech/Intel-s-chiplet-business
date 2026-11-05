@@ -4,6 +4,8 @@ import { Bar, Chip, MonthColumns, Panel, SectionTitle, SignalCard, Tile, href, m
 import { Badge, Empty, SourceLink, Table, Td, humanize } from "@/components/ui";
 import * as d from "@/lib/dashboard";
 import * as m2 from "@/lib/m2";
+import * as sc from "@/lib/scoring";
+import { AssessmentDetail, AssessmentTable, Shortlist } from "@/components/assessment";
 
 type Props = { p: Params; scope: string };
 
@@ -312,17 +314,57 @@ export async function Filings({ p, scope }: Props) {
   );
 }
 
-export async function Assessment({ scope }: Props) {
+export async function Assessment({ p, scope }: Props) {
+  const cfg = await sc.activeConfig();
+  const link = (id: string) => `/assessment/${id}`;
+  if (p.co) {
+    const [a] = await sc.assessments(p.co);
+    if (!a) return <><SectionTitle title="Scoring" scope={scope} /><Empty>No assessment yet for this company.</Empty></>;
+    const ids = [...new Set([...a.stage_record_ids, ...Object.values(a.ratings).flatMap((r) => r.record_ids),
+      ...Object.values(a.qualification).flatMap((q) => q.record_ids), ...a.mappings.flatMap((m) => JSON.parse(m.record_ids || "[]") as string[])])];
+    const records = await sc.resolveRecords(a.company_id, ids);
+    return (
+      <>
+        <SectionTitle title={`${scope} — scoring & Intel fit`} scope={`Framework ${cfg.version}`}>
+          The research team&apos;s framework applied to {scope}&apos;s verified records: development stage, weighted score,
+          qualification and Intel portfolio mapping. Every rating links to the records behind it.
+        </SectionTitle>
+        <AssessmentDetail a={a} cfg={cfg} records={records} />
+      </>
+    );
+  }
+  const rows = sc.rank(await sc.assessments());
+  const counts = { qualified: rows.filter((r) => r.outcome === "qualified").length, conditional: rows.filter((r) => r.outcome === "conditional").length };
   return (
     <>
-      <SectionTitle n={7} title="Scoring" scope={scope} />
-      <Panel title="Pending — assessment criteria from the research team">
-        <p className="text-sm">
-          Development stage, Intel relevance (foundry, design/IP, advanced packaging) and the 3–5 company shortlist will
-          be computed from the evidence in sections 2–6 once the scoring and qualification rules are agreed.
-          No score is shown until then, so nothing on this dashboard is a judgement the rules have not made.
-        </p>
-      </Panel>
+      <SectionTitle title="Scoring & prospect shortlist" scope={`All ${rows.length} screened companies · framework ${cfg.version}`}>
+        Every screened Module 1 company assessed with the research team&apos;s framework: development stage (1–5), weighted
+        score out of 100, tier, evidence confidence, qualification (Q1–Q3) and fit with Intel Foundry, Design/IP and
+        Advanced Packaging. Weights and thresholds can be changed in <Link href="/settings" className="text-accent hover:underline">Settings</Link>.
+      </SectionTitle>
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <Tile label="Companies screened" value={rows.length} note="Target 8–12" />
+        <Tile label="Qualified" value={counts.qualified} note="Pass Q1, Q2 and Q3" />
+        <Tile label="Conditional" value={counts.conditional} note="Q2 or Q3 needs validation" />
+        <Tile label="Tier 1–2 scores" value={rows.filter((r) => r.tier <= 2).length} note="Score 65 or more" />
+      </div>
+      <div className="grid gap-4 xl:grid-cols-[1fr_380px]">
+        <Panel title="Assessment by company" note="Click a company for its full assessment and evidence">
+          <AssessmentTable rows={rows} cfg={cfg} link={link} />
+        </Panel>
+        <Shortlist ranked={rows} cfg={cfg} link={link} />
+      </div>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <Panel title="How the score is calculated" note={`Framework ${cfg.version} — editable in Settings`}>
+          <RankBars rows={cfg.dimensions.map((d) => ({ label: d.label, n: d.weight }))} unit="% weight" />
+          <p className="mt-2 text-xs text-muted">Score = Σ (rating ÷ 5 × weight). Tiers: {cfg.tiers.map((t) => `Tier ${t.tier} ≥ ${t.min_score}`).join(" · ")}.</p>
+        </Panel>
+        <Panel title="Intel portfolio reference" note="What each mapping points to — Intel's own offerings, from official Intel Foundry pages"
+          action={<Link href="/intel-portfolio" className="text-xs text-accent">Open reference database →</Link>}>
+          <p className="text-sm">Process nodes (Intel 18A, 14A, Intel 3, Intel 16), packaging (EMIB, Foveros, ASAT, test services) and design
+            enablement (IP, EDA, Design Services, Chiplet Alliances), each with the verbatim passage from intel.com.</p>
+        </Panel>
+      </div>
     </>
   );
 }

@@ -1,0 +1,25 @@
+URL: https://www.intel.com/content/www/us/en/foundry/manufacturing.html
+TITLE: Global Semiconductor Fabrication
+CAPTURED: 2026-11-05 (read in browser)
+---
+Deploy Comprehensive Manufacturing Globally
+Get a robust, geo-diverse, secure, and expanding supply for wafers and assembly & test from Intel Foundry.
+Our Manufacturing Network Provides World-Class Technology that Enables Cutting-Edge Solutions
+Intel Foundry offers a broad range of leading-edge services, backed by a resilient, sustainable, secure supply chain distributed throughout the world.
+Build Products Around the World
+A geographically-balanced, sustainable, secure and resilient manufacturing scope and scale enable our world-class foundry offerings.
+Intel Foundry offers wafer fabrication sites around the world and the first 2nm-class process node manufactured in North America. We have assembly and test locations throughout the globe and are the largest single purchaser of FCxGA substrates and passives.
+Investing in Robust, Flexible Supply
+We are investing heavily in manufacturing capacity around the world, including investments in the US and EU, to continue strengthening worldwide supply chains.
+North America
+Arizona California New Mexico Ohio Oregon
+Europe
+Ireland
+Asia
+China Israel Malaysia Vietnam
+Security Focused
+Our approach to manufacturing security encompasses information, physical assets, end products, and our own supply chain. We help lead and shape industry best practices through contributions to numerous organizations and initiatives, such as TAPA, C-TPAT, NIST, CyManII, and SEMI – Cybersecurity Standards.
+Process Technologies
+Design your next generation of leadership products with our breakthrough technologies Intel 18A, Intel 3, and Intel 16.
+Advanced Packaging and Test
+Intel Foundry offers cutting-edge interconnects, leadership in 2D, 2.5D, and 3D packaging, and comprehensive assembly and testing services.

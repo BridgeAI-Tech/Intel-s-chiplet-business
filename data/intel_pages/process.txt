@@ -1,0 +1,37 @@
+URL: https://www.intel.com/content/www/us/en/foundry/process.html
+TITLE: Semiconductor Manufacturing Process | Intel 14A, 18A, and 3
+CAPTURED: 2026-11-05 (read in browser)
+---
+Build with Leading-Edge Manufacturing Process Technologies
+Build with the most advanced process technologies—optimized for AI, HPC, and next-generation compute and manufactured through a resilient, global supply chain.
+Intel 14A
+A generational advancement
+Powered by RibbonFET 2 Gate-all-around transistors and PowerDirect backside power delivery for breakthrough efficiency and performance.Delivers 15–20% performance improvement at the same power, or 25–35% power reduction at the same performance, and up to 30% chip density improvement versus Intel 18A.1Turbo Cells accelerate CPU/GPU performance while enabling designers to fine tune block level power performance trade offs for target applications.
+Intel 18A
+Industry-leading innovation
+Introduces the industry‑first combination of RibbonFET Gate‑all‑around transistors and PowerVia backside power delivery.Delivers up to 18% higher performance at iso power, 38% lower power at iso performance, and 30% chip density improvement versus Intel 3.2PowerVia improves standard cell utilization and reduces IR drop, enhancing power delivery and performance efficiency.RibbonFET enables improved electrostatic control, higher performance per watt, and lower Vmin operation.Ready for designs with full ecosystem support and design enablement.The Intel 18A node family also includes Intel 18A-P, offering up to 9% performance-per-watt increase and enhanced power efficiency3, and Intel 18A-PT for advanced 3DIC integration.
+Intel 3
+Our Ultimate FinFET node
+Leveraging EUV and enhanced libraries for better drive current and interconnect efficiency.Delivers 18% performance improvement at iso power and up to 8% chip density improvement versus Intel 4.4Ideal for general compute applications, balancing performance and efficiency.Family includes Intel 3-E, offering expanded I/O and analog capabilities, and Intel 3-T, providing pass-through TSVs for high-density stacking. In high-volume production and available exclusively as a Design Services Node.
+Intel and UMC 12nm process node
+Collaborative innovation
+Developed with UMC, combining Intel’s FinFET expertise with UMC’s logic and RF experience.Delivers 10% higher performance using optimized FinFET devices and 20% power reduction by lowering voltage in comparison to UMC’s 14nm technology (14FFC).Optimized for mobile, wireless, and networking markets.Offering a diversified, resilient supply chain alternative supporting high growth applications.
+Intel 16
+Advantages of FinFET with the flexibility of planar
+Delivers 16nm class performance with fewer masks and simplified back-end design rules.Well suited for storage, RF, mmWave, and consumer applications.Improved short channel behavior across a wide range of channel lengths.In high-volume production at Intel Foundry’s Fab 24 in Ireland.
+Driving power delivery innovations for the AI data center era
+Intel Foundry offers a broad portfolio of technologies for silicon and system architects to optimize power delivery to specific design requirements.
+Intel Foundry Accelerator Ecosystem Alliances
+Enjoy comprehensive support in key areas from ecosystem partners across IP, EDA, Design Services, Cloud, USMAG, Value Chain, and Chiplet Alliances.
+Industry Leaders Trust Intel Foundry
+With Intel 18A products now in market and an expanding node portfolio, customers are choosing Intel Foundry for leadership performance and efficiency.
+We have announced plans to establish Intel Foundry as a subsidiary, providing customers with greater assurance and clearer engagement separation.
+Intel Foundry Shuttle
+Our public, multi-product wafer program that enables design prototyping on Intel’s leading-edge technologies.
+Markets
+Intel’s advanced node silicon, packaging solutions, and resilient supply help enable leadership in key industries.
+Product and Performance Information
+1Based on Intel internal analysis comparing Intel 14A to Intel 18A as of April 2025. Results may vary.
+2K. Fischer et al., “Intel 18A Platform Technology Featuring RibbonFET (GAA) and PowerVia for Advanced High-Performance Computing,” IEEE/JSAP Symposium on VLSI Technology and Circuits, June 2025.
+3A. Bowonder et al., “Intel 18A-P CMOS Technology Enhancement Featuring Advanced RibbonFET (GAA) Transistors and PowerVia for High-Performance Computing,” IEEE/JSAP Symposium on VLSI Technology and Circuits, June 2026.
+4An Intel 3 Advanced FinFET Platform Technology for High Performance Computing and SOC Product Applications, featured as part of the 2024 VLSI Symposium.

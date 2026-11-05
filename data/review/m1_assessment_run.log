@@ -1,0 +1,13 @@
+  cmp_aws: stage 5, score 100.0, tier 1, qualified, confidence high, 0 checks applied
+  cmp_apple: stage 5, score 80.0, tier 1, qualified, confidence medium, 1 checks applied
+  cmp_cerebras: stage 5, score 84.0, tier 1, conditional, confidence high, 0 checks applied
+  cmp_cisco: stage 3, score 67.0, tier 2, qualified, confidence medium, 1 checks applied
+  cmp_google: stage 5, score 77.0, tier 2, qualified, confidence high, 1 checks applied
+  cmp_ibm: stage 4, score 73.0, tier 2, qualified, confidence medium, 1 checks applied
+  cmp_meta: stage 5, score 80.0, tier 1, qualified, confidence medium, 1 checks applied
+  cmp_microsoft: stage 5, score 84.0, tier 1, qualified, confidence low, 1 checks applied
+  cmp_nokia: stage 3, score 65.0, tier 2, qualified, confidence high, 1 checks applied
+  cmp_samsung_electronics: stage 5, score 65.0, tier 2, conditional, confidence high, 1 checks applied
+  cmp_tenstorrent: stage 5, score 92.0, tier 1, qualified, confidence medium, 0 checks applied
+  cmp_tesla: stage 5, score 96.0, tier 1, qualified, confidence medium, 0 checks applied
+Done: 12 companies assessed with framework v1.

@@ -1,0 +1,26 @@
+URL: https://www.intel.com/content/www/us/en/foundry/accelerator.html
+TITLE: Design Ecosystem: Intel Foundry Accelerator
+CAPTURED: 2026-11-05 (read in browser)
+---
+Leverage Robust Intel Foundry Design Ecosystem Options
+Explore the world-class capabilities from our ecosystem partners, tuned to Intel Foundry technology, to turn your innovation into silicon.
+Access a Wide Range of Design Capabilities
+The Intel Foundry Accelerator Ecosystem Alliance Program has collaborated with ecosystem domain leaders to equip you with industry-leading electronic design automation tools (EDA), reusable design blocks (IPs), project acceleration and augmentation services, and design implementation environments to meet your unique needs.
+IP Alliance
+Intellectual Property Alliance is built on a comprehensive, silicon-verified, and Intel process-specific IP portfolio including standard cell libraries, embedded memories, general purpose I/O’s, analog IP, and interface IP.
+EDA Alliance
+Electronic Design Automation Alliance offers powerful and validated solutions optimized for Intel’s technology and manufacturing, covering the full spectrum from concept to high-volume silicon production.
+Design Services Alliance
+Allows you to focus on creating unique product ideas, assigning implementation tasks to rigorously trained designers well-versed in ecosystem technologies.
+Cloud Alliance
+Composed of leading cloud service providers and EDA partners, offering co-optimized solutions to enable design-on-the-cloud.
+USMAG Alliance
+United States Military, Aerospace, and Government Alliance enables national security and government applications.
+Value Chain Alliance
+Value Chain Alliance (VCA) is a network of ASIC design companies for specification-to-silicon solutions. VCA partners provide expertise across different applications, market segments and geographies.
+Chiplet Alliance
+The Chiplet Alliance focuses on optimizing the ecosystem to drive interoperable and secure chiplet implementations across a wide range of government and commercial applications.
+Global Manufacturing
+Benefit from a robust, geo-diverse, and expanding supply for wafers and assembly & test.
+Process Technologies
+Design your next generation of leadership products with our breakthrough technologies Intel 18A, Intel 3, and Intel 16.

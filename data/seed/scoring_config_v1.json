@@ -1,0 +1,75 @@
+{
+  "version": "v1",
+  "source": "Shu Qi, Technical Implementation Brief - Part 2 (Market Signal Scoring, Company Qualification & Intel Portfolio Mapping)",
+  "note": "Version 1 values from the brief. Editable in the app (Settings); scores, tiers and qualification are recomputed from the stored evidence-backed ratings whenever these change.",
+  "rating_scale": [
+    {"rating": 1, "label": "Very weak", "meaning": "No meaningful evidence or relevance."},
+    {"rating": 2, "label": "Limited", "meaning": "Early indications, but insufficient supporting evidence."},
+    {"rating": 3, "label": "Moderate", "meaning": "Credible evidence of activity, but incomplete or developing."},
+    {"rating": 4, "label": "Strong", "meaning": "Clear and substantial evidence of relevant activity."},
+    {"rating": 5, "label": "Very strong", "meaning": "Significant, specific and well-corroborated evidence."}
+  ],
+  "dimensions": [
+    {"key": "custom_silicon", "label": "Custom-silicon activity & strategic relevance", "weight": 25,
+     "evaluate": "Proprietary silicon programmes, custom ASICs, processors, chiplet architectures and related development initiatives."},
+    {"key": "engineering_hiring", "label": "Engineering capability & hiring momentum", "weight": 20,
+     "evaluate": "Hiring activity, semiconductor engineering teams, chiplet architecture, RTL, physical design and packaging capabilities."},
+    {"key": "development_maturity", "label": "Development maturity & progression", "weight": 15,
+     "evaluate": "Prototypes, tape-outs, silicon validation, development milestones and progression towards deployment."},
+    {"key": "ecosystem_signals", "label": "External supplier & ecosystem signals", "weight": 15,
+     "evaluate": "Foundry engagement, external IP licensing, packaging partnerships, supplier evaluations and manufacturing collaborations."},
+    {"key": "intel_fit", "label": "Intel offering fit", "weight": 20,
+     "evaluate": "Potential alignment with Intel Foundry, process technologies, design enablement, IP, advanced packaging, chiplet integration, assembly and test."},
+    {"key": "evidence_strength", "label": "Evidence strength & recency", "weight": 5,
+     "evaluate": "Reliability, specificity, corroboration and recency of supporting evidence."}
+  ],
+  "tiers": [
+    {"tier": 1, "min_score": 80, "label": "High-priority prospect"},
+    {"tier": 2, "min_score": 65, "label": "Strong potential prospect"},
+    {"tier": 3, "min_score": 50, "label": "Monitor for further developments"},
+    {"tier": 4, "min_score": 0, "label": "Low priority"}
+  ],
+  "development_stages": [
+    {"stage": 1, "label": "Early Exploration", "criteria": "Exploring chiplet architectures, custom silicon or related technologies, with limited evidence of active development."},
+    {"stage": 2, "label": "Capability Build", "criteria": "Hiring semiconductor engineers, building internal silicon teams or establishing dedicated development capabilities."},
+    {"stage": 3, "label": "Active Development", "criteria": "Actively developing proprietary silicon, custom ASICs, chiplet architectures or related technologies."},
+    {"stage": 4, "label": "External Ecosystem Engagement", "criteria": "Engaging external foundries, IP providers, packaging partners or other semiconductor ecosystem participants."},
+    {"stage": 5, "label": "Supplier Evaluation / Commercial Engagement", "criteria": "Evidence of supplier evaluation, manufacturing arrangements, design partnerships, packaging agreements or commercial engagement."}
+  ],
+  "stage_rules": {
+    "min_supporting_records_above_stage_3": 2,
+    "require_confirmed_fact_above_stage_3": true,
+    "note": "Do not assign a higher stage based on an isolated or unverified signal."
+  },
+  "evidence_confidence": {
+    "high": "Direct primary-source evidence, such as company announcements, official hiring pages and confirmed partnerships.",
+    "medium": "Credible and corroborated third-party reporting.",
+    "low": "Indirect, unverified or speculative reporting.",
+    "high_min_primary_share": 0.6,
+    "medium_min_primary_share": 0.3
+  },
+  "qualification": {
+    "questions": [
+      {"key": "q1", "label": "Custom-silicon relevance", "question": "Does the company develop or commission proprietary/custom silicon?"},
+      {"key": "q2", "label": "External semiconductor requirement", "question": "Is there a plausible external requirement for semiconductor manufacturing, design/IP or advanced packaging?"},
+      {"key": "q3", "label": "Intel portfolio alignment", "question": "Is there a plausible fit with at least one area of Intel's portfolio?"}
+    ],
+    "outcomes": {
+      "qualified": "Passes Q1, Q2 and Q3 - eligible for Intel prospect shortlist.",
+      "conditional": "Q1 passes, but Q2 or Q3 requires further validation - retain for monitoring/investigation.",
+      "not_qualified_q1": "Fails Q1 - exclude from Module 1 prospect shortlist.",
+      "not_qualified_fit": "No plausible external requirement or Intel portfolio alignment - exclude from active prospect shortlist."
+    }
+  },
+  "shortlist": {"screen_target": "8-12", "shortlist_min": 3, "shortlist_max": 5, "deep_dive": 1,
+                "note": "Not determined by score alone: a company must be Qualified. Order by score/tier, development stage, evidence confidence, then Intel portfolio fit."},
+  "mapping": {
+    "categories": [
+      {"key": "foundry_process", "label": "Foundry / Process"},
+      {"key": "design_ip", "label": "Design / IP / Design Enablement"},
+      {"key": "advanced_packaging", "label": "Advanced Packaging / Chiplet Integration"}
+    ],
+    "relevance": ["direct_fit", "adjacent_fit", "no_identified_fit"],
+    "requirement_status": ["confirmed", "inferred", "unverified"]
+  }
+}

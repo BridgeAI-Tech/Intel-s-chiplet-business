@@ -1,0 +1,53 @@
+URL: https://www.intel.com/content/www/us/en/foundry/packaging.html
+TITLE: Advanced Packaging Innovations | Chip Packages
+CAPTURED: 2026-11-05 (read in browser)
+---
+Intel is the World Leader in Differentiated Packaging and Test Technologies1
+Join Intel Foundry’s goal of 1 trillion transistors in a package by 2030 with 2D, 2.5D, and 3D packaging leadership.
+Packaging
+Test
+Advanced Chiplet Packaging
+Intel Foundry offers a wide range of configurations. Chips can be built using Intel Foundry Advanced System Assembly and Test (Intel Foundry ASAT) or Outsourced Semiconductor Assembly and Test (OSAT). They are then connected by optimized interconnects, that we help drive industry standards for, such as Universal Chiplet Interconnect Express (UCIe).
+We help enable you to combine front-end and back-end technologies to create solutions optimized at the system level. In addition, we offer an unmatched scale and depth of assembly and test capabilities via our robust, geo-diverse, and high-volume manufacturing sites.
+EMIB 2.5D
+Embedded Multi-die Interconnect Bridge 2.5D.
+Efficient, cost-effective way to connect multiple complex die.2.5D packaging for logic-logic and logic-high bandwidth memory (HBM).EMIB-M features MIM capacitors in the bridge. EMIB-T adds TSVs to the bridge.Silicon bridge embedded in package substrate for shoreline-to-shoreline connection.EMIB-T can ease the enablement of IP integration from other packaging designs.Simplified supply chain and assembly process.Production proven: In mass production since 2017 with Intel and external silicon.
+Learn more in the EMIB Technology Brief
+Foveros-S 2.5D
+Next generation package optimized for cost/performance.
+Silicon interposer with 4x reticle.Applicable in client applications.Ideal for solutions with multiple top die chiplets.Production proven: In mass production since 2019 with active base die.
+Learn more in the Foveros 2.5D Technology Brief
+Foveros-R 2.5D
+Features a redistribution layer (RDL) interposer to create heterogeneous integration between chiplets.
+Applicable for client and cost sensitive segments.Ideal for solutions requiring complex function demands from multiple top die chiplets. Production ready in 2027.
+Learn more in the Foveros 2.5D Technology Brief
+Foveros Direct 3D
+3D stacking of chiplets on active base die for superior power-per-bit performance.
+Cu-to-Cu hybrid bonding interface (HBI).Ultra-high bandwidth and low power interconnect.High density and low resistance die-to-die interconnect.Applicable in client and data center applications.Foveros Direct stacks enabled on EMIB 3.5D solutions.
+Learn more in the Foveros Direct 3D Technology Brief
+EMIB 3.5D
+Embedded Multi-die Interconnect Bridge 3.5D and Foveros in one package.
+Enables flexible heterogeneous systems with a wide variety of dies.Well-suited to applications where there is a need to combine multiple 3D stacks together in one package.Intel® Data Center GPU Max Series SoC: using EMIB 3.5D to create Intel’s most complex heterogeneous chip ever mass-produced with more than 100 billion transistors, 47 active tiles, 5 process nodes.
+Driving power delivery innovations for the AI data center era
+Intel Foundry offers a broad portfolio of technologies for silicon and system architects to optimize power delivery to specific design requirements.
+From Blueprint to Build
+At ECTC 2026, Intel Foundry researchers revealed new breakthroughs enabling hyper-large-form-factor chip packages.
+Advanced Chiplet Test
+Intel Foundry delivers extensive experience in singulated die sort, test expertise and advanced equipment solutions to reliably deliver the most demanding customers' products with outstanding yields. We offer testing services across all phases of the manufacturing process, utilizing commercially available automated test equipment (ATE) from Advantest and Teradyne, or Intel Foundry’s High Density Modular Testers (HDMT), depending on your needs.
+The exponential need for compute performance is driving complexity in designs. The increased number of chiplets in a design drives a need for advanced test services that can identify and deliver known good die before final assembly. Our Advanced Chiplet Test services offer a menu of options, from a full turnkey experience with minimal logistical complexity to execution support for customer owned test programs and test hardware.
+Test Services
+Wafer Sort
+As the first step in the manufacturing test flow, our wafer sort process uses prober and tester to conduct electrical tests on each die while it’s still on the wafer. Both commercial ATE and Intel HDMT are supported, based on customer interest and needs.
+Die Sort
+Intel Foundry’s singulated die sort is a best-in-class yield differentiator with over a decade and billions of die worth of production experience. The ability to test at the die level, versus wafer, is essential to deliver more known good die and die stacks to assembly.
+Die sort offers best-in-class active thermal control resulting in tighter thermal gradients and higher setpoint temperatures. As an enhancement to our die sort, burn-in (stress) can occur earlier with Intel Foundry.
+Burn-in
+Our ability to load test under thermal conditions with active thermal control at the package level is critical to improving reliability before final assembly. Intel Foundry supports standard silicon reliability qualifications, as well as burn-in in the manufacturing test flow.
+Final Test
+Intel Foundry offers the highest power, highest IO and parallelism, with our commercial ATE portfolio. Intel’s HDMT supports best-in-class thermal capabilities, including temperature streaming from tester to thermal control on the handler for high thermal density products.
+System Level Test
+System Level Test (SLT) is the final step in delivering reliable products with high yields. Our customizable SLT services are designed to catch the most subtle defects to ensure the device meets its design specifications and performs as expected in real-world conditions.
+Intel Foundry's HDMT Final Test Platform
+Intel Foundry's HDMT System-Level Test Platform
+Product and Performance Information
+1Based on Intel internal analysis (2023).

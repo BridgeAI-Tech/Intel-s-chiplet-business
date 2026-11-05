@@ -1,0 +1,14 @@
+URL: https://www.intel.com/content/www/us/en/foundry/accelerator/ip-alliance.html
+TITLE: IP Alliance - Intel Foundry Accelerator
+CAPTURED: 2026-11-05 (read in browser)
+---
+IP Alliance
+Semiconductor intellectual property (IP) is a reusable block of design that implements a major function. With the increasing complexity of system-on-chip (SoC) design, IP-based design has become the preferred path to achieve high performance designs and accelerate time-to-market.
+Enabling Customers with high-quality IPs from Industry Leaders
+Intel Foundry has partnered with the industry-leading IP partners to form its Intel Foundry Accelerator IP Alliance. Partners in this alliance collaborate with Intel Foundry to enable designers to access high-quality IPs, supporting their design needs and project schedule, while optimizing for performance, power, and area (PPA).
+Building upon Intel’s advanced technology, the IP portfolios of Intel Foundry Accelerator include all the essential IP blocks needed for modern System-On-Chip (SoC), such as standard cell libraries, embedded memories, general purpose I/Os, analog IP, and interface IP.
+Intel IP Portfolio
+Intel IP Tagging Specification
+The Intel IP Tagging Specification aims to offer a better IP tracking record of customers’ tape-out database. The IP tracking records are used for IP usage analysis which can assist in planning next generation IP roadmaps. The Volume production summary of IP usage is posted on the Intel Foundry IP Alliance Portal for customers’ reference in IP selection. IP Tagging has a long history of proven value in wafer production and tracking which contributes to enabling more innovation and expanding the Intel Foundry ecosystem.
+Partner logos shown on the page (image alt text): Logo agile analog, Logo alphawave, Logo analog bits, Logos andes risc v, Aragio logo, Logo arm blue, arteris ip logo, BrainChip logo for IFS, Logo cadence red, Ceva logo, Logo ememory yellow, inpsytech logo, jariet technologies logo, JMEM TEK logo, m31 logo, omni design logo, ProteanTecs logo, quicklogic logo, rambus logo, sifive logo, skyechip logo, sofics logo for ifs, Synopsys logo
+Other names and brands may be claimed as the property of others.

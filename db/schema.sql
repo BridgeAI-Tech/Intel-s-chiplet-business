@@ -299,3 +299,68 @@ CREATE INDEX IF NOT EXISTS ix_m2_company          ON m2_competitive_event(compan
 CREATE INDEX IF NOT EXISTS ix_rel_company         ON company_relationship(company_id);
 CREATE INDEX IF NOT EXISTS ix_record_source_src   ON record_source(source_id);
 CREATE INDEX IF NOT EXISTS ix_rag_record          ON rag_chunk(record_type, record_id);
+
+-- ---------------------------------------------------------------------------
+-- Part 2: scoring, qualification and Intel portfolio mapping (docs/03_part2_scoring_qualification_mapping.md)
+-- Ratings, stages and mappings are stored with the record IDs behind them; the overall score, tier and
+-- qualification outcome are computed from the active scoring_config at read time, so editing the config
+-- re-scores every company without re-running extraction.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS scoring_config (
+    version       TEXT PRIMARY KEY,
+    config_json   TEXT NOT NULL,
+    active        INTEGER NOT NULL DEFAULT 0,
+    updated_at    TEXT NOT NULL,
+    updated_by    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS intel_offering (            -- Intel Portfolio & Technology Reference Database
+    offering_id       TEXT PRIMARY KEY,
+    dataset           TEXT NOT NULL,                   -- product | process | packaging | ip_design | ecosystem
+    name              TEXT NOT NULL,
+    mapping_category  TEXT NOT NULL,                   -- foundry_process | design_ip | advanced_packaging
+    description       TEXT,
+    applications      TEXT,
+    status            TEXT,                            -- active | announced | legacy | unknown
+    related_partners  TEXT,                            -- JSON array, as named in the source
+    source_id         TEXT REFERENCES source_evidence(source_id),
+    excerpt           TEXT NOT NULL,                   -- verbatim from the official source
+    verified_date     TEXT NOT NULL,
+    run_id            TEXT REFERENCES pipeline_run(run_id)
+);
+
+CREATE TABLE IF NOT EXISTS company_assessment (
+    assessment_id               TEXT PRIMARY KEY,
+    company_id                  TEXT NOT NULL REFERENCES company_master(company_id),
+    framework_version           TEXT NOT NULL,
+    custom_silicon_activity     TEXT,
+    development_stage           INTEGER,
+    stage_rationale             TEXT,
+    stage_record_ids            TEXT,                  -- JSON array of "type:id"
+    ratings                     TEXT NOT NULL,         -- JSON {dimension: {rating, rationale, record_ids, insufficient}}
+    evidence_confidence         TEXT,                  -- high | medium | low (computed from cited records)
+    primary_share               REAL,
+    qualification               TEXT NOT NULL,         -- JSON {q1|q2|q3: {answer: yes|needs_validation|no, status, rationale, record_ids}}
+    opportunity_interpretation  TEXT,
+    checks                      TEXT,                  -- JSON list of deterministic adjustments applied
+    model                       TEXT,
+    run_id                      TEXT REFERENCES pipeline_run(run_id),
+    assessed_at                 TEXT NOT NULL,
+    status                      TEXT NOT NULL DEFAULT 'draft'
+);
+
+CREATE TABLE IF NOT EXISTS portfolio_mapping (
+    mapping_id          TEXT PRIMARY KEY,
+    assessment_id       TEXT NOT NULL REFERENCES company_assessment(assessment_id),
+    company_id          TEXT NOT NULL REFERENCES company_master(company_id),
+    category            TEXT NOT NULL,                 -- foundry_process | design_ip | advanced_packaging
+    activity            TEXT,
+    requirement         TEXT,
+    offering_id         TEXT REFERENCES intel_offering(offering_id),
+    relevance           TEXT NOT NULL,                 -- direct_fit | adjacent_fit | no_identified_fit
+    requirement_status  TEXT NOT NULL,                 -- confirmed | inferred | unverified
+    rationale           TEXT,
+    record_ids          TEXT                           -- JSON array of "type:id"
+);
+CREATE INDEX IF NOT EXISTS ix_assessment_company ON company_assessment(company_id);
+CREATE INDEX IF NOT EXISTS ix_mapping_company ON portfolio_mapping(company_id);

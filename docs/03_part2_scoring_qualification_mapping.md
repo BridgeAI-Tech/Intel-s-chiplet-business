@@ -124,3 +124,16 @@ interpretation. Everything traceable to market signals and source URLs — struc
 3. Implement the qualification rules (Q1/Q2/Q3 and outcomes).
 4. Implement portfolio mapping (multi-category, evidence and relevance classifications).
 5. Validate on the initial sample: 8–12 screened → 3–5 shortlisted → 1 deeper assessment.
+
+## Implementation status — 2026-11-05
+| Step | Status |
+|---|---|
+| Configurable, not hard-coded | Weights, rating-scale wording, tier thresholds, stage rules, confidence thresholds and shortlist size live in `scoring_config` (seed `data/seed/scoring_config_v1.json`), editable at `/settings`. Saving creates a new version (v1.1, v1.2…) with history and restore. Score, tier, qualification outcome and shortlist are computed at read time from the active version (`web/lib/scoring.ts`, mirrored by `compute_outcome` in `scripts/m1_assessment.py`), so a change re-scores every company immediately. |
+| 1. Intel Portfolio & Technology Reference Database | 49 entries from 6 official Intel Foundry pages (Packaging & Test, Chiplet Alliance, Process, IP Alliance, Design Ecosystem, Manufacturing), each with a verbatim excerpt; partners kept separate. intel.com refuses scripted requests, so pages were read in a browser and saved under `data/intel_pages/` (`scripts/intel_reference.py`). Not yet covered: Intel ARK product pages, Foundry Resource Library. Shown at `/intel-portfolio`. |
+| 2. Scoring criteria | Development stage 1–5 and six dimension ratings for all 12 screened companies (`scripts/m1_assessment.py`), each citing record IDs. Rule checks: uncited rating → 1; hiring dimension flagged "insufficient" where no job postings were collected (8 companies); stage 4–5 needs ≥2 records incl. a confirmed fact; evidence confidence computed from source types. |
+| 3. Qualification rules | Q1/Q2/Q3 per company with requirement status; outcome computed from the config. Result: 10 Qualified, 2 Conditional (Cerebras — Q3 needs validation; Samsung Electronics). |
+| 4. Portfolio mapping | One mapping per category per company (Direct / Adjacent / No Identified Fit, Confirmed / Inferred / Unverified) pointing to a specific Intel reference offering; Direct Fit requires a specific offering and evidence. |
+| 5. Validation on the sample | 12 screened → shortlist = top 5 Qualified (AWS 100, Tesla 96, Tenstorrent 92, Microsoft 84, Meta / Apple 80) → deep-dive candidate AWS. Ratings are AI-applied and rule-checked, status "draft": scores run high (10 of 12 Qualified), so Version 1 calibration by the research team is the next step, as the brief anticipates. |
+
+Web: dashboard tab "Scoring & shortlist" (table of all 12, shortlist, weights), `/assessment/[company]` (full traceable assessment), `/intel-portfolio`, `/settings`.
+Deployment note: on a read-only snapshot deployment, Settings changes last only for the running instance; a persistent database (e.g. Turso / Cloud SQL) is needed for durable edits.
