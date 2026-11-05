@@ -28,6 +28,7 @@ def main():
     print(f"Snapshot written: {DST} ({DST.stat().st_size / 1e6:.1f} MB)")
     # Curated selections the app shows alongside the records (copied so the web build stays self-contained).
     shutil.copy(ROOT / "data" / "seed" / "m2_shortlist.json", ROOT / "web" / "lib" / "m2-shortlist.json")
+    shutil.copy(ROOT / "data" / "seed" / "m1_shortlist.json", ROOT / "web" / "lib" / "m1-shortlist.json")
 
 
 if __name__ == "__main__":

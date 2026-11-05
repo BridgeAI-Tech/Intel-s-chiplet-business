@@ -16,7 +16,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
   const p: Params = { tab, co: str("co"), category: str("category"), channel: str("channel"), platform: str("platform") };
   const companies = await moduleCompanies();
   const current = companies.find((c) => c.company_id === p.co);
-  const scope = current ? current.short_name : "All three companies";
+  const scope = current ? current.short_name : "All five companies";
   const Section = SECTIONS[tab] ?? S.Summary;
 
   return (
@@ -28,7 +28,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-800"
               title="Every record is backed by an exact sentence found in a dated source">✓ Verified data only</span>
           </div>
-          <p className="text-xs text-muted">Cerebras, AWS and Tesla · {WINDOW.label}</p>
+          <p className="text-xs text-muted">Cerebras, AWS, Meta, Microsoft and Tesla · {WINDOW.label}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href={href(p, { tab: "sources" })} scroll={false}
@@ -43,7 +43,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
 
       <div className="mb-3 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-xs text-muted">Company:</span>
-        <Chip to={href(p, { co: null })} active={!p.co}>All three</Chip>
+        <Chip to={href(p, { co: null })} active={!p.co}>All five</Chip>
         {companies.map((c) => (
           <Chip key={c.company_id} to={href(p, { co: c.company_id })} active={p.co === c.company_id} title={c.official_name}>
             <span className="h-2 w-2 rounded-full" style={{ background: COMPANY_COLOR[c.company_id] }} />{c.short_name}

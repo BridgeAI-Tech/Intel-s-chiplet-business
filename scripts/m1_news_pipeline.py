@@ -303,7 +303,7 @@ def source_type(url, subject, comps):
     h = host(url)
     if h == "sec.gov" or h.endswith(".sec.gov"):
         return "regulatory_filing"
-    if any(h.endswith(d) for d in TRADE_PRESS):
+    if any(h == d or h.endswith("." + d) for d in TRADE_PRESS):   # whole labels: microsoft.com is not ft.com
         return "industry_publication"
     own = next((c for c in comps if c["company_id"] == subject), None)
     if own and any(h == d or h.endswith("." + d) for d in [own["primary_domain"], *json.loads(own["alt_domains"] or "[]")]):

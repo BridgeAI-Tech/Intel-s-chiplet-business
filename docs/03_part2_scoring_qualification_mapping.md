@@ -137,3 +137,14 @@ interpretation. Everything traceable to market signals and source URLs — struc
 
 Web: dashboard tab "Scoring & shortlist" (table of all 12, shortlist, weights), `/assessment/[company]` (full traceable assessment), `/intel-portfolio`, `/settings`.
 Deployment note: on a read-only snapshot deployment, Settings changes last only for the running instance; a persistent database (e.g. Turso / Cloud SQL) is needed for durable edits.
+
+## Update — 2026-11-05: brief's preliminary shortlist applied
+- Active prospect shortlist = Part 1 brief §7: Cerebras, AWS, Meta, Microsoft, Tesla; deep-dive candidate Cerebras, alternative Meta
+  (`data/seed/m1_shortlist.json`, shown on the "Scoring & shortlist" tab). The framework v1 score ranking is kept beside it for reference.
+- Deep source extraction extended to Meta and Microsoft (SEC filings + official newsroom/engineering-blog RSS feeds; Exa has no
+  credits): Meta 20 → 33 signals, Microsoft 22 → 39; relationships 6 → 18 and 13 → 22. Review sheet:
+  `data/review/m1_deep_dive_review_meta_microsoft.xlsx`. Earlier assessments archived in `data/archive/`.
+- Fix: the trade-press domain match treated microsoft.com as ft.com, and fb.com was missing from Meta's domains, so 23 of their own
+  pages were labelled third-party. Relabelled; Microsoft evidence confidence moves Low → High. Other companies unaffected.
+- Re-assessed Meta (80, Qualified, Medium) and Microsoft (84, Qualified, High). Scores unchanged: hiring data is still not collected
+  for them (no provider credits).

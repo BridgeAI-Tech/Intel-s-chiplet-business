@@ -370,7 +370,8 @@
       "primary_domain": "meta.com",
       "alt_domains": [
         "facebook.com",
-        "about.meta.com"
+        "about.meta.com",
+        "fb.com"
       ],
       "hq_country": "United States",
       "hq_city": "Menlo Park, CA",

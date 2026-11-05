@@ -9,6 +9,7 @@ import json
 import sqlite3
 import sys
 from collections import Counter
+from pathlib import Path
 
 from openpyxl import Workbook
 from openpyxl.formatting.rule import FormulaRule
@@ -75,7 +76,9 @@ FIT = {"direct_fit": 2, "adjacent_fit": 1, "no_identified_fit": 0}
 OUT_RANK = {"qualified": 0, "conditional": 1}
 rows.sort(key=lambda x: (OUT_RANK.get(x["outcome"], 2), -x["score"], -(x["r"]["development_stage"] or 0),
                          -CONF.get(x["r"]["evidence_confidence"], 0), -sum(FIT.get(m["relevance"], 0) for m in x["maps"])))
-shortlist = [x["r"]["company_id"] for x in rows if x["outcome"] == "qualified"][: cfg["shortlist"]["shortlist_max"]]
+scored_top = [x["r"]["company_id"] for x in rows if x["outcome"] == "qualified"][: cfg["shortlist"]["shortlist_max"]]
+BRIEF = json.load(open(Path(__file__).resolve().parent.parent / "data/seed/m1_shortlist.json", encoding="utf-8"))
+shortlist = BRIEF["companies"]   # active shortlist: the brief's preliminary shortlist (Section 7)
 
 
 def resolve(cid, rid):
@@ -193,7 +196,7 @@ WEIGHT = {d["key"]: f"'Weights & tiers'!$B${i}" for i, d in enumerate(DIMS, 2)}
 # --- Calibration -------------------------------------------------------------------------------------------------
 wc = wb.create_sheet("Calibration", 1)
 cols = [("#", 4), ("Company", 18), ("Stage (1–5)", 8), ("Evidence confidence", 11), ("Qualification (AI)", 14),
-        ("In v1 shortlist", 10), ("AI score /100", 9), ("AI tier", 7)]
+        ("On shortlist (brief §7)", 10), ("Score-based top 5", 9), ("AI score /100", 9), ("AI tier", 7)]
 for d in DIMS:
     cols += [(f"AI: {d['label']}", 12), (f"Your rating: {d['label']}", 12)]
 cols += [("Calibrated score /100", 11), ("Calibrated tier", 9), ("Change vs AI", 9), ("Reviewer comments", 40)]
@@ -201,7 +204,7 @@ header(wc, cols)
 dv = DataValidation(type="whole", operator="between", formula1="1", formula2="5", allow_blank=True,
                     error="Enter a whole number from 1 to 5, or leave blank to keep the AI rating.")
 wc.add_data_validation(dv)
-first_dim_col = 9
+first_dim_col = 10
 for i, x in enumerate(rows, 2):
     r = x["r"]
     put(wc, i, 1, i - 1, F, None, CENTER)
@@ -209,7 +212,9 @@ for i, x in enumerate(rows, 2):
     put(wc, i, 3, r["development_stage"], F, None, CENTER)
     put(wc, i, 4, (r["evidence_confidence"] or "").capitalize(), F, None, CENTER)
     put(wc, i, 5, OUTCOME[x["outcome"]], F, None, CENTER)
-    put(wc, i, 6, "Yes" if r["company_id"] in shortlist else "", F, None, CENTER)
+    tag = "Yes — deep dive" if r["company_id"] == BRIEF["deep_dive"] else "Yes — alternative" if r["company_id"] == BRIEF["deep_dive_alternative"] else "Yes"
+    put(wc, i, 6, tag if r["company_id"] in shortlist else "", FB, None, CENTER)
+    put(wc, i, 7, "Yes" if r["company_id"] in scored_top else "", F, None, CENTER)
     ai_terms, cal_terms = [], []
     for j, d in enumerate(DIMS):
         ca, cy = first_dim_col + 2 * j, first_dim_col + 2 * j + 1
@@ -224,19 +229,19 @@ for i, x in enumerate(rows, 2):
         ai_terms.append(f"{a}/5*{WEIGHT[d['key']]}")
         cal_terms.append(f"IF({y}=\"\",{a},{y})/5*{WEIGHT[d['key']]}")
     tier_formula = lambda cell: (f"=IF({cell}>={TIER_CELLS[1]},1,IF({cell}>={TIER_CELLS[2]},2,IF({cell}>={TIER_CELLS[3]},3,4)))")
-    put(wc, i, 7, "=ROUND(" + "+".join(ai_terms) + ",1)", FB, None, CENTER)
-    put(wc, i, 8, tier_formula(f"G{i}"), F, None, CENTER)
+    put(wc, i, 8, "=ROUND(" + "+".join(ai_terms) + ",1)", FB, None, CENTER)
+    put(wc, i, 9, tier_formula(f"H{i}"), F, None, CENTER)
     sc = first_dim_col + 2 * len(DIMS)
     put(wc, i, sc, "=ROUND(" + "+".join(cal_terms) + ",1)", FB, None, CENTER)
     put(wc, i, sc + 1, tier_formula(f"{get_column_letter(sc)}{i}"), F, None, CENTER)
-    put(wc, i, sc + 2, f"={get_column_letter(sc)}{i}-G{i}", F, None, CENTER)
+    put(wc, i, sc + 2, f"={get_column_letter(sc)}{i}-H{i}", F, None, CENTER)
     put(wc, i, sc + 3, None, F, INPUT)
 last = len(rows) + 1
 note = last + 2
 wc.cell(row=note, column=2, value="Red italic AI rating = hiring dimension flagged 'insufficient data' (no job postings collected for that company).").font = Font(name="Arial", size=9, italic=True, color="C00000")
-wc.cell(row=note + 1, column=2, value="Qualification and shortlist columns show the AI v1 result; change answers on the Qualification tab.").font = Font(name="Arial", size=9, italic=True)
+wc.cell(row=note + 1, column=2, value="On shortlist = the brief's preliminary shortlist (Section 7). Score-based top 5 = top Qualified by AI v1 score, for reference. Change qualification answers on the Qualification tab.").font = Font(name="Arial", size=9, italic=True)
 wc.cell(row=note + 2, column=2, value="Average AI score").font = FB
-wc.cell(row=note + 2, column=7, value=f"=ROUND(AVERAGE(G2:G{last}),1)").font = FB
+wc.cell(row=note + 2, column=8, value=f"=ROUND(AVERAGE(H2:H{last}),1)").font = FB
 sc_letter = get_column_letter(first_dim_col + 2 * len(DIMS))
 wc.cell(row=note + 2, column=first_dim_col + 2 * len(DIMS), value=f"=ROUND(AVERAGE({sc_letter}2:{sc_letter}{last}),1)").font = FB
 
@@ -371,7 +376,9 @@ obs = [
     ("Q5. Are the tier thresholds right (80/65/50)? With v1 ratings most companies reach Tier 1.", ""),
     ("Q6. Samsung Electronics runs Samsung Foundry, an Intel competitor in Module 2. Keep it as a Module 1 prospect (Conditional) or exclude?", ""),
     ("Q7. Cerebras is Conditional (Q3 Intel fit needs validation) despite scoring 84. Agree, or is there a specific Intel fit to confirm?", ""),
-    ("Q8. Shortlist: is the v1 order right, and which company should get the deep-dive assessment (v1 suggests the top of the shortlist)?", ""),
+    ("Q8. The active shortlist is the brief's preliminary list (Cerebras, AWS, Meta, Microsoft, Tesla; Cerebras deep dive, Meta alternative). "
+     "The score-based top 5 differs (Tenstorrent and Apple in, Cerebras and Meta out). Keep the brief's list, or adjust it after calibration?", ""),
+    ("Q9. The brief says to treat Microsoft as an account to monitor, not automatically a new prospect. Keep it on the shortlist?", ""),
 ]
 r = 1
 for text, ans in obs:
@@ -399,4 +406,4 @@ for sheet in wb.worksheets:
     sheet.sheet_view.zoomScale = 90
 wb.calculation.fullCalcOnLoad = True
 wb.save(OUT)
-print(f"{OUT}: {n} companies, shortlist {', '.join(x['r']['short_name'] for x in rows if x['r']['company_id'] in shortlist)}")
+print(f"{OUT}: {n} companies, shortlist (brief) {', '.join(x['r']['short_name'] for x in rows if x['r']['company_id'] in shortlist)}")

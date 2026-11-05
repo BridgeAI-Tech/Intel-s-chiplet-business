@@ -1,0 +1,122 @@
+{
+ "cmp_meta": {
+  "assessment_id": "asm_d48efdf9b7eafc51cd2e",
+  "company_id": "cmp_meta",
+  "framework_version": "v1",
+  "custom_silicon_activity": "Meta actively develops and deploys its proprietary Meta Training and Inference Accelerator (MTIA) family of custom AI chips, including the MTIA 300, 400, 450, and 500 generations, designed as modular, multi-node chiplet systems incorporating RISC-V cores and HBM3e memory. These custom accelerators are co-developed in partnership with Broadcom across chip design, advanced packaging, and networking, with MTIA 300 in production and MTIA 400 completing lab testing.",
+  "development_stage": 5,
+  "stage_rationale": "Meta has confirmed commercial design and advanced packaging partnerships with Broadcom for multiple generations of its MTIA custom silicon family, alongside active production deployment of hundreds of thousands of MTIA chips and lab testing of next-generation multi-chiplet accelerators.",
+  "stage_record_ids": "[\"sig:sig_05d7615d492efef4333f\", \"sig:sig_4565743f0c0c48973982\", \"sig:sig_3ecbdd731f420b7db2d0\", \"sig:sig_05cb0342b3af25e7fe3e\", \"rel:rel_b01a9514fb2c17ae3790\", \"rel:rel_676d76ebfef8e9e81ab0\"]",
+  "ratings": "{\"custom_silicon\": {\"rating\": 5, \"rationale\": \"Meta has a multi-generation custom AI silicon roadmap (MTIA 300, 400, 450, and 500) built on modular multi-node chiplet architectures with RISC-V cores and HBM3e memory. The company has already deployed hundreds of thousands of MTIA chips in production and completed lab testing on MTIA 400.\", \"record_ids\": [\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_05d7615d492efef4333f\", \"sig:sig_4565743f0c0c48973982\", \"sig:sig_c8e0b91e6b2ae21c8156\", \"sig:sig_46daa3e179f6885a1259\"], \"insufficient\": false}, \"engineering_hiring\": {\"rating\": 1, \"rationale\": \"Hiring data was not collected for this company, and the provided evidence records contain no information regarding semiconductor engineering job postings or internal team hiring momentum.\", \"record_ids\": [], \"insufficient\": true}, \"development_maturity\": {\"rating\": 5, \"rationale\": \"Meta has deployed hundreds of thousands of MTIA chips for inference, has MTIA 300 in production for training ranking and recommendation models, and has completed lab testing of MTIA 400 ahead of data center deployment.\", \"record_ids\": [\"sig:sig_05d7615d492efef4333f\", \"sig:sig_4565743f0c0c48973982\", \"sig:sig_6af289712d2ed3fac39b\", \"sig:sig_9687cdb111d68b012728\", \"rel:rel_e474b26a30740c5a9f6c\", \"rel:rel_0656a9ff03e6fc73125c\"], \"insufficient\": false}, \"ecosystem_signals\": {\"rating\": 5, \"rationale\": \"Meta has an established co-development partnership with Broadcom spanning chip design, advanced packaging, and networking for multiple MTIA generations, with Broadcom's CEO transitioning to a custom silicon advisory role at Meta. Additionally, Meta utilizes Arm CPUs and NPUs in its wearable devices and signed a $100 billion AI infrastructure agreement with AMD.\", \"record_ids\": [\"sig:sig_3ecbdd731f420b7db2d0\", \"sig:sig_05cb0342b3af25e7fe3e\", \"sig:sig_685b71f3af602c3e1ce7\", \"sig:sig_c15d23dedaa7f0bf6e84\", \"rel:rel_b01a9514fb2c17ae3790\", \"rel:rel_676d76ebfef8e9e81ab0\", \"rel:rel_4753480767a0962da4cd\", \"rel:rel_0e6837782616c3b9752e\"], \"insufficient\": false}, \"intel_fit\": {\"rating\": 4, \"rationale\": \"Meta's MTIA architecture explicitly relies on disaggregating compute, I/O, and networking chiplets across different cost-effective process nodes and integrating them with multiple HBM3e stacks. This aligns strongly with Intel Foundry's leading-edge nodes (such as Intel 18A and Intel 3) and advanced packaging technologies (such as EMIB 2.5D and Foveros), although Broadcom is currently entrenched as Meta's design and packaging partner.\", \"record_ids\": [\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_c8e0b91e6b2ae21c8156\", \"sig:sig_46daa3e179f6885a1259\", \"sig:sig_05cb0342b3af25e7fe3e\"], \"insufficient\": false}, \"evidence_strength\": {\"rating\": 5, \"rationale\": \"The evidence consists of recent 2026 confirmed facts from company newsroom announcements, Hot Chips technical disclosures, and partner statements corroborating specific chip specifications, node geometries, and production milestones.\", \"record_ids\": [\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_3ecbdd731f420b7db2d0\", \"sig:sig_6af289712d2ed3fac39b\", \"sig:sig_9687cdb111d68b012728\", \"sig:sig_c8e0b91e6b2ae21c8156\"], \"insufficient\": false}}",
+  "evidence_confidence": "medium",
+  "primary_share": 0.44,
+  "qualification": "{\"q1\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"Meta develops and deploys its proprietary Meta Training and Inference Accelerator (MTIA) family of custom AI silicon (MTIA 300, 400, 450, and 500) in partnership with Broadcom.\", \"record_ids\": [\"sig:sig_05d7615d492efef4333f\", \"sig:sig_3ecbdd731f420b7db2d0\", \"sig:sig_6af289712d2ed3fac39b\", \"rel:rel_b01a9514fb2c17ae3790\"]}, \"q2\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"Meta requires external semiconductor manufacturing (such as 3nm compute dies and 5nm I/O dies) and external co-development across chip design, advanced multi-chiplet HBM packaging, and networking, which it currently executes in partnership with Broadcom.\", \"record_ids\": [\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_c8e0b91e6b2ae21c8156\", \"sig:sig_05cb0342b3af25e7fe3e\", \"rel:rel_676d76ebfef8e9e81ab0\"]}, \"q3\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"Meta's confirmed requirements for multi-node wafer fabrication (3nm and 5nm class chiplets) and advanced multi-die packaging integrating compute, SoC, networking chiplets, and HBM3e stacks align directly with Intel Foundry's process roadmap and EMIB/Foveros packaging portfolio.\", \"record_ids\": [\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_c8e0b91e6b2ae21c8156\", \"sig:sig_46daa3e179f6885a1259\"]}}",
+  "opportunity_interpretation": "Meta represents a high-value potential target for Intel Foundry and Advanced Packaging due to its aggressive, multi-generation MTIA custom silicon roadmap that explicitly utilizes modular, multi-node chiplets and HBM3e integration. Although Meta has a deep commercial partnership with Broadcom for chip design and advanced packaging, its architectural strategy of mixing process nodes for discrete chiplets creates potential alignment for Intel Foundry process technologies (such as Intel 18A and Intel 3) and EMIB 2.5D packaging as Meta scales toward multi-gigawatt deployments.",
+  "checks": "[\"engineering_hiring: job postings not collected for this company - rating based on other records, flagged insufficient\"]",
+  "model": "gemini-4-argon",
+  "run_id": "run_20261105133458_b67de3",
+  "assessed_at": "2026-11-05T13:39:42Z",
+  "status": "draft",
+  "mappings": [
+   {
+    "mapping_id": "map_5804e9c7927ad8c9c8c9",
+    "assessment_id": "asm_d48efdf9b7eafc51cd2e",
+    "company_id": "cmp_meta",
+    "category": "foundry_process",
+    "activity": "Meta architects its MTIA accelerators as modular chiplets manufactured at different process nodes (such as a 3nm compute die and 5nm I/O die on MTIA 300) to optimize cost, performance, and power.",
+    "requirement": "Leading-edge and mature logic wafer fabrication across multiple process nodes for disaggregated compute, SoC, and networking chiplets.",
+    "offering_id": "off_f9d1bd03f11a09d29fa7",
+    "relevance": "direct_fit",
+    "requirement_status": "confirmed",
+    "rationale": "Meta's confirmed use of multiple advanced foundry nodes for discrete chiplets aligns directly with Intel Foundry's wafer fabrication offerings, including leading-edge nodes like Intel 18A and Intel 3.",
+    "record_ids": "[\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_c8e0b91e6b2ae21c8156\"]"
+   },
+   {
+    "mapping_id": "map_d1c10118ed6f278964e7",
+    "assessment_id": "asm_d48efdf9b7eafc51cd2e",
+    "company_id": "cmp_meta",
+    "category": "design_ip",
+    "activity": "Meta co-develops multiple generations of MTIA chips with Broadcom across chip design and networking, incorporating RISC-V cores, PCIe Gen6 host connections, and HBM3e interfaces.",
+    "requirement": "High-speed interface IP (such as PCIe Gen6 and HBM3e), foundational SoC design blocks, and ASIC design enablement services.",
+    "offering_id": "off_bf7176aadf713acbb888",
+    "relevance": "adjacent_fit",
+    "requirement_status": "confirmed",
+    "rationale": "While Meta currently relies on Broadcom as its primary ASIC design partner, its need for high-speed interface IP and process-tuned design blocks could be supported by ecosystem partners through the Intel Foundry Accelerator IP Alliance if Meta evaluates Intel Foundry nodes.",
+    "record_ids": "[\"sig:sig_471c671c82aaa362f53e\", \"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_05cb0342b3af25e7fe3e\", \"rel:rel_676d76ebfef8e9e81ab0\"]"
+   },
+   {
+    "mapping_id": "map_939656403cf459123216",
+    "assessment_id": "asm_d48efdf9b7eafc51cd2e",
+    "company_id": "cmp_meta",
+    "category": "advanced_packaging",
+    "activity": "Meta packages multiple compute chiplets, networking chiplets, an SoC chiplet, and several HBM3e memory stacks into single multi-chiplet modules across its MTIA 300, 400, and 500 accelerators.",
+    "requirement": "High-density 2.5D heterogeneous advanced packaging capable of interconnecting multiple logic chiplets and HBM stacks.",
+    "offering_id": "off_b5bd7e19875b960cd5e0",
+    "relevance": "direct_fit",
+    "requirement_status": "confirmed",
+    "rationale": "Meta's multi-chiplet MTIA architectures require high-bandwidth logic-to-logic and logic-to-HBM interconnects, which directly align with Intel's EMIB 2.5D packaging technology.",
+    "record_ids": "[\"sig:sig_75f44be049877a5ea7bc\", \"sig:sig_6af289712d2ed3fac39b\", \"sig:sig_c8e0b91e6b2ae21c8156\", \"sig:sig_46daa3e179f6885a1259\"]"
+   }
+  ]
+ },
+ "cmp_microsoft": {
+  "assessment_id": "asm_7e12eb3069e2eaa8764c",
+  "company_id": "cmp_microsoft",
+  "framework_version": "v1",
+  "custom_silicon_activity": "Microsoft actively develops and deploys multi-generational custom silicon for its Azure cloud infrastructure, including the Azure Maia 200 (monolithic 3nm SoC with HBM3e) and Maia 300 (multi-chiplet architecture on N2P with HBM4) AI inference accelerators, the Arm-based Azure Cobalt 200 server CPU on 3nm, and the purpose-built Azure Boost DPU for storage and networking offload. Additionally, Microsoft has secured IP rights to OpenAI's custom AI chip designs to extend for its own silicon efforts and announced plans to produce a chip design on the Intel 18A process.",
+  "development_stage": 5,
+  "stage_rationale": "Microsoft is in full commercial engagement and volume production with external semiconductor suppliers, including active 3nm foundry manufacturing with TSMC for Maia 200 and Cobalt 200, IP licensing with Arm (Neoverse CSS V3) and OpenAI, N2P engagement with TSMC for Maia 300, and a publicly stated plan by CEO Satya Nadella to produce a chip design on the Intel 18A process.",
+  "stage_record_ids": "[\"sig:sig_cdb8c2277929176a1cae\", \"rel:rel_717d8c9135c9f555a944\", \"rel:rel_fa7a4736ae15b2c744a6\", \"rel:rel_2bfe5a6b155f05d09f4c\", \"rel:rel_f5ed939be5153c6658f1\", \"rel:rel_6beb630ac599ab1a46a3\", \"intel:intel_relationship\"]",
+  "ratings": "{\"custom_silicon\": {\"rating\": 5, \"rationale\": \"Microsoft has an extensive, multi-generational custom silicon portfolio spanning the Maia 200 and multi-chiplet Maia 300 AI accelerators, the 132-core Cobalt 200 CPU, and the Azure Boost DPU.\", \"record_ids\": [\"sig:sig_a569c2bdab7c8b85017f\", \"sig:sig_00552e7565a959c1d100\", \"sig:sig_9226e8c429761caa90d0\", \"sig:sig_916586ca3e15e2c97749\", \"sig:sig_cdcbc13ecfe4e122d161\"], \"insufficient\": false}, \"engineering_hiring\": {\"rating\": 1, \"rationale\": \"Hiring data and job postings were not collected for this company, leaving no direct evidence of hiring momentum in the provided records.\", \"record_ids\": [], \"insufficient\": true}, \"development_maturity\": {\"rating\": 5, \"rationale\": \"Microsoft has achieved full production and multi-region datacenter deployment for both the Maia 200 AI accelerator and Cobalt 200 CPU, while already detailing the architecture of its third-generation Maia 300 system for 2027 deployment.\", \"record_ids\": [\"sig:sig_b848ad7e6b5e172d90dd\", \"sig:sig_cdb8c2277929176a1cae\", \"rel:rel_fa7a4736ae15b2c744a6\", \"rel:rel_bb3b5bd577bda1e0bd27\"], \"insufficient\": false}, \"ecosystem_signals\": {\"rating\": 5, \"rationale\": \"Records confirm extensive external ecosystem engagement, including volume manufacturing on TSMC 3nm, planned N2P production for Maia 300, Arm Neoverse CSS V3 IP licensing, OpenAI chip IP licensing, and announced plans to use Intel 18A.\", \"record_ids\": [\"rel:rel_717d8c9135c9f555a944\", \"rel:rel_f5ed939be5153c6658f1\", \"rel:rel_2bfe5a6b155f05d09f4c\", \"rel:rel_6beb630ac599ab1a46a3\", \"intel:intel_relationship\"], \"insufficient\": false}, \"intel_fit\": {\"rating\": 5, \"rationale\": \"Microsoft has stated plans to produce a chip design on the Intel 18A process node, and its shift to a modular multi-chiplet architecture with multiple HBM stacks for AI accelerators aligns directly with Intel's advanced packaging portfolio.\", \"record_ids\": [\"intel:intel_relationship\", \"sig:sig_a569c2bdab7c8b85017f\", \"rel:rel_f5ed939be5153c6658f1\"], \"insufficient\": false}, \"evidence_strength\": {\"rating\": 5, \"rationale\": \"The evidence pack contains numerous specific, well-corroborated, and recent records from 2025 to 2026/2027 detailing exact process nodes, transistor counts, memory configurations, and executive announcements.\", \"record_ids\": [\"sig:sig_a569c2bdab7c8b85017f\", \"sig:sig_cdb8c2277929176a1cae\", \"rel:rel_717d8c9135c9f555a944\", \"rel:rel_fa7a4736ae15b2c744a6\", \"intel:intel_relationship\"], \"insufficient\": false}}",
+  "evidence_confidence": "low",
+  "primary_share": 0.07,
+  "qualification": "{\"q1\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"Microsoft actively designs and deploys proprietary silicon, including the Azure Maia 200 and 300 AI accelerators, the Azure Cobalt 200 CPU, and the Azure Boost DPU.\", \"record_ids\": [\"sig:sig_a569c2bdab7c8b85017f\", \"sig:sig_00552e7565a959c1d100\", \"sig:sig_9226e8c429761caa90d0\", \"sig:sig_916586ca3e15e2c97749\"]}, \"q2\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"As a hyperscaler without internal wafer fabrication, Microsoft relies on external foundries (such as TSMC 3nm and N2P, and planned Intel 18A) and external IP providers (Arm and OpenAI) to manufacture and enable its custom chips.\", \"record_ids\": [\"rel:rel_717d8c9135c9f555a944\", \"rel:rel_f5ed939be5153c6658f1\", \"rel:rel_2bfe5a6b155f05d09f4c\", \"rel:rel_6beb630ac599ab1a46a3\", \"intel:intel_relationship\"]}, \"q3\": {\"answer\": \"yes\", \"requirement_status\": \"confirmed\", \"rationale\": \"Microsoft CEO Satya Nadella has stated that Microsoft has chosen a chip design it plans to produce on the Intel 18A process, and Microsoft's multi-chiplet, HBM-intensive architectures also align with Intel's advanced packaging and design ecosystem offerings.\", \"record_ids\": [\"intel:intel_relationship\", \"sig:sig_a569c2bdab7c8b85017f\", \"rel:rel_f5ed939be5153c6658f1\"]}}",
+  "opportunity_interpretation": "Microsoft represents a premier hyperscaler prospect with an established plan to manufacture a custom chip design on the Intel 18A process node. Beyond fulfilling and expanding this initial Intel 18A engagement through the Intel Foundry Accelerator Ecosystem, Microsoft's transition toward modular, multi-chiplet architectures with HBM4 (as seen in Maia 300) and its commitment to multi-generational silicon programmes create potential alignment for Intel's advanced packaging technologies (such as EMIB 2.5D) and future leading-edge nodes like Intel 14A as Microsoft scales to multi-gigawatt deployments.",
+  "checks": "[\"engineering_hiring: job postings not collected for this company - rating based on other records, flagged insufficient\"]",
+  "model": "gemini-4-argon",
+  "run_id": "run_20261105133458_b67de3",
+  "assessed_at": "2026-11-05T13:40:18Z",
+  "status": "draft",
+  "mappings": [
+   {
+    "mapping_id": "map_a22d6f259ba7ab382b9c",
+    "assessment_id": "asm_7e12eb3069e2eaa8764c",
+    "company_id": "cmp_microsoft",
+    "category": "foundry_process",
+    "activity": "Microsoft develops leading-edge custom silicon (including CPUs, DPUs, and multi-generational AI accelerators) and CEO Satya Nadella shared plans to produce a chosen chip design on the Intel 18A process.",
+    "requirement": "Leading-edge wafer fabrication with high performance-per-watt and backside power delivery for custom cloud and AI silicon.",
+    "offering_id": "off_2f79b91371cd6d1b420b",
+    "relevance": "direct_fit",
+    "requirement_status": "confirmed",
+    "rationale": "Microsoft has explicitly stated its intent to produce a chip design on the Intel 18A process node, making Intel 18A a direct fit for its leading-edge foundry requirements.",
+    "record_ids": "[\"intel:intel_relationship\", \"sig:sig_cdcbc13ecfe4e122d161\", \"sig:sig_916586ca3e15e2c97749\"]"
+   },
+   {
+    "mapping_id": "map_1dd19a44404ec20c5e13",
+    "assessment_id": "asm_7e12eb3069e2eaa8764c",
+    "company_id": "cmp_microsoft",
+    "category": "design_ip",
+    "activity": "Microsoft plans to produce a custom chip design on Intel 18A and integrates complex third-party and partner IP alongside custom accelerators and memory/I/O subsystems.",
+    "requirement": "Process-specific foundational IP, high-speed interface IP, and validated EDA workflows tuned to Intel 18A manufacturing.",
+    "offering_id": "off_813bc11c4865202c9fa5",
+    "relevance": "adjacent_fit",
+    "requirement_status": "inferred",
+    "rationale": "Executing a custom chip tape-out on Intel 18A plausibly requires design enablement, EDA flows, and process-tuned third-party IP blocks available through the Intel Foundry Accelerator Ecosystem Alliance Program, though specific IP alliance usage is not detailed in the records.",
+    "record_ids": "[\"intel:intel_relationship\", \"rel:rel_c4dacd7e3fdae1144f78\", \"rel:rel_6beb630ac599ab1a46a3\"]"
+   },
+   {
+    "mapping_id": "map_05968db67e658320b3e4",
+    "assessment_id": "asm_7e12eb3069e2eaa8764c",
+    "company_id": "cmp_microsoft",
+    "category": "advanced_packaging",
+    "activity": "Microsoft has transitioned its AI accelerator line (Maia 300) from a monolithic SoC to a modular multi-chiplet architecture that separates compute, memory-controller, and I/O functions while integrating eight HBM4 stacks.",
+    "requirement": "High-density 2.5D/3D heterogeneous chiplet packaging and shoreline-to-shoreline die-to-die and logic-to-HBM interconnects.",
+    "offering_id": "off_b5bd7e19875b960cd5e0",
+    "relevance": "adjacent_fit",
+    "requirement_status": "inferred",
+    "rationale": "While Maia 300 compute dies are built on TSMC N2P, Microsoft's architectural shift to multi-chiplet designs with multiple HBM stacks for future generations and multi-gigawatt deployments aligns closely with Intel's EMIB 2.5D packaging capabilities for connecting logic chiplets and HBM.",
+    "record_ids": "[\"sig:sig_a569c2bdab7c8b85017f\", \"rel:rel_f5ed939be5153c6658f1\", \"sig:sig_cdcbc13ecfe4e122d161\"]"
+   }
+  ]
+ }
+}

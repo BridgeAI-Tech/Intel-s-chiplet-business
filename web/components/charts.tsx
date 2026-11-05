@@ -4,7 +4,7 @@ import { monthLabel } from "@/components/dash";
 // Fixed colour per company (validated categorical slots 1-3; colour follows the company, never its rank).
 // Values are always printed next to the marks, so colour is never the only cue.
 export const COMPANY_COLOR: Record<string, string> = {
-  cmp_aws: "#2a78d6", cmp_cerebras: "#eb6834", cmp_tesla: "#1baf7a",
+  cmp_aws: "#2a78d6", cmp_cerebras: "#eb6834", cmp_tesla: "#1baf7a", cmp_meta: "#7c5cd6", cmp_microsoft: "#c23b6e",
 };
 const LIGHT = "#9cc3ef";   // lighter step of the blue ramp, for the second part of a two-part bar
 

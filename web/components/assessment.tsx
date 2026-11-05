@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Panel, Tile } from "@/components/dash";
-import { Empty, SourceLink, Table, Td } from "@/components/ui";
+import { SourceLink, Table, Td } from "@/components/ui";
 import type { Assessed, Config } from "@/lib/scoring";
+import SHORTLIST from "@/lib/m1-shortlist.json";
 
 export const OUTCOME: Record<string, { label: string; tone: string }> = {
   qualified: { label: "Qualified", tone: "border-emerald-300 bg-emerald-50 text-emerald-800" },
@@ -61,31 +62,41 @@ export function AssessmentTable({ rows, cfg, link }: { rows: Assessed[]; cfg: Co
 }
 
 export function Shortlist({ ranked, cfg, link }: { ranked: Assessed[]; cfg: Config; link: (id: string) => string }) {
-  const qualified = ranked.filter((r) => r.outcome === "qualified");
-  const shortlist = qualified.slice(0, cfg.shortlist.shortlist_max);
+  // Active shortlist = the brief's preliminary shortlist (research candidates). The score-based ranking from the
+  // framework stays below it for reference, so nothing computed is hidden.
+  const byId = new Map(ranked.map((r) => [r.company_id, r]));
+  const chosen = SHORTLIST.companies.map((id) => byId.get(id)).filter((r): r is Assessed => !!r);
+  const scored = ranked.filter((r) => r.outcome === "qualified").slice(0, cfg.shortlist.shortlist_max);
   const conditional = ranked.filter((r) => r.outcome === "conditional");
   return (
-    <Panel title={`Prospect shortlist (target ${cfg.shortlist.shortlist_min}–${cfg.shortlist.shortlist_max})`}
-      note="Qualified companies only, ordered by score and tier, development stage, evidence confidence, then Intel portfolio fit. Not by score alone.">
-      {shortlist.length ? (
-        <ol className="space-y-2">
-          {shortlist.map((r, i) => (
-            <li key={r.company_id} className="flex flex-wrap items-center gap-2 rounded-lg border border-border p-2 text-sm">
+    <Panel title="Prospect shortlist" note="The brief's preliminary shortlist (Section 7) — research candidates, not confirmed Intel prospects.">
+      <ol className="space-y-2">
+        {chosen.map((r, i) => (
+          <li key={r.company_id} className="rounded-lg border border-border p-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">{i + 1}</span>
               <Link href={link(r.company_id)} className="font-semibold text-accent hover:underline">{r.short_name}</Link>
               <span className="tabular-nums">{r.score}</span><TierPill tier={r.tier} cfg={cfg} />
-              <span className="text-xs text-muted">Stage {r.development_stage} · {CONF[r.evidence_confidence]} confidence</span>
-              {i === 0 && <Pill tone="border-accent bg-accent-soft text-accent">Deep-dive candidate</Pill>}
-            </li>
+              <Pill tone={OUTCOME[r.outcome].tone}>{OUTCOME[r.outcome].label}</Pill>
+              {r.company_id === SHORTLIST.deep_dive && <Pill tone="border-accent bg-accent-soft text-accent">Deep-dive candidate</Pill>}
+              {r.company_id === SHORTLIST.deep_dive_alternative && <Pill tone="border-slate-300 bg-slate-50 text-slate-700">Deep-dive alternative</Pill>}
+            </div>
+            <div className="mt-1 pl-8 text-xs text-muted">Stage {r.development_stage} · {CONF[r.evidence_confidence]} confidence
+              {r.outcome !== "qualified" && " · one qualification question still needs validation"}</div>
+          </li>
+        ))}
+      </ol>
+      <blockquote className="mt-3 border-l-2 border-accent pl-2 text-xs text-muted">&ldquo;{SHORTLIST.quote}&rdquo;</blockquote>
+      <div className="mt-4 border-t border-border pt-3">
+        <div className="mb-1 text-xs font-medium text-muted">For reference — top {scored.length} Qualified by framework {cfg.version} score</div>
+        <div className="flex flex-wrap gap-1.5">
+          {scored.map((r) => (
+            <Link key={r.company_id} href={link(r.company_id)} className="rounded-full border border-border px-2 py-0.5 text-xs hover:underline">
+              {r.short_name} · {r.score}{SHORTLIST.companies.includes(r.company_id) ? "" : " · not in brief list"}
+            </Link>
           ))}
-        </ol>
-      ) : <Empty>No company passes all three qualification questions yet.</Empty>}
-      {shortlist.length < cfg.shortlist.shortlist_min && (
-        <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-900">
-          Only {shortlist.length} {shortlist.length === 1 ? "company is" : "companies are"} fully qualified — below the target of {cfg.shortlist.shortlist_min}.
-          {conditional.length ? ` ${conditional.length} Conditional ${conditional.length === 1 ? "company needs" : "companies need"} one more question validated (listed below) before they can join the shortlist.` : ""}
-        </p>
-      )}
+        </div>
+      </div>
       {conditional.length > 0 && (
         <div className="mt-3">
           <div className="mb-1 text-xs font-medium text-muted">Conditional — retain for monitoring / validation</div>

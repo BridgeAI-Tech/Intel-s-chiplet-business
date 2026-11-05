@@ -21,12 +21,12 @@ export async function Summary({ p, scope }: Props) {
       <SectionTitle title={p.co ? `${scope} at a glance` : "Overview"} scope={scope}>
         {p.co
           ? `Everything we found about ${scope}'s own chips in the last 12 months: what it built or announced, who it works with, and who it is hiring.`
-          : "Three companies building their own chips — Cerebras, AWS and Tesla. See what each has built or announced in the last 12 months, who supplies them, and who they are hiring."}
+          : "The five companies on the prospect shortlist — Cerebras, AWS, Meta, Microsoft and Tesla — all building their own chips. See what each has built or announced in the last 12 months, who supplies them, and who they are hiring."}
       </SectionTitle>
 
       <ol className="mb-5 grid gap-2 rounded-xl border border-border bg-surface p-3 text-sm sm:grid-cols-3">
         {[
-          ["Pick a company", "Use the company buttons above, or keep \"All three\" to compare."],
+          ["Pick a company", "Use the company buttons above, or keep \"All five\" to compare."],
           ["Read the charts", "Every number is a count of real records — nothing is estimated."],
           ["Open the proof", "Click any card to see the exact sentence and the original source."],
         ].map(([t, s], i) => (
@@ -58,7 +58,7 @@ export async function Summary({ p, scope }: Props) {
             <Link href={`/companies/${p.co}`} className="mt-3 inline-block text-xs text-accent">Full company profile →</Link>
           </Panel>
         ) : (
-          <Panel title="How the three companies compare" note="Click a bar to open that company">
+          <Panel title="How the five companies compare" note="Click a bar to open that company">
             <CompareBars
               companies={companies.map((c) => ({ id: c.company_id, name: c.short_name, href: href(p, { co: c.company_id }) }))}
               measures={[
@@ -309,7 +309,7 @@ export async function Filings({ p, scope }: Props) {
         the SEC EDGAR index. Amazon filings count for AWS only where the statement names AWS or its chips.
       </SectionTitle>
       {rows.length ? <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{rows.map((s) => <SignalCard key={s.signal_id} s={s} />)}</div>
-        : <Empty>No filing-sourced signals for this selection. SEC filings were read in depth for Cerebras, AWS (Amazon) and Tesla; other companies are private, foreign filers or not yet covered.</Empty>}
+        : <Empty>No filing-sourced signals for this selection. SEC filings were read in depth for Cerebras, AWS (Amazon), Meta, Microsoft and Tesla; a passage is kept only when it states a date inside the window and its wording is in the filing.</Empty>}
     </>
   );
 }

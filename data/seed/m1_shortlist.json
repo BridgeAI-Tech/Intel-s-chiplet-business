@@ -1,0 +1,8 @@
+{
+  "source": "Intel Chiplet Market Signals - Technical Implementation Brief (Part 1), Section 7 'Initial Company and Competitor Sample'",
+  "quote": "A preliminary shortlist for testing could include Cerebras, AWS, Meta, Microsoft and Tesla. Use Cerebras as the initial deep-dive candidate and Meta as an alternative, subject to the evidence collected. These are research candidates, not confirmed Intel prospects.",
+  "companies": ["cmp_cerebras", "cmp_aws", "cmp_meta", "cmp_microsoft", "cmp_tesla"],
+  "deep_dive": "cmp_cerebras",
+  "deep_dive_alternative": "cmp_meta",
+  "note": "Applied as the active prospect shortlist on 2026-11-05. The score-based ranking from framework v1 is kept alongside for reference; no assessment data was removed."
+}

@@ -9,7 +9,7 @@ Goes beyond the screening run in m1_news_pipeline.py:
 Both feed the same extraction, checks and publish rule as the screening pipeline (process_documents).
 
 Usage:
-    python scripts/m1_deep_dive.py [--companies cmp_cerebras,cmp_aws,cmp_tesla] [--per-query 10] [--no-exa] [--no-sec]
+    python scripts/m1_deep_dive.py [--companies cmp_cerebras,cmp_aws,cmp_tesla] [--per-query 10] [--no-exa] [--no-sec] [--no-feeds]
 """
 import argparse
 import re
@@ -33,7 +33,7 @@ from chiplet.sources.store import RawStore
 import json
 import requests
 
-TICKERS = {"cmp_cerebras": "CBRS", "cmp_aws": "AMZN", "cmp_tesla": "TSLA"}
+TICKERS = {"cmp_cerebras": "CBRS", "cmp_aws": "AMZN", "cmp_tesla": "TSLA", "cmp_meta": "META", "cmp_microsoft": "MSFT"}
 CORE_TERMS = (r"chips?|silicon|semiconductors?|wafers?|foundry|foundries|TSMC|HBM\d?|high[- ]bandwidth memory|"
               r"accelerators?|ASICs?|GPUs?|advanced packaging|CoWoS|chiplets?|process nodes?|[23] ?nm|tape[- ]?outs?")
 COMPANY_TERMS = {
@@ -44,6 +44,21 @@ COMPANY_TERMS = {
                r"data cent(er|re)s?",
     "cmp_tesla": r"AI[456]|Dojo\d?|FSD computer|inference (chips?|compute)|training compute|Cortex|Terafab|"
                  r"AI chips?|custom chips?",
+    "cmp_meta": r"MTIA|Meta Training and Inference Accelerator|custom (silicon|chips?|accelerators?)|Rivos|"
+                r"AI infrastructure|data cent(er|re)s?|servers?|network(ing)? infrastructure",
+    "cmp_microsoft": r"Maia\s?\d*|Cobalt\s?\d*|Azure Boost|custom (silicon|chips?|accelerators?)|Fairwater|"
+                     r"AI infrastructure|data cent(er|re)s?|datacent(er|re)s?",
+}
+# Official newsroom / engineering-blog RSS feeds (WordPress ?paged=N, full article text in content:encoded).
+# (template, pages to reach back to the window start, title filter)
+FEED_TITLES = (r"chip|silicon|MTIA|Maia|Cobalt|accelerat|custom|data ?cent|datacent|supercomput|infrastructure|"
+               r"Azure Boost|GPU|semiconductor|foundry|Fairwater|compute|server|rack|hardware|Rivos|Open Compute|OCP")
+NEWSROOM_FEEDS = {
+    "cmp_meta": [("https://about.fb.com/news/feed/?paged={page}", 16, FEED_TITLES),
+                 ("https://engineering.fb.com/feed/?paged={page}", 12, FEED_TITLES)],
+    "cmp_microsoft": [("https://news.microsoft.com/source/feed/?paged={page}", 45, FEED_TITLES),
+                      ("https://blogs.microsoft.com/feed/?paged={page}", 6, FEED_TITLES),
+                      ("https://azure.microsoft.com/en-us/blog/feed/?paged={page}", 12, FEED_TITLES)],
 }
 CHUNK_CHARS = 30_000
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
@@ -187,6 +202,21 @@ def collect_sec(store, comps):
     return docs
 
 
+def collect_newsroom_feeds(store, comps):
+    """Official newsroom feeds: the publisher's own title, date and full text (no paid search needed)."""
+    from m2_events_pipeline import feed_items   # imported here: m2_events_pipeline imports this module
+    docs = {}
+    for co in comps:
+        n = 0
+        for template, pages, titles in NEWSROOM_FEEDS.get(co["company_id"], []):
+            for item in feed_items(store, co["company_id"], template, pages, titles):
+                if len(item["text"]) >= 400:
+                    docs[canonical_url(item["url"])] = (co["company_id"], item)
+                    n += 1
+        print(f"  {co['short_name']}: {n} in-scope newsroom articles")
+    return docs
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--companies", default="cmp_cerebras,cmp_aws,cmp_tesla")
@@ -194,6 +224,7 @@ def main():
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--no-exa", action="store_true")
     ap.add_argument("--no-sec", action="store_true")
+    ap.add_argument("--no-feeds", action="store_true")
     args = ap.parse_args()
 
     conn = connect()
@@ -205,10 +236,16 @@ def main():
     if not args.no_sec:
         print("Collecting SEC filings…")
         docs.update(collect_sec(store, comps))
+    if not args.no_feeds:
+        print("Collecting official newsroom feeds…")
+        docs.update(collect_newsroom_feeds(store, comps))
     if not args.no_exa:
         print("Collecting web documents (Exa, deep query set)…")
         docs.update(collect_exa(conn, store, comps, args.per_query))
-    process_documents(conn, store, docs, comps, args.workers, "m1_deep_dive_review.xlsx")
+    # One review sheet per company set, so a run for new companies never overwrites an earlier review.
+    default = args.companies == ap.get_default("companies")
+    review = "m1_deep_dive_review.xlsx" if default else         "m1_deep_dive_review_" + "_".join(sorted(c.removeprefix("cmp_") for c in wanted)) + ".xlsx"
+    process_documents(conn, store, docs, comps, args.workers, review)
 
 
 if __name__ == "__main__":
