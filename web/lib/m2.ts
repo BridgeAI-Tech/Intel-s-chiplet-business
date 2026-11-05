@@ -100,3 +100,17 @@ export async function m2Channels(co: string | null) {
     JOIN record_source rs ON rs.record_type = 'm2_event' AND rs.record_id = e.event_id
     JOIN source_evidence se ON se.source_id = rs.source_id WHERE ${LIVE} AND ${s.sql} GROUP BY 1 ORDER BY n DESC`, s.args);
 }
+
+export async function m2EventsByIds(ids: string[]) {
+  await connection();
+  if (!ids.length) return [];
+  return query<M2Event>(`
+    SELECT e.event_id, e.company_id, c.short_name, e.event_type, e.event_title, e.summary, e.event_date, e.publication_date,
+      e.evidence_class, e.counterparty_name, e.product_or_programme, e.architecture_or_node, e.packaging_or_interconnect,
+      e.commercial_stage, rs.excerpt, se.url, se.source_name, se.source_type,
+      (SELECT COUNT(*) FROM record_source x WHERE x.record_type = 'm2_event' AND x.record_id = e.event_id) AS sources
+    FROM m2_competitive_event e JOIN company_master c USING (company_id)
+    JOIN record_source rs ON rs.record_type = 'm2_event' AND rs.record_id = e.event_id AND rs.source_role = 'primary'
+    JOIN source_evidence se ON se.source_id = rs.source_id
+    WHERE e.event_id IN (${ids.map(() => "?").join(",")})`, ids);
+}

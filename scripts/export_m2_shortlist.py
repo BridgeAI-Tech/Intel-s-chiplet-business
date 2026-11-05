@@ -1,6 +1,8 @@
 """Module 2 representative event shortlist (M2-5) for research review."""
+import json
 import sqlite3
 import sys
+from pathlib import Path
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -9,20 +11,8 @@ from openpyxl.utils import get_column_letter
 DB, OUT = sys.argv[1], sys.argv[2]
 
 # event_id -> (why selected, note for the reviewer)
-PICKS = [
-    ("evt_d77826822f00a8223d14", "Custom XPU business landing at a frontier AI lab (Anthropic), financed at 1 GW scale - where custom-silicon demand is going.",
-     "Recorded stage says 'production ramp'; the source says deployment is expected from mid-2026, so treat as announced."),
-    ("evt_66b5d49931af7448d4f4", "Merchant GPU leader (NVIDIA) partners with and invests $2.0B in a custom-XPU provider (Marvell): ecosystem consolidation around custom silicon.", ""),
-    ("evt_a0d4f0e1ff74312a5a6d", "NVIDIA opens its NVLink fabric to third-party custom XPUs through a chiplet - multi-die / chiplet competition for custom silicon.", ""),
-    ("evt_547051528ba3c1b34297", "AMD uses TSMC SoIC-X and CoWoS-L across its AI and data-center portfolio - competing advanced packaging (vs EMIB / Foveros).", ""),
-    ("evt_3f66d8c0481aa942b04f", "AMD qualifies a 2.5D bridge interconnect (EFB) with OSATs ASE and SPIL - a bridge approach comparable in role to EMIB.", ""),
-    ("evt_735b6587939ce80240dd", "TSMC 2 nm steep ramp in Q3 2026 - leading-edge process node competition.", "Company outlook statement (announced plan), from TSMC's earnings release filed with the SEC."),
-    ("evt_c270f1b6829c73cf365b", "TSMC board approves up to US$20B for TSMC Arizona - US leading-edge foundry capacity.", ""),
-    ("evt_8c51d4c229016cf1b8f6", "Arm moves into its own production silicon (AGI CPU) - changes Arm's role beyond IP licensing.",
-     "Arm is also an Intel Foundry Chiplet Alliance partner; recorded partner (ASRock Rack) is one of several named in the release."),
-    ("evt_94788ce2e0f312ed9f4f", "Samsung Foundry wins 2 nm and 2.3D/2.5D packaging collaboration with Broadcom (MoU) - foundry + packaging competition for a custom-silicon leader.", "Non-binding MoU (announced plan)."),
-    ("evt_80c10b9e8e0744a1d839", "NVIDIA and Amkor plan >300% interposer capacity increase by end-2028 - OSAT advanced-packaging capacity build-out.", ""),
-]
+# Selection lives in data/seed/m2_shortlist.json (also read by the web app's Shortlist tab).
+PICKS = [(p["event_id"], p["why"], p["note"]) for p in json.load(open(Path(__file__).resolve().parent.parent / "data/seed/m2_shortlist.json", encoding="utf-8"))]
 
 conn = sqlite3.connect(DB)
 conn.row_factory = sqlite3.Row

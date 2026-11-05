@@ -3,6 +3,7 @@ import { CompareBars, MonthBars, RankBars, SplitBar } from "@/components/charts"
 import { Bar, Chip, MonthColumns, Panel, SectionTitle, SignalCard, Tile, href, monthLabel, type Params } from "@/components/dash";
 import { Badge, Empty, SourceLink, Table, Td, humanize } from "@/components/ui";
 import * as d from "@/lib/dashboard";
+import * as m2 from "@/lib/m2";
 
 type Props = { p: Params; scope: string };
 
@@ -96,6 +97,8 @@ export async function Summary({ p, scope }: Props) {
         </Panel>
       </div>
 
+      {!p.co && <CompetitorStrip />}
+
       <div className="mt-4">
         <Panel title="Latest confirmed developments" action={<Link href={href(p, { tab: "developments" })} className="text-xs text-accent">See all →</Link>}>
           {latest.length ? <div className="grid gap-3 md:grid-cols-3">{latest.map((s) => <SignalCard key={s.signal_id} s={s} />)}</div>
@@ -103,6 +106,45 @@ export async function Summary({ p, scope }: Props) {
         </Panel>
       </div>
     </>
+  );
+}
+
+// Module 2 at a glance on the main overview: where competitors are landing custom-silicon business.
+async function CompetitorStrip() {
+  const [k, comp, recent] = await Promise.all([m2.m2Summary(null), m2.byCompetitor(), m2.m2Events(null, { cls: "confirmed_fact", limit: 40 })]);
+  const seen = new Set<string>();
+  const latest = recent.filter((e) => !seen.has(e.company_id) && seen.add(e.company_id)).slice(0, 3);
+  const n = (v: unknown) => Number(v ?? 0);
+  return (
+    <div className="mt-4">
+      <Panel title="Meanwhile, competitors (Competitive Radar)" note="Broadcom, Marvell, TSMC, AMD, NVIDIA, Arm and Samsung Foundry — official announcements and filings"
+        action={<Link href="/competitive-radar" className="text-xs text-accent">Open Competitive Radar →</Link>}>
+        <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.4fr]">
+          <div className="grid grid-cols-2 gap-2 self-start">
+            <Tile label="Competitive events" value={k.events ?? 0} />
+            <Tile label="Confirmed" value={k.confirmed ?? 0} />
+            <Tile label="Announced plans" value={k.intents ?? 0} />
+            <Tile label="Partners named" value={k.counterparties ?? 0} />
+          </div>
+          <div>
+            <div className="mb-2 text-xs font-medium text-muted">Events by competitor</div>
+            <RankBars rows={comp.map((c) => ({ label: c.short_name, n: n(c.n), href: `/competitive-radar?co=${c.company_id}` }))} unit="events" />
+          </div>
+          <div>
+            <div className="mb-2 text-xs font-medium text-muted">Latest confirmed move per competitor</div>
+            <ul className="space-y-2 text-sm">
+              {latest.map((e) => (
+                <li key={e.event_id} className="rounded-lg border border-border p-2">
+                  <div className="flex items-center gap-2 text-xs text-muted"><b className="text-foreground">{e.short_name}</b>{humanize(e.event_type)} · {e.event_date ?? e.publication_date}</div>
+                  <Link href={`/events/m2_event/${e.event_id}`} className="font-medium hover:underline">{e.event_title}</Link>
+                </li>
+              ))}
+            </ul>
+            <Link href="/competitive-radar?tab=shortlist" className="mt-2 inline-block text-xs text-accent">10 events shortlisted for research review →</Link>
+          </div>
+        </div>
+      </Panel>
+    </div>
   );
 }
 

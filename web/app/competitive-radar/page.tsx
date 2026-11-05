@@ -4,11 +4,13 @@ import { Chip, Panel, SectionTitle, Tile } from "@/components/dash";
 import { Badge, Empty, SourceLink, Table, Td, humanize } from "@/components/ui";
 import { WINDOW } from "@/lib/dashboard";
 import * as m from "@/lib/m2";
+import SHORTLIST from "@/lib/m2-shortlist.json";
 
 const TABS = [
   { key: "overview", label: "Overview", hint: "Charts and key numbers" },
   { key: "events", label: "Events", hint: "Every competitive development, with its source sentence" },
   { key: "tracker", label: "Foundry & packaging tracker", hint: "Process nodes, chiplets and advanced packaging" },
+  { key: "shortlist", label: "Shortlist for review", hint: "10 representative events selected for the research team" },
 ] as const;
 const TRACKER_TYPES = ["foundry_process_manufacturing", "chiplet_advanced_packaging"];
 
@@ -63,6 +65,7 @@ export default async function CompetitiveRadar({ searchParams }: PageProps<"/com
       </nav>
 
       {p.tab === "events" ? <Events p={p} scope={scope} /> : p.tab === "tracker" ? <Tracker p={p} scope={scope} />
+        : p.tab === "shortlist" ? <Shortlist p={p} />
         : <Overview p={p} scope={scope} list={list} />}
     </>
   );
@@ -187,6 +190,43 @@ async function Tracker({ p, scope }: { p: P; scope: string }) {
           </Table>
         </Panel>
       ) : <Empty>No foundry or packaging developments for this selection.</Empty>}
+    </>
+  );
+}
+
+async function Shortlist({ p }: { p: P }) {
+  const picks = SHORTLIST;
+  const byId = new Map((await m.m2EventsByIds(picks.map((x) => x.event_id))).map((e) => [e.event_id, e]));
+  const rows = picks.map((x) => ({ ...x, e: byId.get(x.event_id) })).filter((x) => x.e && (!p.co || x.e.company_id === p.co));
+  const types = new Set(rows.map((x) => x.e!.event_type));
+  const companies = new Set(rows.map((x) => x.e!.company_id));
+  return (
+    <>
+      <SectionTitle title="Shortlist for review" scope={p.co ? rows[0]?.e?.short_name ?? "—" : `${rows.length} events`}>
+        Representative events chosen from all verified events to cover every event type and competitor, for the research
+        team to assess. Selection only — Intel implication, response and priority are added by the research team.
+      </SectionTitle>
+      <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <Tile label="Events selected" value={rows.length} note="Target 5–10" />
+        <Tile label="Competitors covered" value={companies.size} note="Target at least 6" />
+        <Tile label="Event types covered" value={`${types.size} of 6`} />
+        <Tile label="Confirmed" value={rows.filter((x) => x.e!.evidence_class === "confirmed_fact").length} note="The rest are announced plans" />
+      </div>
+      <div className="space-y-3">
+        {rows.map((x, i) => (
+          <div key={x.event_id} className="grid gap-3 lg:grid-cols-[1fr_320px]">
+            <div className="flex gap-3">
+              <span className="mt-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">{i + 1}</span>
+              <div className="flex-1"><EventCard e={x.e!} /></div>
+            </div>
+            <Panel title="Why it was selected">
+              <p className="text-sm">{x.why}</p>
+              {x.note && <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-900"><b>Note for reviewer:</b> {x.note}</p>}
+              <p className="mt-2 text-xs text-muted">Intel implication: <i>pending research review</i></p>
+            </Panel>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
