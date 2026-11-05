@@ -83,7 +83,28 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
      JOIN source_evidence se ON se.source_id = rs.source_id
      WHERE c.company_id IN ${FOCUS_SQL} AND rs.excerpt LIKE '%intel_relationship_status%' AND (${like(coCols).join(" OR ")}) LIMIT 10`, args(coCols));
 
+  // Module 2: competitor events (Broadcom, Marvell, TSMC, AMD, NVIDIA, Arm, Samsung Foundry), capped per competitor.
+  const evCols = ["e.event_title", "e.summary", "rs.excerpt", "c.short_name", "e.event_type", "e.counterparty_name",
+    "e.product_or_programme", "e.architecture_or_node", "e.packaging_or_interconnect"];
+  const m2 = await query<Record<string, string | number | null>>(
+    `SELECT * FROM (
+       SELECT e.event_id, c.short_name, e.event_title, e.summary, e.event_type, rs.excerpt, e.evidence_class,
+              COALESCE(e.event_date, e.publication_date) AS d, se.url, (${score(evCols)}) AS sc,
+              ROW_NUMBER() OVER (PARTITION BY e.company_id ORDER BY (${score(evCols)}) DESC,
+                                 COALESCE(e.event_date, e.publication_date) DESC) AS rn
+       FROM m2_competitive_event e JOIN company_master c USING (company_id)
+       JOIN record_source rs ON rs.record_type = 'm2_event' AND rs.record_id = e.event_id AND rs.source_role = 'primary'
+       JOIN source_evidence se ON se.source_id = rs.source_id
+       WHERE e.record_status IN ('extracted', 'reviewed') AND (${like(evCols).join(" OR ")}))
+     WHERE rn <= 6 ORDER BY sc DESC, d DESC LIMIT 30`,
+    [...args(evCols), ...args(evCols), ...args(evCols)]);
+
   const docs: Doc[] = [];
+  m2.forEach((e) => docs.push({
+    ref: "", kind: `competitor event · ${e.event_type}`, company: String(e.short_name), title: String(e.event_title),
+    text: `${e.summary ?? ""} Source excerpt: "${e.excerpt}"`, date: e.d as string | null,
+    evidence_class: e.evidence_class as string, url: e.url as string, link: `/events/m2_event/${e.event_id}`,
+  }));
   signals.forEach((s) => docs.push({
     ref: "", kind: `signal · ${s.signal_type}`, company: String(s.short_name), title: String(s.title),
     text: `${s.summary ?? ""} Source excerpt: "${s.excerpt}"`, date: s.d as string | null,

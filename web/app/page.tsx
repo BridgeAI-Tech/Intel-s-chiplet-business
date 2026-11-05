@@ -30,10 +30,15 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
           </div>
           <p className="text-xs text-muted">Cerebras, AWS and Tesla · {WINDOW.label}</p>
         </div>
-        <Link href={href(p, { tab: "sources" })} scroll={false}
-          className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${tab === "sources" ? "border-foreground bg-foreground text-white" : "border-border bg-surface hover:border-accent"}`}>
-          Where the data comes from
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href={href(p, { tab: "sources" })} scroll={false}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${tab === "sources" ? "border-foreground bg-foreground text-white" : "border-border bg-surface hover:border-accent"}`}>
+            Where the data comes from
+          </Link>
+          <Link href="/competitive-radar" className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:border-accent">
+            Competitive Radar →
+          </Link>
+        </div>
       </div>
 
       <div className="mb-3 flex flex-wrap items-center gap-1.5">

@@ -1,0 +1,41 @@
+Collecting official press releases (sitemaps)…
+  Broadcom: 138 sitemap URLs -> 19 in-scope press releases -> 19 fetched
+  Marvell: 1017 sitemap URLs -> 32 in-scope press releases -> 32 fetched
+  AMD: 1334 sitemap URLs -> 17 in-scope press releases -> 17 fetched
+  NVIDIA: 1165 sitemap URLs -> 56 in-scope press releases -> 56 fetched
+  Arm: 1197 sitemap URLs -> 44 in-scope press releases -> 44 fetched
+  Samsung Foundry: 1741 sitemap URLs -> 47 in-scope press releases -> 45 fetched
+  Samsung Foundry: 77 in-scope newsroom feed articles
+Collecting SEC filings…
+  Broadcom: 8 filing documents -> 13 passages
+  Marvell: 8 filing documents -> 17 passages
+  AMD: 4 filing documents -> 13 passages
+  NVIDIA: 4 filing documents -> 9 passages
+  Arm: 255 filing documents -> 38 passages
+  TSMC: 69 filing documents -> 73 passages
+453 documents / passages collected
+Extracting 453 documents with 6 workers…
+  20/453 documents processed, 5 accepted events
+  40/453 documents processed, 36 accepted events
+  60/453 documents processed, 68 accepted events
+  80/453 documents processed, 95 accepted events
+  100/453 documents processed, 120 accepted events
+  120/453 documents processed, 143 accepted events
+  140/453 documents processed, 183 accepted events
+  160/453 documents processed, 205 accepted events
+  180/453 documents processed, 205 accepted events
+  200/453 documents processed, 205 accepted events
+  220/453 documents processed, 205 accepted events
+  240/453 documents processed, 207 accepted events
+  260/453 documents processed, 208 accepted events
+  280/453 documents processed, 208 accepted events
+  300/453 documents processed, 217 accepted events
+  320/453 documents processed, 247 accepted events
+  340/453 documents processed, 281 accepted events
+  360/453 documents processed, 303 accepted events
+  380/453 documents processed, 334 accepted events
+  400/453 documents processed, 345 accepted events
+  420/453 documents processed, 354 accepted events
+  440/453 documents processed, 360 accepted events
+Consolidated 67 duplicate reports into existing events (kept as corroborating sources)
+Done: 363 accepted events written; 496 held back (see data/review/m2_events_review.xlsx). Live calls=0

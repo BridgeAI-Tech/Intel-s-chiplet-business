@@ -29,6 +29,12 @@ export default async function EventPage({ params }: PageProps<"/events/[type]/[i
             <Item label="Published">{row.publication_date ?? "—"}</Item>
             <Item label="First observed">{row.first_observed_date}</Item>
             <Item label="Counterparty">{row.counterparty ?? "—"}</Item>
+            {type === "m2_event" && <>
+              <Item label="Product / programme">{row.product_or_programme ?? "not stated"}</Item>
+              <Item label="Process node">{row.architecture_or_node ?? "not stated"}</Item>
+              <Item label="Packaging / interconnect">{row.packaging_or_interconnect ?? "not stated"}</Item>
+              <Item label="Stage">{row.commercial_stage ? humanize(row.commercial_stage) : "—"}</Item>
+            </>}
             <Item label="Technologies">{parseJsonList(row.technology_tags).map(humanize).join(", ") || "—"}</Item>
             <Item label="Extraction">{row.extraction_method} {row.extraction_model ? `(${row.extraction_model})` : ""}</Item>
           </dl>

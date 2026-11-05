@@ -155,15 +155,18 @@ def collect_sec(store, comps):
             if date < WINDOW_START:
                 continue
             base = f"https://www.sec.gov/Archives/edgar/data/{cik}/{acc.replace('-', '')}"
-            if form in ("10-K", "10-Q", "424B4"):
+            if form in ("10-K", "10-Q", "424B4", "20-F"):
                 targets = [(f"{base}/{primary}", f"Form {form}")]
-            elif form == "8-K" and "2.02" in items:
+            elif (form == "8-K" and "2.02" in items) or form == "6-K":   # earnings / foreign-issuer reports
                 status, index, _ = store.fetch("sec_edgar", "filing_index", {"url": f"{base}/index.json"},
                                                co["company_id"], _json_call("GET", f"{base}/index.json",
                                                                             headers=SecEdgar.HEADERS))
                 names = [it["name"] for it in (index.get("directory") or {}).get("item", [])] if status == 200 else []
-                targets = [(f"{base}/{nm}", "Form 8-K Exhibit 99 (earnings release)") for nm in names
-                           if re.search(r"ex(hibit)?-?99", nm, re.I) and nm.lower().endswith((".htm", ".html"))]
+                label = "Form 8-K Exhibit 99 (earnings release)" if form == "8-K" else "Form 6-K Exhibit 99"
+                # 8-K: the Exhibit 99 press release. 6-K: every document in the filing (foreign issuers such as
+                # TSMC name their reports freely, e.g. the quarterly management report).
+                targets = [(f"{base}/{nm}", label) for nm in names if nm.lower().endswith((".htm", ".html"))
+                           and "-index" not in nm and (form == "6-K" or re.search(r"ex(hibit)?-?99", nm, re.I))]
             else:
                 continue
             for url, label in targets:
