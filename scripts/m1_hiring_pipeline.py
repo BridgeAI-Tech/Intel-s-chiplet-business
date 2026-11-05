@@ -24,13 +24,20 @@ from chiplet.db import REVIEW_DIR, connect
 from chiplet.extract.llm import ExtractionError, Extractor
 from chiplet.extract.normalize import job_dedup_key, job_may_be_silicon, parse_date, stable_id
 from chiplet.extract.store import upsert_source
-from chiplet.sources.providers import BROWSER_UA, PredictLeads, _json_call
+from chiplet.sources.providers import BROWSER_UA, PredictLeads, TheirStack, _json_call
 from chiplet.sources.store import RawStore, utc_now
 
 WINDOW_START = "2025-11-01"
 PREDICTLEADS_TARGETS = [("cmp_cerebras", "cerebras.ai", "Cerebras Systems"), ("cmp_tesla", "tesla.com", "Tesla"),
                         ("cmp_tenstorrent", "tenstorrent.com", "Tenstorrent")]
 MAX_PAGES = 20
+# TheirStack (1 credit per job): a recent sample per company where PredictLeads was not used. (pages, page size)
+# Meta's postings are listed under facebook.com. Page 0 of size 10 for Meta was the paid test call (cached).
+THEIRSTACK_TARGETS = [("cmp_meta", "facebook.com", "Meta", 2, 10), ("cmp_microsoft", "microsoft.com", "Microsoft", 1, 20),
+                      ("cmp_google", "google.com", "Google", 1, 20), ("cmp_apple", "apple.com", "Apple", 1, 20),
+                      ("cmp_ibm", "ibm.com", "IBM", 1, 20), ("cmp_cisco", "cisco.com", "Cisco", 1, 20),
+                      ("cmp_nokia", "nokia.com", "Nokia", 1, 20), ("cmp_samsung_electronics", "samsung.com", "Samsung Electronics", 1, 20)]
+JOB_BOARDS = ("linkedin.com", "naukri.com", "indeed.", "glassdoor.", "recruitics.com", "ziprecruiter.", "monster.")
 
 
 def predictleads_jobs(store, cid, domain):
@@ -92,6 +99,44 @@ def amazon_jobs(store, query="Annapurna Labs"):
     return jobs
 
 
+def theirstack_jobs(store, cid, domain, pages, size):
+    """Most recent silicon-titled postings since the window start. The same role copied to several job boards is
+    kept once, preferring the employer's own career-site link."""
+    ts = TheirStack(store)
+    raw = []
+    for page in range(pages):
+        count = page == 0   # page 0 also reports the total (and reuses the cached test call for Meta)
+        status, payload, _ = ts.jobs(cid, domain, WINDOW_START, limit=size, page=page, count=count)
+        if status != 200:
+            print(f"  theirstack {domain} page {page}: HTTP {status} {str(payload)[:150]}")
+            break
+        raw_id = store._key("theirstack", f"jobs:{domain}", TheirStack.body(domain, WINDOW_START, size, page, count))
+        if count:
+            print(f"  theirstack {domain}: {(payload.get('metadata') or {}).get('total_results')} matching postings in the window")
+        raw += [(j, raw_id) for j in payload.get("data") or []]
+        if len(payload.get("data") or []) < size:
+            break
+    best = {}
+    for j, raw_id in raw:
+        url = j.get("final_url") or j.get("url") or j.get("source_url") or ""
+        key = (j.get("job_title") or "").strip().lower()
+        on_board = any(b in url for b in JOB_BOARDS)
+        if key in best and (on_board or not best[key][2]):
+            continue
+        best[key] = (j, raw_id, not on_board, url)
+    jobs = []
+    for j, raw_id, _, url in best.values():
+        jobs.append({
+            "provider": "theirstack", "provider_job_id": str(j.get("id")), "raw_record_id": raw_id,
+            "title": j.get("job_title") or "", "original_title": j.get("job_title") or "", "description": j.get("description") or "",
+            "url": url, "location": j.get("long_location") or j.get("location"), "posting_date": j.get("date_posted"),
+            "first_seen": j.get("discovered_at"), "last_seen": None, "status": "closed" if j.get("closed_at") else "unknown",
+            "contract": ", ".join(j.get("employment_statuses") or []) or None,
+        })
+    print(f"  theirstack {domain}: {len(raw)} returned, {len(jobs)} after removing job-board copies")
+    return jobs
+
+
 def classify(run_id, cid, company_name, job):
     conn = connect()
     ex = Extractor(RawStore(conn, "m1_hiring", run_id=run_id))
@@ -108,6 +153,8 @@ def classify(run_id, cid, company_name, job):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--theirstack-only", action="store_true",
+                    help="collect only the TheirStack sample (earlier PredictLeads / amazon.jobs postings stay as they are)")
     args = ap.parse_args()
     conn = connect()
     store = RawStore(conn, "m1_hiring", vars(args))
@@ -115,9 +162,12 @@ def main():
     recent = (datetime.now(timezone.utc) - timedelta(days=10)).strftime("%Y-%m-%d")
 
     targets = []
-    for cid, domain, name in PREDICTLEADS_TARGETS:
-        targets += [(cid, name, j) for j in predictleads_jobs(store, cid, domain)]
-    targets += [("cmp_aws", "Amazon Web Services (Annapurna Labs)", j) for j in amazon_jobs(store)]
+    if not args.theirstack_only:
+        for cid, domain, name in PREDICTLEADS_TARGETS:
+            targets += [(cid, name, j) for j in predictleads_jobs(store, cid, domain)]
+        targets += [("cmp_aws", "Amazon Web Services (Annapurna Labs)", j) for j in amazon_jobs(store)]
+    for cid, domain, name, pages, size in THEIRSTACK_TARGETS:
+        targets += [(cid, name, j) for j in theirstack_jobs(store, cid, domain, pages, size)]
 
     candidates = [(cid, name, j) for cid, name, j in targets if job_may_be_silicon(j["title"], j["description"])]
     print(f"{len(targets)} postings collected, {len(candidates)} pass the silicon pre-filter; classifying…")
@@ -167,7 +217,8 @@ def main():
     for row in review:
         ws.append(row)
     REVIEW_DIR.mkdir(parents=True, exist_ok=True)
-    wb.save(REVIEW_DIR / "m1_hiring_review.xlsx")
+    # A TheirStack-only run gets its own sheet so the earlier review is kept.
+    wb.save(REVIEW_DIR / ("m1_hiring_review_theirstack.xlsx" if args.theirstack_only else "m1_hiring_review.xlsx"))
     print(f"Done: {stored} silicon postings stored; {len(review)} held back. calls live={store.live_calls}")
 
 

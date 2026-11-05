@@ -148,3 +148,15 @@ Deployment note: on a read-only snapshot deployment, Settings changes last only 
   pages were labelled third-party. Relabelled; Microsoft evidence confidence moves Low → High. Other companies unaffected.
 - Re-assessed Meta (80, Qualified, Medium) and Microsoft (84, Qualified, High). Scores unchanged: hiring data is still not collected
   for them (no provider credits).
+
+## Update — 2026-11-05: hiring data for the other 8 companies (TheirStack)
+- New provider: TheirStack job search API (1 credit per job; free plan 200/month). `chiplet/sources/providers.py` `TheirStack`,
+  `scripts/m1_hiring_pipeline.py --theirstack-only`. Meta's jobs are listed under facebook.com.
+- Recent sample of ~20 silicon-titled postings per company since 2025-11-01; job-board copies dropped in favour of the employer's link;
+  Gemini role classification + verbatim check as before. Stored 113: Apple 20, Microsoft 17, Cisco 15, Meta 15, Samsung 15, Nokia 13,
+  IBM 10, Google 8. Review sheet: `data/review/m1_hiring_review_theirstack.xlsx`.
+- Provider totals in the window (passed to the assessment as "provider count, not individually verified"): Apple 1,991, Cisco 1,395,
+  Microsoft 401, Nokia 379, IBM 164, Samsung 153, Meta 24, Google 10.
+- Re-assessed the 8 companies; earlier assessments archived in `data/archive/assessment_v1_all_before_theirstack_hiring.json`.
+  The re-run also moved some non-hiring ratings (listed on the calibration workbook's Observations tab).
+- Credits: 172 of 200 used; 28 left until 2026-12-05.

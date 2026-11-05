@@ -31,7 +31,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from chiplet.db import connect
 from chiplet.extract.llm import ExtractionError, Extractor
 from chiplet.extract.normalize import content_hash, stable_id
+from chiplet.sources.providers import TheirStack
 from chiplet.sources.store import RawStore, utc_now
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from m1_hiring_pipeline import THEIRSTACK_TARGETS, WINDOW_START as HIRING_WINDOW
 
 PRIMARY_SOURCES = {"company_newsroom", "investor_relations", "regulatory_filing", "partner_announcement",
                    "company_product_page", "company_blog", "job_posting", "career_page"}
@@ -176,6 +180,10 @@ def evidence_pack(conn, cid):
         pack.append(f"[hiring:engineering_roles] {total} silicon-relevant job postings (vacancies, not hires) observed "
                     f"{min(r['a'] for r in roles)} to {max(r['b'] for r in roles)}. Role mix: {mix}")
         meta["hiring:engineering_roles"] = {"evidence_class": "confirmed_fact", "source_type": "job_posting"}
+        total_listed = theirstack_total(conn, cid)
+        if total_listed is not None:
+            pack[-1] += (f". These are a recent sample: the job-data provider (TheirStack) lists {total_listed} postings "
+                         f"with silicon-role titles for this company since {HIRING_WINDOW} (provider count, not individually verified).")
     for r in conn.execute("""SELECT rs.excerpt, se.url FROM record_source rs JOIN source_evidence se USING (source_id)
                              WHERE rs.record_type = 'company' AND rs.record_id = ? AND rs.excerpt LIKE '%intel_relationship_status%'""", (cid,)):
         e = json.loads(r["excerpt"])
@@ -185,6 +193,18 @@ def evidence_pack(conn, cid):
               f"Intel relationship status (research classification): {co['intel_relationship_status']}\n"
               f"Job postings collected for this company: {'yes' if roles else 'no — hiring data was not collected'}")
     return header, pack, meta, bool(roles)
+
+
+def theirstack_total(conn, cid):
+    """Provider-reported number of silicon-titled postings in the window, from the cached first-page response."""
+    for tcid, domain, _, _, size in THEIRSTACK_TARGETS:
+        if tcid != cid:
+            continue
+        key = RawStore._key("theirstack", f"jobs:{domain}", TheirStack.body(domain, HIRING_WINDOW, size, 0, True))
+        row = conn.execute("SELECT response_json FROM raw_provider_record WHERE raw_record_id = ?", (key,)).fetchone()
+        if row:
+            return (json.loads(row[0]).get("metadata") or {}).get("total_results")
+    return None
 
 
 def inventory(conn):

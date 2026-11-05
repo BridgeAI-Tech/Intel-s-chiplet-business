@@ -238,7 +238,7 @@ for i, x in enumerate(rows, 2):
     put(wc, i, sc + 3, None, F, INPUT)
 last = len(rows) + 1
 note = last + 2
-wc.cell(row=note, column=2, value="Red italic AI rating = hiring dimension flagged 'insufficient data' (no job postings collected for that company).").font = Font(name="Arial", size=9, italic=True, color="C00000")
+wc.cell(row=note, column=2, value="Red italic AI rating = hiring dimension flagged 'insufficient data' (no job postings collected for that company). Hiring for Meta, Microsoft, Google, Apple, IBM, Cisco, Nokia and Samsung is from a recent sample of about 20 postings.").font = Font(name="Arial", size=9, italic=True, color="C00000")
 wc.cell(row=note + 1, column=2, value="On shortlist = the brief's preliminary shortlist (Section 7). Score-based top 5 = top Qualified by AI v1 score, for reference. Change qualification answers on the Qualification tab.").font = Font(name="Arial", size=9, italic=True)
 wc.cell(row=note + 2, column=2, value="Average AI score").font = FB
 wc.cell(row=note + 2, column=8, value=f"=ROUND(AVERAGE(H2:H{last}),1)").font = FB
@@ -347,6 +347,31 @@ tier1 = sum(x["tier"] == 1 for x in rows)
 scores = [x["score"] for x in rows]
 
 
+FULL_PULL = {"cmp_aws", "cmp_cerebras", "cmp_tesla", "cmp_tenstorrent"}
+sampled = [x["r"]["short_name"] for x in rows if x["r"]["company_id"] not in FULL_PULL]
+hiring_note = (f"Hiring data: full 12-month job pulls for AWS, Cerebras, Tesla and Tenstorrent (PredictLeads, amazon.jobs); for "
+               f"{', '.join(sampled)} a recent sample of about 20 silicon postings each (TheirStack), with the provider's total count "
+               f"given to the assessment. 'Insufficient data' flags: {len(insufficient) or 'none'}.")
+ARCHIVE = Path(__file__).resolve().parent.parent / "data/archive/assessment_v1_all_before_theirstack_hiring.json"
+drift = []
+if ARCHIVE.exists():
+    before = json.load(open(ARCHIVE, encoding="utf-8"))
+    for x in rows:
+        o = before.get(x["r"]["company_id"])
+        if not o:
+            continue
+        ro = json.loads(o["ratings"])
+        moved = [f"{d['label'].split(' ')[0]} {ro[d['key']]['rating']}→{x['ratings'][d['key']]['rating']}" for d in DIMS
+                 if d["key"] != "engineering_hiring" and ro[d["key"]]["rating"] != x["ratings"][d["key"]]["rating"]]
+        if o["development_stage"] != x["r"]["development_stage"]:
+            moved.append(f"stage {o['development_stage']}→{x['r']['development_stage']}")
+        if moved:
+            drift.append(f"{x['r']['short_name']} ({', '.join(moved)})")
+drift_note = ("Consistency: re-running the AI assessment after adding hiring data also moved some non-hiring ratings: "
+              + "; ".join(drift) + ". These need a reviewer's eye." if drift else
+              "Consistency: re-running the assessment changed only the hiring ratings.")
+
+
 def share(key, val):
     return dist[key].get(val, 0)
 
@@ -359,15 +384,14 @@ obs = [
      f"{share('custom_silicon', 5)} of {n}, Evidence strength 5 for {share('evidence_strength', 5)} of {n}. These dimensions barely separate the companies.", None),
     (f"Development stage 5 (supplier evaluation / commercial engagement) for {stage5} of {n}, so the stage barely "
      f"separates the companies either (see question Q3 on what stage 5 should require).", None),
-    (f"Hiring data gap: job postings were collected for {n - len(insufficient)} companies only. For {len(insufficient)} "
-     f"({', '.join(insufficient)}) the hiring dimension is flagged insufficient and rated low, which costs them up to 16 points "
-     f"for a data gap rather than a real signal.", None),
+    (hiring_note, None),
+    (drift_note, None),
     ("Intel offering fit and External ecosystem signals are the dimensions that actually separate the companies.", None),
     ("The sample was pre-screened for custom-silicon activity, so a high qualification rate is partly expected.", None),
     ("", None),
     ("Questions for your decision", "Your answer"),
-    ("Q1. Where hiring data was not collected, should the hiring dimension (a) stay at its low rating, (b) be treated as neutral (3), or "
-     "(c) be dropped and the other weights re-scaled for that company?", ""),
+    ("Q1. For 8 companies hiring is rated from a recent sample of about 20 postings plus the provider's total count; AWS, Cerebras, "
+     "Tesla and Tenstorrent have a full 12-month pull. Is a sample enough for the rating, or should we buy credits for full pulls?", ""),
     ("Q2. Should a rating of 5 require more than one confirmed fact (e.g. two independent primary sources within 12 months)? This would "
      "spread the Custom-silicon, Maturity and Evidence ratings.", ""),
     ("Q3. Stage 5 needs 'supplier evaluation or commercial engagement'. Should a public foundry/IP customer relationship alone count, "

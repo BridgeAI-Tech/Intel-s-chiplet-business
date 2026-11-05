@@ -131,3 +131,33 @@ class SecEdgar:
         return self.store.fetch("sec_edgar", "submissions", {"cik": cik10}, company_id,
                                 _json_call("GET", f"https://data.sec.gov/submissions/CIK{cik10}.json",
                                            headers=self.HEADERS))
+
+
+class TheirStack:
+    """Job postings (title, description, posting date, original URL). 1 API credit per job returned."""
+    URL = "https://api.theirstack.com/v1/jobs/search"
+    # Role-level silicon terms only (company boilerplate words such as "AI" are left to the description check).
+    # TheirStack regexes are case-insensitive and have no , so terms are written to avoid accidental substrings.
+    SILICON_TITLES = [
+        r"asic|rtl |rtl$|soc |soc$|silicon|semiconductor|chiplet|tape-?out",
+        r"physical design|design verification|dft |design for test|microarchitect|cpu architect|gpu architect",
+        r"hardware design|hardware architect|packaging engineer|advanced packaging|signal integrity|power integrity|serdes",
+        r"analog design|analog ic|mixed-signal|mixed signal|mtia|maia|tpu |axion|trainium|graviton",
+    ]
+
+    def __init__(self, store):
+        self.store = store
+        self.headers = {"Authorization": f"Bearer {env('THEIRSTACK_API_KEY')}", "Content-Type": "application/json"}
+
+    @classmethod
+    def body(cls, domain, posted_from, limit, page=0, count=False):
+        return {"company_domain_or": [domain], "posted_at_gte": posted_from, "job_title_pattern_or": cls.SILICON_TITLES,
+                "limit": limit, "page": page, "include_total_results": count}
+
+    def jobs(self, company_id, domain, posted_from, limit, page=0, count=False):
+        body = self.body(domain, posted_from, limit, page, count)
+        return self.store.fetch("theirstack", f"jobs:{domain}", body, company_id,
+                                _json_call("POST", self.URL, headers=self.headers, json=body))
+
+    def credit_balance(self):
+        return _json_call("GET", "https://api.theirstack.com/v0/billing/credit-balance", headers=self.headers)()

@@ -192,7 +192,7 @@ export async function Hiring({ p, scope }: Props) {
         Open chip-engineering jobs, grouped by the skill they ask for. A company hiring chip designers is a sign it is
         building its own chips. These are open vacancies, not confirmed hires.
       </SectionTitle>
-      {!mix.length ? <Empty>Hiring data not collected for this company in the sample (collected: Cerebras, AWS, Tesla, Tenstorrent).</Empty> : (
+      {!mix.length ? <Empty>No silicon job postings collected for this company.</Empty> : (
         <>
           <div className="grid gap-4 lg:grid-cols-2">
             <Panel title="Engineering role mix">
@@ -223,7 +223,7 @@ export async function Hiring({ p, scope }: Props) {
                       <div className="text-xs text-muted">{j.seniority ? humanize(j.seniority) : ""}</div></Td>
                     <Td>{j.role_category ? humanize(j.role_category) : "—"}</Td>
                     <Td className="text-xs">{j.location ?? "—"}</Td>
-                    <Td>{j.url ? <SourceLink url={j.url} label={j.provider === "predictleads" ? "PredictLeads" : "amazon.jobs"} /> : j.provider}</Td>
+                    <Td>{j.url ? <SourceLink url={j.url} label={j.provider === "predictleads" ? "PredictLeads" : j.provider === "amazon_jobs" ? "amazon.jobs" : new URL(j.url).hostname.replace(/^www\./, "")} /> : j.provider}</Td>
                   </tr>
                 ))}
               </Table>
@@ -427,6 +427,7 @@ export async function DataSources({ p, scope }: Props) {
     gemini: ["Gemini extraction", "Structured extraction and job classification (temperature 0, schema-validated)"],
     predictleads: ["PredictLeads", "Job postings history (Cerebras, Tesla, Tenstorrent)"],
     amazon_jobs: ["amazon.jobs", "AWS / Annapurna Labs open roles"],
+    theirstack: ["TheirStack", "Recent silicon job postings for Meta, Microsoft, Google, Apple, IBM, Cisco, Nokia, Samsung (sample of ~20 each)"],
     explorium: ["Explorium", "Firmographics: domain, LinkedIn, HQ, business units"],
     google_news: ["Google News RSS", "Probe only — not used as evidence"],
   };
