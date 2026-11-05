@@ -1,0 +1,14 @@
+Collecting SEC filings…
+  Microsoft: 8 filing documents -> 6 passages
+  Meta: 8 filing documents -> 6 passages
+Collecting official newsroom feeds…
+  Microsoft: 69 in-scope newsroom articles
+  Meta: 37 in-scope newsroom articles
+Extracting 116 documents with 6 workers…
+  20/116 documents processed, 1 accepted records
+  40/116 documents processed, 5 accepted records
+  60/116 documents processed, 22 accepted records
+  80/116 documents processed, 24 accepted records
+  100/116 documents processed, 27 accepted records
+Consolidated 9 duplicate reports into existing signals (kept as corroborating sources)
+Done: 40 accepted records written; 25 held back (see data/review/m1_deep_dive_review.xlsx). Exa/Gemini calls live=0
