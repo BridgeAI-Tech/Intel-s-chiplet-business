@@ -142,7 +142,7 @@ async function CompetitorStrip() {
                 </li>
               ))}
             </ul>
-            <Link href="/competitive-radar?tab=shortlist" className="mt-2 inline-block text-xs text-accent">10 events shortlisted for research review →</Link>
+            <Link href="/competitive-radar?tab=events" className="mt-2 inline-block text-xs text-accent">Explore all competitive developments →</Link>
           </div>
         </div>
       </Panel>

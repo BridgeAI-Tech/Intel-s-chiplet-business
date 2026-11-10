@@ -14,7 +14,7 @@ export default async function IntelPortfolio() {
   const groups = Object.keys(CATEGORY).map((k) => ({ key: k, rows: rows.filter((r) => r.mapping_category === k) }));
   return (
     <>
-      <div className="mb-3 text-xs"><Link href="/?tab=assessment" className="text-accent">← Scoring & shortlist</Link></div>
+      <div className="mb-3 text-xs"><Link href="/" className="text-accent">← Emerging Demand Radar</Link></div>
       <SectionTitle title="Intel Portfolio & Technology Reference" scope={`${rows.length} entries`}>
         What Intel offers, used as the reference inventory for portfolio mapping. Each entry comes from an official Intel
         Foundry page and carries the verbatim passage it was taken from. Ecosystem partners are listed with the programme that

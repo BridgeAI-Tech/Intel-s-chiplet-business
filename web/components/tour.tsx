@@ -39,7 +39,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     sel: "#tour-tabs",
     t: "Intelligence Dimensions",
-    x: "Switch between Overview charts, Developments, Silicon Hiring by role, Partners & suppliers, Intel ties, SEC filings, Scoring & shortlist, and All sources.",
+    x: "Switch between Overview charts, Developments, Silicon Hiring by role, Partners & suppliers, Intel ties, SEC filings, and All sources.",
   },
   {
     sel: "#tour-summary-tiles",
@@ -291,7 +291,7 @@ export function TourBanner() {
             New to Intel Chiplet Market Signals? Take an interactive tour
           </span>
           <span className="block text-xs text-muted">
-            A quick 1-minute walkthrough explaining verified proof, silicon engineering hiring, and scoring.
+            A quick 1-minute walkthrough explaining verified proof, silicon engineering hiring, and ecosystem partners.
           </span>
         </div>
       </div>

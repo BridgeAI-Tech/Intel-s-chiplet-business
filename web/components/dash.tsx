@@ -9,7 +9,6 @@ export const TABS = [
   { key: "ecosystem", label: "Partners & suppliers", hint: "Foundries, packaging, memory, design tools" },
   { key: "intel", label: "Intel relationship", hint: "Existing ties to Intel, with sources" },
   { key: "filings", label: "SEC filings", hint: "Statements from official filings" },
-  { key: "assessment", label: "Scoring & shortlist", hint: "Stage, score, qualification and Intel fit" },
   { key: "evidence", label: "All sources", hint: "Every source document behind the numbers" },
 ] as const;
 

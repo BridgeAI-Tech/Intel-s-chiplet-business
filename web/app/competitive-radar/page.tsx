@@ -10,7 +10,6 @@ const TABS = [
   { key: "overview", label: "Overview", hint: "Charts and key numbers" },
   { key: "events", label: "Events", hint: "Every competitive development, with its source sentence" },
   { key: "tracker", label: "Foundry & packaging tracker", hint: "Process nodes, chiplets and advanced packaging" },
-  { key: "shortlist", label: "Shortlist for review", hint: "10 representative events selected for the research team" },
 ] as const;
 const TRACKER_TYPES = ["foundry_process_manufacturing", "chiplet_advanced_packaging"];
 
@@ -66,7 +65,6 @@ export default async function CompetitiveRadar({ searchParams }: PageProps<"/com
       </nav>
 
       {p.tab === "events" ? <Events p={p} scope={scope} /> : p.tab === "tracker" ? <Tracker p={p} scope={scope} />
-        : p.tab === "shortlist" ? <Shortlist p={p} />
         : <Overview p={p} scope={scope} list={list} />}
     </>
   );

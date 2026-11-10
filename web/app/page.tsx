@@ -9,7 +9,7 @@ export const instant = false;
 
 const SECTIONS = {
   summary: S.Summary, developments: S.Developments, hiring: S.Hiring, ecosystem: S.Ecosystem,
-  intel: S.IntelRelationship, filings: S.Filings, assessment: S.Assessment, evidence: S.EvidenceLake, sources: S.DataSources,
+  intel: S.IntelRelationship, filings: S.Filings, evidence: S.EvidenceLake, sources: S.DataSources,
 };
 
 export default async function Dashboard({ searchParams }: PageProps<"/">) {
