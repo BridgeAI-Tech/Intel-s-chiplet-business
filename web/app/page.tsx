@@ -2,7 +2,10 @@ import Link from "next/link";
 import { COMPANY_COLOR } from "@/components/charts";
 import { Chip, TABS, href, type Params } from "@/components/dash";
 import * as S from "@/components/sections";
+import { TourBanner } from "@/components/tour";
 import { WINDOW, moduleCompanies } from "@/lib/dashboard";
+
+export const instant = false;
 
 const SECTIONS = {
   summary: S.Summary, developments: S.Developments, hiring: S.Hiring, ecosystem: S.Ecosystem,
@@ -22,7 +25,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
+        <div id="tour-verified">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold">Emerging Demand Radar</h1>
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-800"
@@ -30,18 +33,11 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
           </div>
           <p className="text-xs text-muted">Cerebras, AWS, Meta, Microsoft and Tesla · {WINDOW.label}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link href={href(p, { tab: "sources" })} scroll={false}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${tab === "sources" ? "border-foreground bg-foreground text-white" : "border-border bg-surface hover:border-accent"}`}>
-            Where the data comes from
-          </Link>
-          <Link href="/competitive-radar" className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:border-accent">
-            Competitive Radar →
-          </Link>
-        </div>
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center gap-1.5">
+      <TourBanner />
+
+      <div id="tour-company-chips" className="mb-3 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-xs text-muted">Company:</span>
         <Chip to={href(p, { co: null })} active={!p.co}>All five</Chip>
         {companies.map((c) => (
@@ -52,7 +48,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/">) {
         {current && <Link href={`/companies/${current.company_id}`} className="ml-2 text-xs text-accent">Full company profile →</Link>}
       </div>
 
-      <nav className="-mx-4 mb-6 overflow-x-auto border-b border-border px-4">
+      <nav id="tour-tabs" className="-mx-4 mb-6 overflow-x-auto border-b border-border px-4">
         <div className="flex min-w-max gap-1">
           {TABS.map((t) => (
             <Link key={t.key} href={href(p, { tab: t.key, category: null, channel: null, platform: null })} scroll={false} title={t.hint}

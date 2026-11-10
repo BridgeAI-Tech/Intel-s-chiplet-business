@@ -3,6 +3,8 @@ import { Badge, Card, CompanyLink, PageHeader, SourceLink, humanize } from "@/co
 import { queryOne, parseJsonList } from "@/lib/db";
 import { eventSources } from "@/lib/data";
 
+export const instant = false;
+
 export default async function EventPage({ params }: PageProps<"/events/[type]/[id]">) {
   const { type, id } = await params;
   if (type !== "m1_signal" && type !== "m2_event") notFound();

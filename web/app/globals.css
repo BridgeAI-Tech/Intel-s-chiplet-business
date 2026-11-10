@@ -27,3 +27,81 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+/* Guided tour (matches hp-ph-bpo spotlight & popover style) */
+#tourRing {
+  position: fixed;
+  z-index: 120;
+  border: 3px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.45);
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+#tourPop {
+  position: fixed;
+  z-index: 121;
+  width: min(340px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+  padding: 16px;
+  color: var(--foreground);
+  transition: all 0.2s ease;
+}
+
+#tourPop h4 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+#tourPop p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+#tourPop .tbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#tourPop .tbar .n {
+  font-size: 11px;
+  font-family: var(--font-geist-mono), monospace;
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: auto;
+}
+
+#tourPop button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--foreground);
+  transition: background 0.15s ease;
+}
+
+#tourPop button:hover {
+  background: var(--accent-soft);
+}
+
+#tourPop button.primary {
+  background: var(--foreground);
+  color: #ffffff;
+  border-color: var(--foreground);
+}
+
+#tourPop button.primary:hover {
+  background: #000000;
+}

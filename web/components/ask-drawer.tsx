@@ -39,6 +39,18 @@ export function AskDrawer({ companies }: { companies: { company_id: string; shor
   useEffect(() => { if (open) field.current?.focus(); }, [open]);
   useEffect(() => { bottom.current?.scrollIntoView({ behavior: "smooth" }); }, [turns, busy]);
 
+  useEffect(() => {
+    const handleOpen = (e: Event) => {
+      setOpen(true);
+      const ce = e as CustomEvent<{ question?: string }>;
+      if (ce.detail?.question) {
+        ask(ce.detail.question);
+      }
+    };
+    window.addEventListener("open-ask-drawer", handleOpen as EventListener);
+    return () => window.removeEventListener("open-ask-drawer", handleOpen as EventListener);
+  }, [co, busy]);
+
   async function ask(q: string) {
     if (!q.trim() || busy) return;
     setInput("");
@@ -82,7 +94,7 @@ export function AskDrawer({ companies }: { companies: { company_id: string; shor
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)}
+        <button id="tour-ask-btn" onClick={() => setOpen(true)}
           className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black">
           <Sparkle /> Ask Intelligence
         </button>

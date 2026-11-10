@@ -25,6 +25,8 @@ function href(p: P, change: Partial<P>) {
   return s ? `/competitive-radar?${s}` : "/competitive-radar";
 }
 
+export const instant = false;
+
 export default async function CompetitiveRadar({ searchParams }: PageProps<"/competitive-radar">) {
   const sp = await searchParams;
   const str = (k: string) => (typeof sp[k] === "string" && sp[k] ? (sp[k] as string) : null);
@@ -36,7 +38,7 @@ export default async function CompetitiveRadar({ searchParams }: PageProps<"/com
   return (
     <>
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
+        <div id="tour-verified">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold">Competitive Movement Radar</h1>
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-800"
@@ -44,7 +46,6 @@ export default async function CompetitiveRadar({ searchParams }: PageProps<"/com
           </div>
           <p className="text-xs text-muted">Where custom-silicon business is landing and who is involved · {WINDOW.label}</p>
         </div>
-        <Link href="/" className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium hover:border-accent">← Emerging Demand Radar</Link>
       </div>
 
       <div className="mb-3 flex flex-wrap items-center gap-1.5">

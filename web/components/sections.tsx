@@ -37,7 +37,7 @@ export async function Summary({ p, scope }: Props) {
         ))}
       </ol>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+      <div id="tour-summary-tiles" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <Tile label="Chip developments" value={k.signals} note="News, filings and announcements found" />
         <Tile label="Confirmed" value={k.confirmed} note="Already happened, officially stated" />
         <Tile label="Announced plans" value={k.intents} note="Officially announced, not yet done" />

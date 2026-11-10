@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Card, Empty, PageHeader, SourceLink, Table, Td, humanize } from "@/components/ui";
 import { evidenceDetail, evidenceList, sourceTypes } from "@/lib/data";
 
+export const instant = false;
+
 export default async function EvidenceLibrary({ searchParams }: PageProps<"/evidence">) {
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q : "";

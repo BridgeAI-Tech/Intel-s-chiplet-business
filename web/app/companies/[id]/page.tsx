@@ -4,6 +4,8 @@ import { Badge, Card, Empty, PageHeader, SourceLink, Table, Td, humanize } from 
 import { parseJsonList } from "@/lib/db";
 import { company, companyEvidence, events, hiring, programmesFor, relationships } from "@/lib/data";
 
+export const instant = false;
+
 export default async function CompanyPage({ params }: PageProps<"/companies/[id]">) {
   const { id } = await params;
   const c = await company(id);

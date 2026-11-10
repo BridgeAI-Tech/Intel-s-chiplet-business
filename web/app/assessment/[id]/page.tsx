@@ -4,6 +4,8 @@ import { AssessmentDetail } from "@/components/assessment";
 import { SectionTitle } from "@/components/dash";
 import * as sc from "@/lib/scoring";
 
+export const instant = false;
+
 export default async function AssessmentPage({ params }: PageProps<"/assessment/[id]">) {
   const { id } = await params;
   const [cfg, [a]] = await Promise.all([sc.activeConfig(), sc.assessments(id)]);

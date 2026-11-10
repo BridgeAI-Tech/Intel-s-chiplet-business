@@ -3,6 +3,8 @@ import { Panel, SectionTitle } from "@/components/dash";
 import { SourceLink, Table, Td, humanize } from "@/components/ui";
 import { offerings } from "@/lib/scoring";
 
+export const instant = false;
+
 const CATEGORY: Record<string, string> = {
   foundry_process: "Foundry / Process", design_ip: "Design / IP / Design Enablement", advanced_packaging: "Advanced Packaging / Chiplet Integration",
 };

@@ -3,6 +3,8 @@ import { Badge, Card, CompanyLink, Empty, PageHeader, Table, Td, humanize } from
 import { query } from "@/lib/db";
 import { companies } from "@/lib/data";
 
+export const instant = false;
+
 type Stat = { company_id: string; signals: number; postings: number; relationships: number; latest: string | null };
 
 export default async function EmergingDemand({ searchParams }: PageProps<"/emerging-demand">) {
