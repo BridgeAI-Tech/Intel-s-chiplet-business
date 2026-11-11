@@ -180,10 +180,9 @@ def theirstack_companies(store, limit):
             "company_name_partial_match_not": [n for n in KNOWN["poc"] + KNOWN["established_chip_vendor"] if len(n) >= 5],
             "company_type": "direct_employer", "min_num_jobs_found": 2,
             "order_by": [{"field": "num_jobs_found", "desc": True}], "limit": limit, "page": 0}
-    headers = {"Authorization": f"Bearer {env('THEIRSTACK_API_KEY')}", "Content-Type": "application/json"}
     status, payload, _ = store.fetch("theirstack", "companies_search", body, None,
-                                     _json_call("POST", "https://api.theirstack.com/v1/companies/search",
-                                                headers=headers, json=body))
+                                     TheirStack(store).call("POST", "https://api.theirstack.com/v1/companies/search",
+                                                            json=body))
     if status != 200:
         print(f"  theirstack companies: HTTP {status} {str(payload)[:300]}")
         return []

@@ -203,8 +203,11 @@ export async function providers(co: string | null) {
       SELECT provider, COUNT(*) AS calls, SUM(http_status = 200) AS ok, MAX(fetched_at) AS last
       FROM raw_provider_record ${s.sql} GROUP BY 1 ORDER BY calls DESC`, s.args),
     query<Record<string, string | number | null>>(`
-      SELECT pipeline, started_at, finished_at, status, records_out FROM pipeline_run
-      WHERE pipeline NOT LIKE '%probe%' ORDER BY started_at DESC LIMIT 12`),
+      SELECT pipeline, started_at, finished_at, status, records_out FROM pipeline_run p
+      WHERE pipeline IN ('m1_news', 'm1_deep_dive', 'm1_hiring', 'm2_events', 'intel_reference')
+        AND status IN ('succeeded', 'running')
+        AND started_at = (SELECT MAX(started_at) FROM pipeline_run q WHERE q.pipeline = p.pipeline AND q.status IN ('succeeded', 'running'))
+      ORDER BY started_at DESC`),
   ]);
   return { byProvider, runs };
 }

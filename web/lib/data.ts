@@ -87,7 +87,9 @@ export async function programmesFor(companyIds: string[]) {
   await fresh();
   if (!companyIds.length) return [];
   return query<Record<string, string | number | null>>(
-    `SELECT p.*, c.short_name FROM programme_master p JOIN company_master c USING (company_id)
+    `SELECT p.*, c.short_name, ps.stage, ps.stage_label, ps.rationale AS stage_rationale, ps.evidence AS stage_evidence
+     FROM programme_master p JOIN company_master c USING (company_id)
+     LEFT JOIN programme_stage ps ON ps.programme_id = p.programme_id
      WHERE p.company_id IN (${companyIds.map(() => "?").join(",")}) ORDER BY c.short_name, p.name`,
     companyIds,
   );

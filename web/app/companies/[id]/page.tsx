@@ -55,18 +55,25 @@ export default async function CompanyPage({ params }: PageProps<"/companies/[id]
           {c.matching_notes && <p className="mt-2 text-xs text-muted">{c.matching_notes}</p>}
         </Card>
 
-        <Card title="Silicon programmes (reference list)">
+        <Card title="Silicon programmes and their stage">
           {programmes.length ? (
-            <ul className="space-y-1 text-sm">
+            <ul className="space-y-3 text-sm">
               {programmes.map((p) => (
                 <li key={String(p.programme_id)}>
-                  <span className="font-medium">{String(p.name)}</span>{" "}
-                  <span className="text-xs text-muted">{humanize(String(p.programme_type))}</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium">{String(p.name)}</span>
+                    <span className="text-xs text-muted">{humanize(String(p.programme_type))}</span>
+                    {p.stage ? <span className="rounded-full border border-accent/40 bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent"
+                        title={String(p.stage_rationale ?? "")}>Stage {String(p.stage)} · {String(p.stage_label)}</span>
+                      : <span className="text-[11px] text-muted">Stage not assessed (no linked records)</span>}
+                  </div>
+                  {p.stage_rationale && <p className="mt-0.5 text-xs text-muted">{String(p.stage_rationale)}</p>}
                 </li>
               ))}
             </ul>
           ) : <Empty>No programmes listed.</Empty>}
-          <p className="mt-2 text-xs text-muted">Search terms for the pipelines, not evidence. Programme facts appear in the signals below.</p>
+          <p className="mt-2 text-xs text-muted">Stage per programme from fixed rules on its linked records (stage 4–5 need at least
+            two records, one confirmed). The programme names are also the search terms for the pipelines.</p>
         </Card>
       </div>
 

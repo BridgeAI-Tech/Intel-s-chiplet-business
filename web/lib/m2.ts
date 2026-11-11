@@ -13,7 +13,7 @@ function scope(co: string | null) {
 
 export type M2Event = {
   event_id: string; company_id: string; short_name: string; event_type: string; event_title: string; summary: string | null;
-  event_date: string | null; publication_date: string | null; evidence_class: string; counterparty_name: string | null;
+  event_date: string | null; publication_date: string | null; evidence_class: string; counterparty_name: string | null; counterparty_excerpt: string | null;
   product_or_programme: string | null; architecture_or_node: string | null; packaging_or_interconnect: string | null;
   commercial_stage: string | null; excerpt: string | null; url: string; source_name: string | null; source_type: string; sources: number;
 };
@@ -83,7 +83,7 @@ export async function m2Events(co: string | null, opts: { type?: string; types?:
   if (opts.cls) { where.push("e.evidence_class = ?"); args.push(opts.cls); }
   return query<M2Event>(`
     SELECT e.event_id, e.company_id, c.short_name, e.event_type, e.event_title, e.summary, e.event_date, e.publication_date,
-      e.evidence_class, e.counterparty_name, e.product_or_programme, e.architecture_or_node, e.packaging_or_interconnect,
+      e.evidence_class, e.counterparty_name, e.counterparty_excerpt, e.product_or_programme, e.architecture_or_node, e.packaging_or_interconnect,
       e.commercial_stage, rs.excerpt, se.url, se.source_name, se.source_type,
       (SELECT COUNT(*) FROM record_source x WHERE x.record_type = 'm2_event' AND x.record_id = e.event_id) AS sources
     FROM m2_competitive_event e JOIN company_master c USING (company_id)
@@ -106,7 +106,7 @@ export async function m2EventsByIds(ids: string[]) {
   if (!ids.length) return [];
   return query<M2Event>(`
     SELECT e.event_id, e.company_id, c.short_name, e.event_type, e.event_title, e.summary, e.event_date, e.publication_date,
-      e.evidence_class, e.counterparty_name, e.product_or_programme, e.architecture_or_node, e.packaging_or_interconnect,
+      e.evidence_class, e.counterparty_name, e.counterparty_excerpt, e.product_or_programme, e.architecture_or_node, e.packaging_or_interconnect,
       e.commercial_stage, rs.excerpt, se.url, se.source_name, se.source_type,
       (SELECT COUNT(*) FROM record_source x WHERE x.record_type = 'm2_event' AND x.record_id = e.event_id) AS sources
     FROM m2_competitive_event e JOIN company_master c USING (company_id)

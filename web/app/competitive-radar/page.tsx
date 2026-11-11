@@ -254,6 +254,12 @@ function EventCard({ e, compact }: { e: m.M2Event; compact?: boolean }) {
           “{compact ? e.excerpt.slice(0, 220) + (e.excerpt.length > 220 ? "…" : "") : e.excerpt}”
         </blockquote>
       )}
+      {!compact && e.counterparty_excerpt && (
+        <blockquote className="mt-2 rounded-md border border-emerald-200 bg-emerald-50/60 p-2 text-xs">
+          <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800">Where the source names {e.counterparty_name}</div>
+          “{e.counterparty_excerpt.trim().replace(/^[“"]+|[”"]+$/g, "")}”
+        </blockquote>
+      )}
       <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 pt-3 text-xs text-muted">
         <span>{e.event_date ? (e.event_date > today ? `Target ${e.event_date}` : `Event ${e.event_date}`) : `Published ${e.publication_date}`}</span>
         <span>{humanize(e.source_type)}</span>

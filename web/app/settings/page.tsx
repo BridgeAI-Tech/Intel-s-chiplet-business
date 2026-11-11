@@ -13,7 +13,7 @@ export default async function Settings({ searchParams }: PageProps<"/settings">)
   const error = typeof sp.error === "string" ? sp.error : null;
   return (
     <>
-      <div className="mb-3 text-xs"><Link href="/?tab=assessment" className="text-accent">← Scoring & shortlist</Link></div>
+      <div className="mb-3 text-xs"><Link href="/" className="text-accent">← Emerging Demand Radar</Link></div>
       <SectionTitle title="Scoring settings" scope={`Active: ${cfg.version}`}>
         The scoring calculation, rating scale and qualification thresholds from the research framework (Version 1). Saving
         creates a new version and re-scores every company straight away — the evidence-based ratings stay the same, only

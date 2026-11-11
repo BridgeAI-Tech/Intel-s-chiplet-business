@@ -1,0 +1,28 @@
+URL: https://www.intel.com/content/www/us/en/foundry/accelerator/design-services-alliance.html
+TITLE: Design Services Alliance - Intel Foundry Accelerator
+CAPTURED: 2026-11-11 (browser)
+---
+Design Services Alliance
+
+Design Services include but are not limited to silicon design, silicon validation, package design, post silicon testing, product engineering, platform services and sustaining support.
+
+Supporting Rapid Adoption of Leading-Edge Process Technologies
+
+Intel Foundry Accelerator Design Services partners are well-trained engineers and program managers who support complex SoC and ASIC processes. They complement the engineering team, help address the challenges of adopting the new leading-edge process technologies and minimize unexpected design and manufacturing costs that stand in the way of a successful silicon design execution.
+
+The Intel Foundry Accelerator - Design Services Alliance has been established to help our customers accelerate their silicon-product ideas into successful production. The members of the Design Services Alliance meet stringent criteria to assure high quality and reliability on Intel process technology. Design Services scope is versatile, with specialties ranging from analog and digital physical designs to post silicon tests and bring-up services to low-level system software.
+
+Depending on customer needs, experts from the Design Services Alliance can assist in different stages such as design, verification, implementation, emulation, and post silicon services. Moreover, they can interface with manufacturing and appropriate OSATs to enable end-to-end co-development (RTL to tested products), and power up next generation silicon solutions.
+
+The Current Partners of Intel Foundry Accelerator - Design Services Alliance Include:
+See More Intel Foundry Design Ecosystem Options
+Back to Accelerator overview
+Let's Build the Future Together
+Contact Intel Foundry Accelerator
+Intel Foundry Portal
+
+Sign in
+
+Notices and Disclaimers
+
+Other names and brands may be claimed as the property of others.

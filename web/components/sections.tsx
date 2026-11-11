@@ -430,6 +430,8 @@ export async function DataSources({ p, scope }: Props) {
     theirstack: ["TheirStack", "Recent silicon job postings for Meta, Microsoft, Google, Apple, IBM, Cisco, Nokia, Samsung (sample of ~20 each)"],
     explorium: ["Explorium", "Firmographics: domain, LinkedIn, HQ, business units"],
     google_news: ["Google News RSS", "Probe only — not used as evidence"],
+    coresignal: ["CoreSignal", "Job records for the Signal Sweep name list (task 5) — not counted on this dashboard"],
+    web: ["Direct page reads", "Company newsrooms, RSS feeds and Intel Foundry pages, read as published"],
   };
   return (
     <>
@@ -446,7 +448,7 @@ export async function DataSources({ p, scope }: Props) {
         ))}
       </div>
       <div className="mt-4">
-        <Panel title="Latest pipeline runs">
+        <Panel title="Latest run of each pipeline">
           <Table head={["Pipeline", "Started", "Status", "Records published"]}>
             {runs.map((r) => (
               <tr key={String(r.started_at) + r.pipeline}>

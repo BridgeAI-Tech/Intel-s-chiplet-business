@@ -63,8 +63,10 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
   const relCols = ["c.short_name", "sp.name", "r.relationship_type", "r.summary"];
   const rels = await query<Record<string, string | number | null>>(
     `SELECT r.relationship_id, r.company_id, c.short_name, sp.name, r.relationship_type, r.summary, r.evidence_class,
-            COALESCE(r.event_date, r.publication_date) AS d, (${score(relCols)}) AS sc
+            COALESCE(r.event_date, r.publication_date) AS d, (${score(relCols)}) AS sc, rs.excerpt, se.url
      FROM company_relationship r JOIN company_master c USING (company_id) JOIN supplier_partner_master sp USING (supplier_id)
+     LEFT JOIN record_source rs ON rs.record_type = 'relationship' AND rs.record_id = r.relationship_id AND rs.source_role = 'primary'
+     LEFT JOIN source_evidence se ON se.source_id = rs.source_id
      WHERE r.company_id IN ${FOCUS_SQL} AND (${like(relCols).join(" OR ")}) ORDER BY sc DESC LIMIT 15`,
     [...args(relCols), ...args(relCols)]);
 
@@ -72,7 +74,10 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
   const jobs = await query<Record<string, string | number | null>>(
     `SELECT c.short_name, c.company_id, h.role_category, COUNT(*) AS n,
             MIN(COALESCE(h.posting_date, h.first_observed_date)) AS first_d,
-            MAX(COALESCE(h.posting_date, h.first_observed_date)) AS last_d
+            MAX(COALESCE(h.posting_date, h.first_observed_date)) AS last_d,
+            (SELECT se.url FROM hiring_posting h2 JOIN source_evidence se ON se.source_id = h2.source_id
+             WHERE h2.company_id = h.company_id AND h2.role_category = h.role_category
+             ORDER BY COALESCE(h2.posting_date, h2.first_observed_date) DESC LIMIT 1) AS url
      FROM hiring_posting h JOIN company_master c USING (company_id)
      WHERE h.company_id IN ${FOCUS_SQL} AND (${like(jobCols).join(" OR ")}) GROUP BY 1, 2, 3 ORDER BY n DESC LIMIT 20`, args(jobCols));
 
@@ -112,13 +117,14 @@ export async function retrieve(question: string, limit = 40): Promise<Doc[]> {
   }));
   rels.forEach((r) => docs.push({
     ref: "", kind: `relationship · ${r.relationship_type}`, company: String(r.short_name), title: `${r.short_name} ↔ ${r.name}`,
-    text: String(r.summary ?? ""), date: r.d as string | null, evidence_class: r.evidence_class as string, url: null,
+    text: `${r.summary ?? ""}${r.excerpt ? ` Source excerpt: "${r.excerpt}"` : ""}`, date: r.d as string | null,
+    evidence_class: r.evidence_class as string, url: (r.url as string | null) ?? null,
     link: `/companies/${r.company_id}`,
   }));
   jobs.forEach((j) => docs.push({
     ref: "", kind: "hiring aggregate", company: String(j.short_name), title: `${j.short_name}: ${j.n} silicon postings in ${j.role_category}`,
     text: `${j.n} open or recent silicon-relevant job postings classified as ${j.role_category}, posted or first observed between ${j.first_d} and ${j.last_d}. Vacancies are not confirmed hires.`,
-    date: j.last_d as string | null, evidence_class: null, url: null, link: `/companies/${j.company_id}`,
+    date: j.last_d as string | null, evidence_class: null, url: (j.url as string | null) ?? null, link: `/?co=${j.company_id}&tab=hiring`,
   }));
   companyFacts.forEach((f) => {
     let ex = String(f.excerpt);

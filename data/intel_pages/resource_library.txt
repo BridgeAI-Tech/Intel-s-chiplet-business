@@ -1,0 +1,74 @@
+URL: https://www.intel.com/content/www/us/en/foundry/library/overview.html
+TITLE: Foundry Resource Library
+CAPTURED: 2026-11-11 (browser)
+---
+Newsletter Sign Up
+Peek Inside Intel Foundry Resources
+
+ 
+
+ 
+
+TALKING TECH + INTEL TECHNOLOGY
+
+The Road to Panther Lake:
+Intel 18A Process Node
+
+Panther Lake is the first processor to use the Intel 18A process node. Take a deeper look at this cutting-edge manufacturing technology and why it’s so important for next-gen processors in this episode of Talking Tech.
+
+Hear about why we chose to implement two fundamentally new technologies in this node, debuting RibbonFET gate-all-around transistors and PowerVia backside power delivery and learn how to enable customers with EDA tools, the nuances of MIM capacitors, and what’s coming next with 18A-P and 18A-PT nodes. Ready to take the next step, contact Intel Foundry today.
+
+ 
+
+Watch to learn more
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Read the latest from Intel Foundry
+Driving power delivery innovations for the AI data center era
+
+Intel Foundry offers a broad portfolio of technologies for silicon and system architects to optimize power delivery to specific design requirements.
+
+Accelerating AI and HPC with advanced process and packaging technologies
+
+Intel Foundry offers a unique portfolio of process nodes, technologies, and packaging solutions to help AI and HPC silicon companies scale their performance.
+
+Advancing microelectronics for aerospace, defense, and government
+
+Intel Foundry's process nodes, technologies, and packaging solutions enable high-performance analog/digital designs.
+
+Intel 18A process node family
+
+The Intel 18A process node family delivers an industry-first foundry platform built for modern compute workloads.
+
+EMIB revolutionizes chip packaging interconnect technology
+
+Discover how EMIB delivers high-bandwidth communications when integrating multiple dies (chips) into a single package.
+
+Foveros 2.5D packaging technology enables complex chip designs
+
+Foveros 2.5D advanced packaging technology enables more compact chip designs, with chip-on-chip bonding for interconnect density.
+
+Foveros Direct 3D revolutionizes chip integration for AI and HPC
+
+Foveros Direct 3D advanced packaging technology uses ultra-high density interconnects via direct copper-to-copper bonding to enable increased performance.
+
+Cutting-Edge Process Technologies for Data Center
+
+Intel Xeon 6+ processors, formerly codenamed Clearwater Forest, deliver Intel 18A and advanced chiplet packaging to the data center.
+
+Let's Build the Future Together
+Contact Intel Foundry today
+Intel Foundry Portal
+
+Sign in

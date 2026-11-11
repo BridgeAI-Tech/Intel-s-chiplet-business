@@ -11,6 +11,8 @@ Usage:
 """
 import argparse
 import json
+import re
+import time
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
@@ -29,14 +31,28 @@ from chiplet.sources.store import RawStore, utc_now
 
 WINDOW_START = "2025-11-01"
 PREDICTLEADS_TARGETS = [("cmp_cerebras", "cerebras.ai", "Cerebras Systems"), ("cmp_tesla", "tesla.com", "Tesla"),
-                        ("cmp_tenstorrent", "tenstorrent.com", "Tenstorrent")]
-MAX_PAGES = 20
+                        ("cmp_tenstorrent", "tenstorrent.com", "Tenstorrent"),
+                        # Full 12-month pulls (Nov 2026) for the companies that first had only a TheirStack sample.
+                        ("cmp_meta", "meta.com", "Meta"), ("cmp_microsoft", "microsoft.com", "Microsoft"),
+                        ("cmp_google", "google.com", "Google"), ("cmp_apple", "apple.com", "Apple"),
+                        ("cmp_ibm", "ibm.com", "IBM"), ("cmp_cisco", "cisco.com", "Cisco"),
+                        ("cmp_nokia", "nokia.com", "Nokia"), ("cmp_samsung_electronics", "samsung.com", "Samsung Electronics")]
+MAX_PAGES = 40   # 1,000 postings per page, 1 PredictLeads credit per page
 # TheirStack (1 credit per job): a recent sample per company where PredictLeads was not used. (pages, page size)
 # Meta's postings are listed under facebook.com. Page 0 of size 10 for Meta was the paid test call (cached).
 THEIRSTACK_TARGETS = [("cmp_meta", "facebook.com", "Meta", 2, 10), ("cmp_microsoft", "microsoft.com", "Microsoft", 1, 20),
                       ("cmp_google", "google.com", "Google", 1, 20), ("cmp_apple", "apple.com", "Apple", 1, 20),
                       ("cmp_ibm", "ibm.com", "IBM", 1, 20), ("cmp_cisco", "cisco.com", "Cisco", 1, 20),
                       ("cmp_nokia", "nokia.com", "Nokia", 1, 20), ("cmp_samsung_electronics", "samsung.com", "Samsung Electronics", 1, 20)]
+# The 8 large companies post tens of thousands of roles a year (Microsoft ~30k, IBM ~30k); the loose description
+# pre-filter lets ~14k through, mostly security "SOC", IT and software roles. For them a posting must carry a chip
+# role in its title before it is classified.
+LARGE_EMPLOYERS = {"cmp_meta", "cmp_microsoft", "cmp_google", "cmp_apple", "cmp_ibm", "cmp_cisco", "cmp_nokia",
+                   "cmp_samsung_electronics"}
+CHIP_TITLE = re.compile(
+    r"\b(asic|rtl|dft|chiplet|tape-?out|post-silicon|pre-silicon|advanced packaging|packaging engineer|microarchitect\w*|"
+    r"soc (design|architect\w*|verification|physical)|(cpu|gpu|silicon|soc) architect\w*|silicon|"
+    r"design verification|physical design|asic physical)\b", re.I)
 JOB_BOARDS = ("linkedin.com", "naukri.com", "indeed.", "glassdoor.", "recruitics.com", "ziprecruiter.", "monster.")
 
 
@@ -63,9 +79,9 @@ def predictleads_jobs(store, cid, domain):
                 "last_seen": a.get("last_seen_at"), "status": a.get("status"),
                 "contract": ", ".join(a.get("contract_types") or []) or None,
             })
-        count = (payload.get("meta") or {}).get("count") or 0
-        print(f"  {domain} page {page}: {len(data)} jobs (window total {count})")
-        if len(data) < 1000 or page * 1000 >= count:
+        count = (payload.get("meta") or {}).get("count")   # schema 3.3 no longer returns a total
+        print(f"  {domain} page {page}: {len(data)} jobs" + (f" (window total {count})" if count else ""))
+        if len(data) < 1000 or (count and page * 1000 >= count):
             break
     return jobs
 
@@ -141,11 +157,17 @@ def classify(run_id, cid, company_name, job):
     conn = connect()
     ex = Extractor(RawStore(conn, "m1_hiring", run_id=run_id))
     try:
-        result, verified, _ = ex.classify_job(title=job["title"], description=job["description"],
-                                              location=job["location"], company_name=company_name, company_id=cid)
-        return job, result, verified, None
-    except ExtractionError as e:
-        return job, None, False, str(e)
+        for attempt in range(3):
+            try:
+                result, verified, _ = ex.classify_job(title=job["title"], description=job["description"],
+                                                      location=job["location"], company_name=company_name, company_id=cid)
+                return job, result, verified, None
+            except ExtractionError as e:
+                return job, None, False, str(e)
+            except Exception as e:   # dropped connection / timeout: retry, then hold the posting back, never stop the run
+                if attempt == 2:
+                    return job, None, False, f"{type(e).__name__}: {e}"
+                time.sleep(5 * (attempt + 1))
     finally:
         conn.close()
 
@@ -153,6 +175,7 @@ def classify(run_id, cid, company_name, job):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--only", help="comma-separated company_ids to collect (others are left as they are)")
     ap.add_argument("--theirstack-only", action="store_true",
                     help="collect only the TheirStack sample (earlier PredictLeads / amazon.jobs postings stay as they are)")
     args = ap.parse_args()
@@ -161,15 +184,22 @@ def main():
     today = utc_now()[:10]
     recent = (datetime.now(timezone.utc) - timedelta(days=10)).strftime("%Y-%m-%d")
 
+    only = set(args.only.split(",")) if args.only else None
+    want = lambda cid: only is None or cid in only
     targets = []
     if not args.theirstack_only:
         for cid, domain, name in PREDICTLEADS_TARGETS:
-            targets += [(cid, name, j) for j in predictleads_jobs(store, cid, domain)]
-        targets += [("cmp_aws", "Amazon Web Services (Annapurna Labs)", j) for j in amazon_jobs(store)]
+            if want(cid):
+                targets += [(cid, name, j) for j in predictleads_jobs(store, cid, domain)]
+        if want("cmp_aws"):
+            targets += [("cmp_aws", "Amazon Web Services (Annapurna Labs)", j) for j in amazon_jobs(store)]
     for cid, domain, name, pages, size in THEIRSTACK_TARGETS:
-        targets += [(cid, name, j) for j in theirstack_jobs(store, cid, domain, pages, size)]
+        if want(cid):
+            targets += [(cid, name, j) for j in theirstack_jobs(store, cid, domain, pages, size)]
 
-    candidates = [(cid, name, j) for cid, name, j in targets if job_may_be_silicon(j["title"], j["description"])]
+    candidates = [(cid, name, j) for cid, name, j in targets
+                  if (CHIP_TITLE.search(j["title"] or "") if cid in LARGE_EMPLOYERS and j["provider"] == "predictleads"
+                      else job_may_be_silicon(j["title"], j["description"]))]
     print(f"{len(targets)} postings collected, {len(candidates)} pass the silicon pre-filter; classifying…")
 
     stored, review = 0, []
@@ -183,6 +213,11 @@ def main():
                 continue
             if not verified:
                 review.append([cid, job["title"], job["url"], "excerpt not found in posting", result.excerpt])
+                continue
+            dedup = job_dedup_key(cid, job["title"], job["location"], job["description"])
+            same = conn.execute("SELECT provider FROM hiring_posting WHERE company_id = ? AND dedup_key = ? AND provider != ?",
+                                (cid, dedup, job["provider"])).fetchone()
+            if same:   # the same role already stored from another provider
                 continue
             posted = parse_date(job["posting_date"])
             first = parse_date(job["first_seen"])
@@ -202,7 +237,7 @@ def main():
                            last_observed_date, posting_status, source_id, raw_record_id, run_id)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (stable_id("job", job["provider"], job["provider_job_id"]), cid, job["provider"],
-                     job["provider_job_id"], job_dedup_key(cid, job["title"], job["location"], job["description"]),
+                     job["provider_job_id"], dedup,
                      job["original_title"], result.normalised_title, result.job_function, result.role_category.value,
                      result.seniority.value, job["location"], result.department or job.get("department"),
                      result.excerpt, json.dumps(result.programme_keywords), job["contract"],
@@ -218,7 +253,9 @@ def main():
         ws.append(row)
     REVIEW_DIR.mkdir(parents=True, exist_ok=True)
     # A TheirStack-only run gets its own sheet so the earlier review is kept.
-    wb.save(REVIEW_DIR / ("m1_hiring_review_theirstack.xlsx" if args.theirstack_only else "m1_hiring_review.xlsx"))
+    name = ("m1_hiring_review_theirstack.xlsx" if args.theirstack_only else
+            "m1_hiring_review_full_pull.xlsx" if only else "m1_hiring_review.xlsx")
+    wb.save(REVIEW_DIR / name)
     print(f"Done: {stored} silicon postings stored; {len(review)} held back. calls live={store.live_calls}")
 
 

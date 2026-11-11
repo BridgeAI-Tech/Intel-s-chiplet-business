@@ -1,0 +1,58 @@
+URL: https://www.intel.com/content/www/us/en/foundry/research.html
+TITLE: Industry-Leading Research at Intel Foundry
+CAPTURED: 2026-11-11 (browser)
+---
+Industry-Leading Research at Intel Foundry
+
+Research drives our long-term competitiveness and differentiation. To address the toughest challenges facing semiconductor customers in the AI era, we make continuous investments in materials, transistor architectures, packaging, and manufacturing. Discover the future unfolding now at Intel Foundry.
+
+Explore Our Cutting-Edge Research
+From breakthrough process and packaging technologies to innovations powering high-performance computing and advanced communications, our more than 70,000 active patent assets span every layer of the technology stack. Discover how Intel Foundry is driving progress in compute-intensive applications like AI and HPC, enabling more efficient electronics, and laying the groundwork for the next generation of computing systems.
+Logic
+
+We have introduced several pioneering innovations in transistor architecture and interconnect technologies to advance Moore's Law toward the angstrom era.
+
+Learn more
+
+System Technology Elements
+
+Chipmakers are shifting to system-centric strategies to meet the performance, efficiency, thermal, and reliability demands of today's workloads. Our R&D focuses on optimizing architecture, design, processes, controls, automation, and data systems for system-level targets.
+
+Learn more
+
+Heterogeneous Integration
+
+We have driven significant innovations in heterogeneous integration by developing throughput breakthroughs, materials innovation, and system-level packaging advances to optimize cost and performance for advanced, high-density applications.
+
+Learn more
+
+Packaging & Test
+
+We are developing new ways to unlock larger, more powerful chiplet-based designs with improved cost, performance, and power efficiency. Our work focuses on new materials and advanced packaging technologies to meet the most demanding solution requirements.
+
+Learn more
+
+Quantum
+
+We continue to use our high-volume silicon manufacturing expertise to research scalable quantum hardware and control systems. Silicon spin qubits lay the groundwork for quantum practicality while our innovative cryogenic control chip reduces wiring bottlenecks.
+
+Learn more
+
+Integrated Photonics
+
+After years of R&D, we were the first to mass produce integrated photonics modules for data centers. We continue to develop advancements in integrating lasers and optics into silicon using standard chip manufacturing.
+
+Learn more
+
+From Blueprint to Build
+
+At ECTC 2026, Intel Foundry researchers revealed new breakthroughs enabling hyper-large-form-factor chip packages.
+
+Learn more in the Intel Foundry Blog
+
+	
+Let's Build the Future Together
+Contact Intel Foundry today
+Intel Foundry Portal
+
+Sign in

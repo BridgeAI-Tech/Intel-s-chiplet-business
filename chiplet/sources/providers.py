@@ -145,9 +145,32 @@ class TheirStack:
         r"analog design|analog ic|mixed-signal|mixed signal|mtia|maia|tpu |axion|trainium|graviton",
     ]
 
+    # Several accounts can be pooled: keys are used in this order, moving on when one runs out of credits.
+    KEY_VARS = ("THEIRSTACK_API_KEY", "THEIRSTACK_API_KEY_2")
+
     def __init__(self, store):
         self.store = store
-        self.headers = {"Authorization": f"Bearer {env('THEIRSTACK_API_KEY')}", "Content-Type": "application/json"}
+        self.keys = [k for k in (env(v) for v in self.KEY_VARS) if k]
+        self.active = 0
+
+    @property
+    def headers(self):
+        return {"Authorization": f"Bearer {self.keys[self.active]}", "Content-Type": "application/json"}
+
+    @staticmethod
+    def _out_of_credits(status, payload):
+        return status == 402 or (status in (403, 429) and "credit" in str(payload).lower())
+
+    def call(self, method, url, json=None):
+        """A store.fetch callable that switches to the next key when the current account has no credits left."""
+        def run():
+            while True:
+                status, payload = _json_call(method, url, headers=self.headers, json=json)()
+                if self._out_of_credits(status, payload) and self.active + 1 < len(self.keys):
+                    self.active += 1
+                    continue
+                return status, payload
+        return run
 
     @classmethod
     def body(cls, domain, posted_from, limit, page=0, count=False):
@@ -156,8 +179,15 @@ class TheirStack:
 
     def jobs(self, company_id, domain, posted_from, limit, page=0, count=False):
         body = self.body(domain, posted_from, limit, page, count)
-        return self.store.fetch("theirstack", f"jobs:{domain}", body, company_id,
-                                _json_call("POST", self.URL, headers=self.headers, json=body))
+        return self.store.fetch("theirstack", f"jobs:{domain}", body, company_id, self.call("POST", self.URL, json=body))
 
     def credit_balance(self):
-        return _json_call("GET", "https://api.theirstack.com/v0/billing/credit-balance", headers=self.headers)()
+        """API credits left per key, in the order the keys are used."""
+        out = []
+        for i, key in enumerate(self.keys):
+            status, payload = _json_call("GET", "https://api.theirstack.com/v0/billing/credit-balance",
+                                         headers={"Authorization": f"Bearer {key}"})()
+            left = payload.get("api_credits", 0) - payload.get("used_api_credits", 0) if status == 200 else None
+            out.append({"key": self.KEY_VARS[i], "status": status, "credits_left": left,
+                        "expires": payload.get("earliest_expiration") if status == 200 else None})
+        return out

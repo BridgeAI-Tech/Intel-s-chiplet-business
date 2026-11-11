@@ -1,0 +1,72 @@
+URL: https://www.intel.com/content/www/us/en/foundry/overview.html
+TITLE: Semiconductor Manufacturing Company for the AI Era
+CAPTURED: 2026-11-11 (browser)
+---
+Newsletter Sign Up
+Play Video
+Yours For The Making
+
+Intel Foundry is providing the technology foundations for the AI Era. We offer world-class process nodes, industry-leading packaging and test technologies, and a rich portfolio of semiconductor and systems IP. We work alongside customers to energize architectures and accelerate innovation. We deliver this with sustainability-informed manufacturing practices and a global, resilient, secure supply chain.
+
+With Intel Foundry, the AI Era is yours for the making.
+
+Process Technologies	Advanced Packaging & Test	Manufacturing	Ecosystem	Research	Shuttle	Contact Us	Foundry Portal Sign In
+	
+Process Technologies
+
+Take advantage of world-class process innovation. We’re delivering advancements beyond traditional node scaling, with a comprehensive IP portfolio and trusted ecosystem partners.
+
+Learn more
+
+	
+Advanced Packaging & Test
+
+Combine front-end and back-end technologies to create solutions optimized at the system level with our leadership in 2D, 2.5D, and 3D packaging. Utilize our full suite of testing services, from wafer sort to final test, with specialized solutions like singulated die test and industry-leading test equipment capacity.
+
+Learn more
+
+	
+Manufacturing
+
+Leverage a robust, geo-diverse, secure, and expanding supply for wafers and assembly & test. Our leadership in sustainability helps our customers meet their targets and regulatory requirements.
+
+Learn more
+
+	
+Intel Foundry Accelerator Ecosystem Alliances
+
+Enjoy comprehensive support in key areas from ecosystem partners across IP, EDA, Design Services, Cloud, USMAG, Value Chain, and Chiplet Alliances.
+
+Learn more
+
+	
+Industry-Leading Research
+
+Research drives our long-term competitiveness and differentiation. Discover the future unfolding now at Intel Foundry.
+
+Learn more
+
+	
+Intel Foundry Shuttle
+
+Our public, multi-product wafer program enables design prototyping on Intel’s leading-edge technologies and is available to select customers and university partners.
+
+Learn more
+
+	
+Software and Services
+
+Accelerate system delivery with design support integrating our unique technologies, unified compute software development across multiple architectures and vendors, and decades of experience delivering solutions in partnership with industry leaders.
+
+Learn more
+
+	
+Explore Our Latest Whitepapers & More
+
+See resources
+
+Let's Build the Future Together
+Contact Intel Foundry today
+Intel Foundry Portal
+
+Sign in

@@ -62,6 +62,78 @@ def excerpt_in_source(excerpt, source_text):
 
 
 # ---------------------------------------------------------------------------
+# Counterparty (customer / partner) names
+# ---------------------------------------------------------------------------
+_LEGAL_SUFFIX = re.compile(
+    r"(?:,?\s+(?:inc|incorporated|corp|corporation|co\.?,?\s*ltd|ltd|limited|llc|plc|n\.?v|s\.?a|ag|gmbh|pte\.?\s*ltd|opco)\.?)+\s*$",
+    re.I)
+_TRAILING_ACRONYM = re.compile(r"\s*\(\s*[\"“]?([A-Za-z0-9&.\-]{2,12})[\"”]?\s*\)\s*$")
+# Same company written differently by different sources -> one display name.
+PARTY_ALIASES = {
+    "amazon web services": "AWS", "amazon web services (aws)": "AWS",
+    "advanced micro devices": "AMD",
+    "taiwan semiconductor manufacturing company": "TSMC", "taiwan semiconductor manufacturing": "TSMC",
+    "marvell technology": "Marvell", "marvell semiconductor": "Marvell",
+    "nvidia": "NVIDIA", "gf": "GlobalFoundries", "globalfoundries": "GlobalFoundries",
+    "siliconware precision industries": "SPIL", "openai": "OpenAI", "microsoft": "Microsoft",
+}
+
+
+def canonical_party(name):
+    """One display name per customer/partner: drops a leading '@', a trailing '(TSMC)'-style acronym and legal
+    suffixes (Inc., Corporation, Limited, LLC, Co., Ltd. ...), then applies PARTY_ALIASES."""
+    if not name:
+        return name
+    n = re.sub(r"\s+", " ", unicodedata.normalize("NFC", name)).strip().lstrip("@").strip()
+    acronym = _TRAILING_ACRONYM.search(n)
+    base = _TRAILING_ACRONYM.sub("", n).strip() if acronym else n
+    base = _LEGAL_SUFFIX.sub("", base).strip(" ,")
+    return PARTY_ALIASES.get(base.lower(), PARTY_ALIASES.get(n.lower(), base or n))
+
+
+def party_variants(*names):
+    """Strings that count as the party being named in a text: the names given, their canonical form, its acronym and
+    every alias spelling that maps to the same canonical name."""
+    out = set()
+    for name in names:
+        if not name:
+            continue
+        out.add(name.strip().lstrip("@"))
+        canon = canonical_party(name)
+        out.add(canon)
+        acronym = _TRAILING_ACRONYM.search(name)
+        if acronym:
+            out.add(acronym.group(1))
+        out.update(k for k, v in PARTY_ALIASES.items() if v == canon and len(k) > 3)
+    return {v for v in out if v and len(v) >= 2}
+
+
+def names_party(text, variants):
+    """True when any variant appears in the text as a whole word (case-insensitive)."""
+    t = normalize_text(text)
+    return any(re.search(r"(?<![a-z0-9])" + re.escape(normalize_text(v)) + r"(?![a-z0-9])", t) for v in variants)
+
+
+def sentence_naming(source_text, variants, max_len=420):
+    """A verbatim sentence from the source that names the party, or None. Long sentences are cut to a window around
+    the name at word boundaries, so the result is still an exact substring of the source."""
+    if not source_text:
+        return None
+    for sentence in re.split(r"(?<=[.!?])\s+|\n+", source_text):
+        s = sentence.strip()
+        if len(s) < 20 or not names_party(s, variants):
+            continue
+        if len(s) <= max_len:
+            return s
+        low = s.lower()
+        pos = min((low.find(v.lower()) for v in variants if v.lower() in low), default=0)
+        start = s.rfind(" ", 0, max(0, pos - max_len // 2)) + 1
+        end = s.find(" ", min(len(s), start + max_len))
+        return s[start:end if end > 0 else len(s)].strip()
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Dates
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)

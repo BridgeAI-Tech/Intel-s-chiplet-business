@@ -8,19 +8,21 @@ Sample scope: screen 8–12 companies → shortlist 3–5 → 1 deep dive. Last 
 Rule: build and review **one pipeline at a time** — share sample records + source links before moving on.
 
 
-## Status — 2026-11-02 (sample delivered in web app)
+## Status — 2026-11-11
 | Task | Status |
 |---|---|
-| M1-0 Scope | 12 companies in master; 20/22 company records source-verified |
+| M1-0 Scope | 12 companies screened; dashboard shows the brief's shortlist (Cerebras, AWS, Meta, Microsoft, Tesla) |
 | M1-1 Firmographics | Explorium + SEC verified (domain, LinkedIn, HQ); evidence on company pages |
 | M1-2 Technographics | Capability evidence comes from extracted signals (Explorium stack not used: generic IT) |
-| M1-3 Hiring | 432 verified silicon postings: Tenstorrent 161, AWS 138 (amazon.jobs), Tesla 79, Cerebras 54. Other 8 companies not collected (PredictLeads volume/credits) |
+| M1-3 Hiring | **Done for all 12.** 2,870 verified silicon postings. Full 12-month PredictLeads pull for all companies (119,506 postings read; for the 8 large employers a chip-role title is required before Gemini classification, 2,695 classified). Same role from two providers kept once. Meta 147, Microsoft 277, AWS 138, Tesla 79, Cerebras 54. Review: data/review/m1_hiring_review_full_pull.xlsx |
+| Stage per programme | **Done.** 24 programmes staged by fixed rules on linked records (`scripts/m1_programme_stage.py`, table `programme_stage`); stage 4–5 need ≥2 records incl. a confirmed fact. Shown on company pages |
+| Intel portfolio reference | **Done.** 12 official Intel pages (added Foundry Overview, Software & Services, Research, Design Services Alliance, Resource Library, ARK) → 62 offerings. ARK lists only product categories, so it adds none |
 | M1-4 News & filings | 370 verified signals across all 12 companies (Exa official + trade press, SEC filings). Deep dive (scripts/m1_deep_dive.py) on the pilot set: Cerebras 92 (41 from the 424B4 prospectus and 10-Qs), AWS 79 (10 from Amazon filings naming AWS/its chips), Tesla 26. Held back: data/review/m1_news_review.xlsx, m1_deep_dive_review.xlsx |
 | M1-5 Supplier relationships | 103 relationships derived from verified signals |
 | M1-6 Normalise & link | Shared company/programme/source IDs; duplicate reports merged as corroborating sources |
-| M1-7 Assessment | **Blocked — needs research scoring rules (Shu Qi)**; no scores shown |
-| M1-8 UI | Company-wise dashboard (8 numbered sections, company chips, evidence lake, data-source panel), company pages, signal detail, Ask AI |
-| M1-9 Validation | Manual sample audit done; publish rule: verbatim excerpt + date provable from the document + fully inside window |
+| M1-7 Assessment | Framework v1 applied to all 12 (`scripts/m1_assessment.py`); **hidden from the dashboard until Shu Qi calibrates it** (10 of 12 land in Tier 1) |
+| M1-8 UI | Company-wise dashboard (7 tabs, company chips, evidence lake, data-source panel), company pages with programme stages, signal detail, Ask Intelligence |
+| M1-9 Validation | **Brief §12 test: 6/6 Module 1 questions pass** (cited, every source linked and dated, evidence class stated, no unsupported intent) — data/review/rag_s12_test.md (`scripts/rag_s12_test.py`). 33 signals still marked needs_review for a person to check |
 
 ---
 

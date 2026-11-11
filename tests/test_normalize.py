@@ -79,3 +79,27 @@ def test_job_dedup_and_prefilter():
     assert not job_may_be_silicon("Store Sales Advisor", "Help customers choose a vehicle")
     boilerplate = "Cerebras builds the world's largest AI chip, a wafer-scale accelerator."
     assert not job_may_be_silicon("Staff Software Engineer, Observability", boilerplate)
+
+
+@pytest.mark.parametrize("raw, expected", [
+    ("Amazon Web Services", "AWS"),
+    ("Taiwan Semiconductor Manufacturing Company Limited (\"TSMC\")", "TSMC"),
+    ("Taiwan Semiconductor Manufacturing Company Limited", "TSMC"),
+    ("Sony Semiconductor Solutions Corporation", "Sony Semiconductor Solutions"),
+    ("Sony", "Sony"),
+    ("@Supermicro", "Supermicro"),
+    ("OpenAI OpCo, LLC", "OpenAI"),
+    ("Tongfu Microelectronics Co., Ltd.", "Tongfu Microelectronics"),
+    ("Aston Martin Aramco Formula One™ Team", "Aston Martin Aramco Formula One™ Team"),
+])
+def test_canonical_party(raw, expected):
+    from chiplet.extract.normalize import canonical_party
+    assert canonical_party(raw) == expected
+
+
+def test_sentence_naming_is_verbatim():
+    from chiplet.extract.normalize import party_variants, sentence_naming
+    text = "Intro line here. Global AI labs planning to adopt Vera include Anthropic, OpenAI and SpaceXAI. End."
+    s = sentence_naming(text, party_variants("Anthropic"))
+    assert s and s in text and "Anthropic" in s
+    assert sentence_naming(text, party_variants("Meta")) is None

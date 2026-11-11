@@ -1,0 +1,66 @@
+URL: https://www.intel.com/content/www/us/en/foundry/software.html
+TITLE: Semiconductor Manufacturing Software and Services
+CAPTURED: 2026-11-11 (browser)
+---
+Newsletter Sign Up
+Speed Solution Delivery and Optimization
+
+Shorten time to market and deliver more performant, efficient solutions with our systems foundry software and services.
+
+	
+Delivering a Systems Foundry
+
+Accelerate system delivery and optimization with design support integrating our unique technologies, capabilities and decades of experience delivering solutions in partnership with industry leaders.
+
+Architecture
+
+Leverage expertise earned through more than 12 product generations and develop more robust architectural solutions more quickly.
+
+Intel IP
+
+Take advantage of Intel® Technology offerings for advanced graphics, media, display, imaging, connectivity, and more, align with familiar IP from third-party providers.
+
+Cooling
+
+Significantly improve performance and efficiency through our tailored liquid cooling design services and comprehensive R&D.
+
+Software
+
+Comprehensive software suites, using both open source and proprietary tools, simplify cross-architecture programming, expedite optimization, and maximize efficiency in heterogeneous computing environments.
+
+Standards
+
+Intel is a founding or leading board member in many standards bodies, such as UCIe, PCIe, JEDEC, OCP, Si2, and CXL. This leadership helps improve solution costs and performance across the industry though investment in interconnects, memory, networking, and other areas.
+
+	
+Chiplets
+
+Execute systems-of-chips designs with confidence using our proven expertise in building chiplet-based products & technologies at high volume.
+
+Learn more
+
+World-Class Foundry Offerings
+Process Technologies
+
+Design your next generation of leadership products with our breakthrough technologies Intel 18A, Intel 3, and Intel 16.
+
+Learn more
+
+Advanced Packaging and Test
+
+Intel Foundry offers cutting-edge interconnects, leadership in 2D, 2.5D, and 3D packaging, and comprehensive assembly and testing services.
+
+Learn more
+
+	
+Manufacturing
+
+Leverage robust, geo-diverse, secure, and expanding supply for wafers and assembly & test. Our leadership in sustainability helps customers meet their targets and regulatory requirements.
+
+Learn more
+
+Let's Build the Future Together
+Contact Intel Foundry today
+Intel Foundry Portal
+
+Sign in

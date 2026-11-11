@@ -7,19 +7,20 @@ Sample scope: 6–8 competitor entities/groups, **5–10 representative developm
 Rule: build and review **one pipeline at a time** — share sample records + source links before moving on.
 
 
-## Status — 2026-11-05 (events collected, shown on /competitive-radar)
+## Status — 2026-11-11 (events collected, shown on /competitive-radar)
 | Task | Status |
 |---|---|
 | M2-0 Scope | 7 competitors: Broadcom, Marvell, TSMC (pilot), AMD, NVIDIA, Arm, Samsung Foundry |
 | M2-1 Profiles | In company master with value-chain role and Intel context |
 | M2-2 Discovery | Free official sources only (Exa credits exhausted): newsroom sitemaps (NVIDIA, AMD, Marvell, Arm, Samsung), Broadcom releases via PR Newswire, Samsung Newsroom feed, SEC filings (10-K, 10-Q, 20-F, 8-K and 6-K exhibits). TSMC site blocks bots: TSMC from SEC 20-F/6-K. `scripts/m2_events_pipeline.py` |
 | M2-3 Extraction & classification | 296 verified events (184 confirmed, 112 announced plans): NVIDIA 84, Arm 66, Marvell 60, AMD 45, TSMC 26, Broadcom 12, Samsung Foundry 3. Six event types; duplicates merged as corroborating sources; 496 held back in data/review/m2_events_review.xlsx |
-| M2-4 Pre-signal trail | Not started |
+| Counterparty names | **Done.** One canonical name per customer/partner (e.g. TSMC was 4 spellings, now 13 events under one name); when the event excerpt does not name the partner, a verbatim sentence from the same source that does is stored and shown (37 events). `scripts/m2_counterparties.py` |
+| M2-4 Pre-signal trail | **Done.** 101 of 296 events link earlier records by fixed rules (same partner, same programme, partner's own announcements, supplier relationships, partner hiring build-up). Shown on each event page. `scripts/m2_pre_signal_trail.py` |
 | M2-5 Representative 5–10 events | 10 events, 7 competitors, all 6 types: data/review/m2_representative_events.xlsx (scripts/export_m2_shortlist.py). Sent for Shu Qi review |
 | M2-6 Event records | Done for all fields except Intel implication / response / priority (rulebook) |
 | M2-7 Intel implication mapping | **Blocked — needs Shu Qi's rulebook** |
 | M2-8 UI | /competitive-radar: overview charts, event register, foundry & packaging tracker; Ask Intelligence answers M2 questions |
-| M2-9 Validation | Pilot hand-audit done; formal brief §12 question test pending |
+| M2-9 Validation | **Brief §12 test: 6/6 Module 2 questions pass**, including Arm's role vs direct foundry competitors — data/review/rag_s12_test.md |
 
 Rules added for M2: Module 1 category names map to M2 types only one-to-one (investment/financing and capacity → strategic investment/capacity; milestone → product/architecture); period dates ("Q4", "fiscal quarter ended …") keep no event date and rely on the document date; Samsung records count for Samsung Foundry only when the title or excerpt is about foundry work.
 

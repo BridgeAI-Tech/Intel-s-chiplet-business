@@ -16,7 +16,7 @@ export default async function AssessmentPage({ params }: PageProps<"/assessment/
   return (
     <>
       <div className="mb-3 flex flex-wrap gap-3 text-xs">
-        <Link href="/?tab=assessment" className="text-accent">← All companies</Link>
+        <Link href="/" className="text-accent">← Emerging Demand Radar</Link>
         <Link href={`/companies/${a.company_id}`} className="text-accent">Company profile →</Link>
       </div>
       <SectionTitle title={`${a.official_name} — scoring & Intel fit`} scope={`Framework ${cfg.version}`}>

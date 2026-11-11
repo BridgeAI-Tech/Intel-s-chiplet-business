@@ -219,6 +219,19 @@ CREATE TABLE IF NOT EXISTS m1_signal (
 -- ---------------------------------------------------------------------------
 -- Module 2 records
 -- ---------------------------------------------------------------------------
+-- Development stage per silicon programme (brief: stage per project/activity, not only per company).
+-- Rule-based from the programme's linked records; see scripts/m1_programme_stage.py.
+CREATE TABLE IF NOT EXISTS programme_stage (
+    programme_id   TEXT PRIMARY KEY REFERENCES programme_master(programme_id),
+    company_id     TEXT NOT NULL REFERENCES company_master(company_id),
+    stage          INTEGER NOT NULL CHECK (stage BETWEEN 1 AND 5),
+    stage_label    TEXT NOT NULL,
+    rationale      TEXT NOT NULL,
+    record_ids     TEXT NOT NULL,                      -- JSON array: sig:<id> | rel:<id> | job:<id>
+    evidence       TEXT NOT NULL,                      -- JSON: counts per stage level
+    computed_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS m2_competitive_event (
     event_id                 TEXT PRIMARY KEY,
     company_id               TEXT NOT NULL REFERENCES company_master(company_id),   -- competitor
@@ -229,7 +242,8 @@ CREATE TABLE IF NOT EXISTS m2_competitive_event (
     publication_date         TEXT,
     first_observed_date      TEXT NOT NULL,
     counterparty_company_id  TEXT REFERENCES company_master(company_id),   -- customer / partner, when identified
-    counterparty_name        TEXT,                     -- free text when not in master, or 'undisclosed'
+    counterparty_name        TEXT,                     -- canonical display name (normalize.canonical_party), or 'undisclosed'
+    counterparty_excerpt     TEXT,                     -- verbatim sentence naming the counterparty when the main excerpt does not
     product_or_programme     TEXT,
     architecture_or_node     TEXT,
     packaging_or_interconnect TEXT,

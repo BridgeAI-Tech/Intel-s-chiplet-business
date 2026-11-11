@@ -30,7 +30,8 @@ import m1_deep_dive as dd
 from m1_news_pipeline import extract_one, host, in_window
 
 from chiplet.db import REVIEW_DIR, connect
-from chiplet.extract.normalize import CompanyIndex, canonical_url, parse_date, stable_id
+from chiplet.extract.normalize import (CompanyIndex, canonical_party, canonical_url, names_party, parse_date,
+                                       party_variants, sentence_naming, stable_id)
 from chiplet.extract.store import upsert_source
 from chiplet.sources.providers import BROWSER_UA
 from chiplet.sources.store import RawStore, utc_now
@@ -43,6 +44,23 @@ M1_TO_M2 = {"investment_ma_financing": "strategic_investment_capacity",
             "manufacturing_capacity": "strategic_investment_capacity",
             "programme_milestone": "product_architecture"}
 SAMSUNG_FOUNDRY = re.compile(r"foundry|\bSF\d|\bGAA\b|gate-all-around|I-Cube|X-Cube|SAINT|\bSAFE\b", re.I)
+
+
+def counterparty_fields(idx, raw_name, excerpt, source_text):
+    """(display name, company_id, extra excerpt) for an event's customer/partner.
+
+    One canonical name per party (no 'AWS' vs 'Amazon Web Services' split). When the event's excerpt does not name the
+    party, a verbatim sentence from the same source that does is kept as proof; with no such sentence the party is
+    dropped rather than shown without evidence."""
+    if not raw_name or raw_name.strip().lower() == "undisclosed":
+        return raw_name, None, None
+    name = canonical_party(raw_name)
+    variants = party_variants(raw_name, name)
+    cp_id = idx.resolve_name(name) or idx.resolve_name(raw_name)
+    if names_party(excerpt or "", variants):
+        return name, cp_id, None
+    sentence = sentence_naming(source_text, variants)
+    return (name, cp_id, sentence) if sentence else (None, None, None)
 M2_TYPES = {"design_win_customer", "product_architecture", "foundry_process_manufacturing",
             "chiplet_advanced_packaging", "partnership_ecosystem", "strategic_investment_capacity"}
 
@@ -280,18 +298,20 @@ def process(conn, store, docs, comps, workers):
                     cp = next((x for x in rec.counterparties if x.role.value in ("customer", "design_partner", "ecosystem_partner",
                                                                                 "foundry", "packaging_partner", "ip_provider")), None)
                     event_id = stable_id("evt", source_id, rec.title.lower())
+                    cp_name, cp_id, cp_excerpt = counterparty_fields(idx, cp.name if cp else None, rec.excerpt,
+                                                                     r.get("full_text") or r["text"])
                     with conn:
                         conn.execute(
                             """INSERT OR REPLACE INTO m2_competitive_event (event_id, company_id, programme_id, event_title,
                                    event_type, event_date, publication_date, first_observed_date, counterparty_company_id,
-                                   counterparty_name, product_or_programme, architecture_or_node, packaging_or_interconnect,
-                                   value_chain_role, commercial_stage, evidence_class, summary, extraction_method,
-                                   extraction_model, run_id, record_status)
+                                   counterparty_name, counterparty_excerpt, product_or_programme, architecture_or_node,
+                                   packaging_or_interconnect, value_chain_role, commercial_stage, evidence_class, summary,
+                                   extraction_method, extraction_model, run_id, record_status)
                                VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT first_observed_date FROM m2_competitive_event
-                                       WHERE event_id = ?), ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, 'llm', 'gemini', ?, 'extracted')""",
+                                       WHERE event_id = ?), ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'llm', 'gemini', ?, 'extracted')""",
                             (event_id, subject, prog, rec.title, category, evt,
                              doc_pub.value if doc_pub else None, event_id, today,
-                             idx.resolve_name(cp.name) if cp else None, cp.name if cp else None, rec.programme_or_product,
+                             cp_id, cp_name, cp_excerpt, rec.programme_or_product,
                              rec.architecture_or_node, rec.packaging_or_interconnect, in_scope[subject]["value_chain_role"],
                              rec.commercial_stage.value, c.evidence_class, rec.summary, store.run_id))
                         conn.execute("""INSERT OR REPLACE INTO record_source (record_type, record_id, source_id, source_role,
