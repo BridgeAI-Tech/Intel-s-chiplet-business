@@ -19,7 +19,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     sel: "#tour-nav",
     t: "Navigation & Modules",
-    x: "Easily switch between Emerging Demand (Module 1), Competitive Radar (Module 2: TSMC, Samsung, Broadcom, etc.), and Where the data comes from directly in the top navbar.",
+    x: "Easily switch between Emerging Demand Radar (Module 1), Competitive Movement Radar (Module 2: TSMC, Samsung, Broadcom, etc.), and Data Sources directly in the top navbar.",
   },
   {
     sel: "#tourBtn",

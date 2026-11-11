@@ -22,7 +22,7 @@ export default async function CompanyPage({ params }: PageProps<"/companies/[id]
 
   return (
     <>
-      <PageHeader title={c.official_name}
+      <PageHeader title={c.short_name}
         subtitle={`${humanize(c.entity_type)} · ${c.in_module_1 ? "Module 1" : ""}${c.in_module_1 && c.in_module_2 ? " & " : ""}${c.in_module_2 ? "Module 2" : ""}`} />
 
       <div className="grid gap-4 lg:grid-cols-3">

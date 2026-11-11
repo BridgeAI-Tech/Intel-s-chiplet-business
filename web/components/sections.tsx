@@ -119,8 +119,8 @@ async function CompetitorStrip() {
   const n = (v: unknown) => Number(v ?? 0);
   return (
     <div className="mt-4">
-      <Panel title="Meanwhile, competitors (Competitive Radar)" note="Broadcom, Marvell, TSMC, AMD, NVIDIA, Arm and Samsung Foundry — official announcements and filings"
-        action={<Link href="/competitive-radar" className="text-xs text-accent">Open Competitive Radar →</Link>}>
+      <Panel title="Meanwhile, competitors (Competitive Movement Radar)" note="Broadcom, Marvell, TSMC, AMD, NVIDIA, Arm and Samsung Foundry — official announcements and filings"
+        action={<Link href="/competitive-radar" className="text-xs text-accent">Open Competitive Movement Radar →</Link>}>
         <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.4fr]">
           <div className="grid grid-cols-2 gap-2 self-start">
             <Tile label="Competitive events" value={k.events ?? 0} />
@@ -435,7 +435,7 @@ export async function DataSources({ p, scope }: Props) {
   };
   return (
     <>
-      <SectionTitle title="Where the data comes from" scope={scope}>
+      <SectionTitle title="Data Sources" scope={scope}>
         The services we collect from and when they last ran.
       </SectionTitle>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

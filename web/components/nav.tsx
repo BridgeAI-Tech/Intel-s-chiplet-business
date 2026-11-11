@@ -22,7 +22,7 @@ export function Nav() {
             : "border border-border bg-surface text-foreground hover:border-accent hover:text-accent"
         }`}
       >
-        Emerging Demand
+        Emerging Demand Radar
       </Link>
       <Link
         href="/competitive-radar"
@@ -32,7 +32,7 @@ export function Nav() {
             : "border border-border bg-surface text-foreground hover:border-accent hover:text-accent"
         }`}
       >
-        Competitive Radar
+        Competitive Movement Radar
       </Link>
       <Link
         href="/?tab=sources"
@@ -42,7 +42,7 @@ export function Nav() {
             : "border border-border bg-surface text-foreground hover:border-accent hover:text-accent"
         }`}
       >
-        Where the data comes from
+        Data Sources
       </Link>
     </nav>
   );
